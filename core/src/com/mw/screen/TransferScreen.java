@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Timer;
 import com.mw.actor.LoadingImage;
 import com.mw.game.MainGame;
 
@@ -14,8 +15,8 @@ public class TransferScreen implements Screen {
 	private LoadingImage image_loading;
 	private TextureAtlas atlas;
 	private Stage stage;
-//	private static final float DURATION = 0.0f;
-//	private Timer timer = new Timer();
+	private static final float DURATION = 0.5f;
+	private Timer timer = new Timer();
 
 	public TransferScreen(MainGame mainGame) {
 		super();
@@ -34,13 +35,13 @@ public class TransferScreen implements Screen {
 		
 		stage = new Stage();
 		stage.addActor(image_loading);
-//		timer.scheduleTask(new Task() {
-//			
-//			@Override
-//			public void run() {
-//			}
-//		}, DURATION);
-		mainGame.setScreen(new MainScreen(mainGame));
+		timer.scheduleTask(new Timer.Task() {
+			@Override
+			public void run() {
+				mainGame.setScreen(new MainScreen(mainGame));
+			}
+		}, DURATION);
+
 	}
 
 	@Override
