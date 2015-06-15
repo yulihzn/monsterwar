@@ -10,18 +10,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.mw.base.BaseScreen;
 import com.mw.game.MainGame;
 
-public class StartScreen implements Screen{
+public class StartScreen extends BaseScreen implements Screen{
 	private Stage stage;
 	private TextureAtlas atlas;
 	private ImageButton ib_start;
 	private Image background;
 	private float backgroundScale = 1.0f;
-	private MainGame mainGame;
 
 	public StartScreen(MainGame mainGame) {
-		this.mainGame = mainGame;
+		super(mainGame);
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class StartScreen implements Screen{
 
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				mainGame.setScreen(new TransferScreen(mainGame));
+				mainGame.setScreen(new TransferScreen(mainGame,new MainScreen(mainGame)));
 				super.clicked(event, x, y);
 			}
 			

@@ -17,3 +17,17 @@ button_start_pressed
   orig: 150, 50
   offset: 0, 0
   index: -1
+button_back_normal
+  rotate: false
+  xy: 305, 19
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+button_back_pressed
+  rotate: false
+  xy: 339, 19
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
