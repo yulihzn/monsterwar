@@ -1,12 +1,11 @@
 package com.mw.base;
 
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.mw.game.MainGame;
 
-/**
- * Created by BanditCat on 2015/6/16.
- */
-public abstract class BaseScreen implements Screen{
+
+public abstract class BaseScreen extends InputAdapter implements Screen{
     protected MainGame mainGame;
 
     public BaseScreen(MainGame mainGame) {
