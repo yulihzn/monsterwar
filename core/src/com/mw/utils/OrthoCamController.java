@@ -47,4 +47,5 @@ public class OrthoCamController extends InputAdapter {
 		last.set(-1, -1, -1);
 		return false;
 	}
+
 }

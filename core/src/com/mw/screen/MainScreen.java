@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mw.base.BaseScreen;
 import com.mw.game.MainGame;
+import com.mw.utils.CameraController;
 import com.mw.utils.OrthoCamController;
 
 import java.util.Random;
@@ -36,6 +38,8 @@ public class MainScreen extends BaseScreen implements Screen{
 	private int[] layers = new int[LAYERS];
 	private OrthographicCamera cam;
 	private OrthoCamController camController;
+	CameraController controller;
+	GestureDetector gestureDetector;
 	private long startTime = TimeUtils.nanoTime();
 
 	public MainScreen(MainGame mainGame) {
@@ -44,6 +48,8 @@ public class MainScreen extends BaseScreen implements Screen{
 		cam = new OrthographicCamera(480, 320);
 		cam.position.set(WIDTH * 32 / 2, HEIGHT * 32 / 2, 0);
 		camController = new OrthoCamController(cam);
+		controller = new CameraController(cam);
+		gestureDetector = new GestureDetector(20, 0.5f, 2, 0.15f, controller);
 
 		texture = new Texture(Gdx.files.internal("tiles.png"));
 
@@ -72,11 +78,11 @@ public class MainScreen extends BaseScreen implements Screen{
 		ib_back = new ImageButton(imageUp, imageDown);
 		ib_back.setPosition(BACKPADDING, Gdx.graphics.getHeight()-BACKPADDING-ib_back.getWidth());
 		stage = new Stage();
-		ib_back.addListener(new ClickListener(){
+		ib_back.addListener(new ClickListener() {
 
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				mainGame.setScreen(new TransferScreen(mainGame,new StartScreen(mainGame)));
+				mainGame.setScreen(new TransferScreen(mainGame, new StartScreen(mainGame)));
 				super.clicked(event, x, y);
 			}
 
@@ -84,7 +90,8 @@ public class MainScreen extends BaseScreen implements Screen{
 		stage.addActor(ib_back);
 		InputMultiplexer inputMultiplexer = new InputMultiplexer();
 		inputMultiplexer.addProcessor(stage);
-		inputMultiplexer.addProcessor(camController);
+//		inputMultiplexer.addProcessor(camController);
+		inputMultiplexer.addProcessor(gestureDetector);
 		Gdx.input.setInputProcessor(inputMultiplexer);
 
 	}
@@ -92,6 +99,7 @@ public class MainScreen extends BaseScreen implements Screen{
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+//		controller.update();
 		cam.update();
 
 
