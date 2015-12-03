@@ -63,6 +63,7 @@ public class StartScreen extends BaseScreen implements Screen{
 		particleEffectActor = new ParticleEffectActor(particleEffect);
 		particleEffectActor.scaleBy(2.0f,2.0f);
 		particleEffectActor.setPposition(Gdx.graphics.getWidth()/2 + 330*backgroundScale, 140*backgroundScale);
+		particleEffectActor.getEffect().scaleEffect(2.0f);
 		stage.addActor(particleEffectActor);
 
 

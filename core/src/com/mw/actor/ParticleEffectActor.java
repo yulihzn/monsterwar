@@ -33,7 +33,6 @@ public class ParticleEffectActor extends Actor {
 
     public ParticleEffectActor(ParticleEffect effect) {
         this.effect = effect;
-        effect.scaleEffect(2.0f);
     }
 
     public ParticleEffect getEffect() {
