@@ -3,6 +3,7 @@ package com.mw.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.mw.actor.ParticleEffectActor;
 import com.mw.base.BaseScreen;
 import com.mw.game.MainGame;
 
@@ -19,6 +21,9 @@ public class StartScreen extends BaseScreen implements Screen{
 	private ImageButton ib_start;
 	private Image background;
 	private float backgroundScale = 1.0f;
+	private ParticleEffect particleEffect;
+	private ParticleEffectActor particleEffectActor;
+
 
 	public StartScreen(MainGame mainGame) {
 		super(mainGame);
@@ -52,14 +57,23 @@ public class StartScreen extends BaseScreen implements Screen{
 		stage.addActor(background);
 		stage.addActor(ib_start);
 		Gdx.input.setInputProcessor(stage);
-		
+
+		particleEffect = new ParticleEffect();
+		particleEffect.load(Gdx.files.internal("data/fire.p"),Gdx.files.internal("images"));
+		particleEffectActor = new ParticleEffectActor(particleEffect);
+		particleEffectActor.scaleBy(2.0f,2.0f);
+		particleEffectActor.setPposition(Gdx.graphics.getWidth()/2 + 330*backgroundScale, 140*backgroundScale);
+		stage.addActor(particleEffectActor);
+
+
+
 	}
 
 	@Override
 	public void render(float delta) {
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
-		
+
 	}
 
 	@Override

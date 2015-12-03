@@ -76,6 +76,8 @@ public class MainScreen extends BaseScreen implements Screen{
 		TextureRegionDrawable imageUp = new TextureRegionDrawable(atlas.findRegion("button_back_normal"));
 		TextureRegionDrawable imageDown = new TextureRegionDrawable(atlas.findRegion("button_back_pressed"));
 		ib_back = new ImageButton(imageUp, imageDown);
+		ib_back.setWidth(Gdx.graphics.getWidth()/10);
+		ib_back.setHeight(Gdx.graphics.getHeight()/10);
 		ib_back.setPosition(BACKPADDING, Gdx.graphics.getHeight()-BACKPADDING-ib_back.getWidth());
 		stage = new Stage();
 		ib_back.addListener(new ClickListener() {
