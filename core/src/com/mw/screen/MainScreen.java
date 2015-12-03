@@ -17,13 +17,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mw.base.BaseScreen;
 import com.mw.game.MainGame;
+import com.mw.stage.MapStage;
 import com.mw.utils.CameraController;
 import com.mw.utils.OrthoCamController;
 
 import java.util.Random;
 
 public class MainScreen extends BaseScreen implements Screen{
-	private Stage stage = new Stage();
+	private MapStage stage;
 	private ImageButton ib_back;
 	private TextureAtlas atlas;
 	private static final float BACKPADDING = 10f;
@@ -79,7 +80,7 @@ public class MainScreen extends BaseScreen implements Screen{
 		ib_back.setWidth(Gdx.graphics.getWidth()/10);
 		ib_back.setHeight(Gdx.graphics.getHeight()/10);
 		ib_back.setPosition(BACKPADDING, Gdx.graphics.getHeight()-BACKPADDING-ib_back.getWidth());
-		stage = new Stage();
+		stage = new MapStage(cam);
 		ib_back.addListener(new ClickListener() {
 
 			@Override
