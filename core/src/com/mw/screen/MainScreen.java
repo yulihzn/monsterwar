@@ -3,14 +3,24 @@ package com.mw.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.maps.tiled.TideMapLoader;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -43,6 +53,13 @@ public class MainScreen extends BaseScreen implements Screen{
 	GestureDetector gestureDetector;
 	private long startTime = TimeUtils.nanoTime();
 
+	private Image map02;
+	private float backgroundScale = 1.0f;
+
+	private TiledMap map;
+	private TiledMapRenderer renderer;
+	private AssetManager assetManager;
+
 	public MainScreen(MainGame mainGame) {
 		super(mainGame);
 
@@ -53,6 +70,11 @@ public class MainScreen extends BaseScreen implements Screen{
 		gestureDetector = new GestureDetector(20, 0.5f, 2, 0.15f, controller);
 
 		texture = new Texture(Gdx.files.internal("tiles.png"));
+		map02 = new Image(new Texture(Gdx.files.internal("images/map02.jpg")));
+		backgroundScale = Gdx.graphics.getHeight()/map02.getHeight();
+//		map02.setWidth(map02.getWidth() * backgroundScale);
+//		map02.setHeight(Gdx.graphics.getHeight());
+		map02.setPosition(Gdx.graphics.getWidth()/2-map02.getWidth()/2,0);
 
 		Random rand = new Random();
 		for (int i = 0; i < LAYERS; i++) {
@@ -68,6 +90,13 @@ public class MainScreen extends BaseScreen implements Screen{
 			}
 			layers[i] = cache.endCache();
 		}
+
+		assetManager = new AssetManager();
+		assetManager.setLoader(TiledMap.class,new TmxMapLoader(new InternalFileHandleResolver()));
+		assetManager.load("images/tiles.tmx",TiledMap.class);
+		assetManager.finishLoading();
+		map = assetManager.get("images/tiles.tmx");
+		renderer = new OrthogonalTiledMapRenderer(map,1f/32f);
 
 	}
 
@@ -96,6 +125,7 @@ public class MainScreen extends BaseScreen implements Screen{
 //		inputMultiplexer.addProcessor(camController);
 		inputMultiplexer.addProcessor(gestureDetector);
 		Gdx.input.setInputProcessor(inputMultiplexer);
+		stage.addActor(map02);
 
 	}
 
@@ -104,6 +134,12 @@ public class MainScreen extends BaseScreen implements Screen{
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 //		controller.update();
 		cam.update();
+		if(Math.abs(cam.zoom)>5){
+			map02.setVisible(true);
+		}else{
+			map02.setVisible(false);
+		}
+
 
 
 		Gdx.gl.glEnable(GL20.GL_BLEND);
@@ -124,6 +160,10 @@ public class MainScreen extends BaseScreen implements Screen{
 		}
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
+
+		renderer.setView(cam);
+		renderer.render();
+
 		
 	}
 
