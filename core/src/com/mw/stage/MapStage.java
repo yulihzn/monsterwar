@@ -25,9 +25,10 @@ public class MapStage extends Stage{
 	@Override
 	public boolean scrolled(int amount) {
 		Gdx.app.log("scrolled",""+amount);
-		camera.zoom += amount*0.25;
-		if(camera.zoom == 0.0f){
-			camera.zoom = 0.1f;
+		if(amount == -1){
+			camera.zoom += camera.zoom*0.05;
+		}else if(amount == 1){
+			camera.zoom -= camera.zoom*0.05;
 		}
 		Gdx.app.log("zoom",""+camera.zoom);
 		return super.scrolled(amount);
