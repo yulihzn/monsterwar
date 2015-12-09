@@ -34,6 +34,7 @@ import com.mw.base.BaseScreen;
 import com.mw.game.MainGame;
 import com.mw.stage.MapStage;
 import com.mw.utils.CameraController;
+import com.mw.utils.Dungeon;
 import com.mw.utils.OrthoCamController;
 
 import java.util.Random;
@@ -106,9 +107,12 @@ public class MainScreen extends BaseScreen implements Screen{
 //		inputMultiplexer.addProcessor(camController);
 		inputMultiplexer.addProcessor(gestureDetector);
 		Gdx.input.setInputProcessor(inputMultiplexer);
-		stage.addActor(map01);
-		stage.addActor(map02);
+//		stage.addActor(map01);
+//		stage.addActor(map02);
 		stage.addActor(map03);
+		Dungeon d = new Dungeon();
+		d.createDungeon(100,100,50);
+		Gdx.app.log("", d.showDungeon());
 
 	}
 
@@ -119,22 +123,22 @@ public class MainScreen extends BaseScreen implements Screen{
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 //		controller.update();
 		cam.update();
-		if(Math.abs(cam.zoom)>=5 && Math.abs(cam.zoom)<10){
-			map01.setVisible(false);
-			map02.setVisible(true);
-			map03.setVisible(false);
-		}else if(Math.abs(cam.zoom)>=10){
-			map01.setVisible(false);
-			map02.setVisible(false);
-			map03.setVisible(true);
-		}else if(Math.abs(cam.zoom)<5){
-			map01.setVisible(true);
-			map02.setVisible(false);
-			map03.setVisible(false);
-		}
+//		if(Math.abs(cam.zoom)>=5 && Math.abs(cam.zoom)<10){
+//			map01.setVisible(false);
+//			map02.setVisible(true);
+//			map03.setVisible(false);
+//		}else if(Math.abs(cam.zoom)>=10){
+//			map01.setVisible(false);
+//			map02.setVisible(false);
+//			map03.setVisible(true);
+//		}else if(Math.abs(cam.zoom)<5){
+//			map01.setVisible(true);
+//			map02.setVisible(false);
+//			map03.setVisible(false);
+//		}
 
 		if (TimeUtils.nanoTime() - startTime >= 1000000000) {
-			Gdx.app.log("TileTest", "fps: " + Gdx.graphics.getFramesPerSecond());
+//			Gdx.app.log("TileTest", "fps: " + Gdx.graphics.getFramesPerSecond());
 			startTime = TimeUtils.nanoTime();
 		}
 		stage.act(Gdx.graphics.getDeltaTime());
