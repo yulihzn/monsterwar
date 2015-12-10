@@ -28,15 +28,15 @@ public class Dungeon {
     private long oldseed = 0;
 
     //a list over tile types we're using
-    final private int tileUnused = 0;
-    final private int tileDirtWall = 1; //not in use
-    final private int tileDirtFloor = 2;
-    final private int tileStoneWall = 3;
-    final private int tileCorridor = 4;
-    final private int tileDoor = 5;
-    final private int tileUpStairs = 6;
-    final private int tileDownStairs = 7;
-    final private int tileChest = 8;
+    final public static int tileUnused = 0;
+    final public static int tileDirtWall = 1; //not in use
+    final public static int tileDirtFloor = 2;
+    final public static int tileStoneWall = 3;
+    final public static int tileCorridor = 4;
+    final public static int tileDoor = 5;
+    final public static int tileUpStairs = 6;
+    final public static int tileDownStairs = 7;
+    final public static int tileChest = 8;
 
     //misc. messages to print
     private String msgXSize = "X size of dungeon: \t";
@@ -502,6 +502,11 @@ public class Dungeon {
 
     public int[][] getDungeonArray(){
         int[][] array = new int[ysize][xsize];
+        for (int y = 0; y < ysize; y++) {
+            for (int x = 0; x < xsize; x++) {
+                array[x][y] = getCell(x,y);
+            }
+        }
         return array;
     }
 

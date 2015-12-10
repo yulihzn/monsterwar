@@ -101,7 +101,6 @@ public class MainScreen extends BaseScreen implements Screen{
 			}
 
 		});
-		stage.addActor(ib_back);
 		InputMultiplexer inputMultiplexer = new InputMultiplexer();
 		inputMultiplexer.addProcessor(stage);
 //		inputMultiplexer.addProcessor(camController);
@@ -110,9 +109,7 @@ public class MainScreen extends BaseScreen implements Screen{
 //		stage.addActor(map01);
 //		stage.addActor(map02);
 		stage.addActor(map03);
-		Dungeon d = new Dungeon();
-		d.createDungeon(100,100,50);
-		Gdx.app.log("", d.showDungeon());
+		stage.addActor(ib_back);
 
 	}
 
