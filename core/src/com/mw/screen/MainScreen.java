@@ -107,8 +107,9 @@ public class MainScreen extends BaseScreen implements Screen{
 		inputMultiplexer.addProcessor(gestureDetector);
 		Gdx.input.setInputProcessor(inputMultiplexer);
 //		stage.addActor(map01);
-//		stage.addActor(map02);
+//		stage.addActor(map02);b
 		stage.addActor(map03);
+		map03.setDungeon();
 		stage.addActor(ib_back);
 
 	}

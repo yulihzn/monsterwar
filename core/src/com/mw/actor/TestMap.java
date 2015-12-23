@@ -16,7 +16,7 @@ import java.util.Random;
  */
 public class TestMap extends Actor {
     private OrthographicCamera cam;
-    private static final int LAYERS = 1;
+    private static final int LAYERS = 5;
     private static final int WIDTH = 15;
     private static final int HEIGHT = 10;
     private Texture texture;
@@ -26,10 +26,14 @@ public class TestMap extends Actor {
     private TextureAtlas textureAtlas;
 
     private Dungeon dungeon;
-    private static final int ysize = 30,xsize = 30;
+    private static final int ysize = 100,xsize = 100;
     private SpriteCache[] caches = new SpriteCache[LAYERS];
     private SpriteCache cache = new SpriteCache();
+    private SpriteCache cache1 = new SpriteCache();
     private int cacheId = 0;
+    private int cacheId1 = 0;
+    private SpriteCache[][] mapcaches = new SpriteCache[10][10];
+    private int[][] mapcacheids = new int[10][10];
 
     public TestMap(OrthographicCamera cam) {
         this.cam = cam;
@@ -49,16 +53,22 @@ public class TestMap extends Actor {
             }
             layers[i] = cache.endCache();
         }
-        setDungeon();
+//        setDungeon();
 
     }
 
-    private void setDungeon(){
+    public void setDungeon(){
         dungeon = new Dungeon();
-        dungeon.createDungeon(xsize,ysize,100);
+        dungeon.createDungeon(xsize,ysize,10000);
         Gdx.app.log("", dungeon.showDungeon());
         int[][] array = dungeon.getDungeonArray();
-        cache.beginCache();
+        for(int i = 0;i < 10;i++){
+            for (int j = 0;j < 10;j++){
+                mapcaches[i][j] = new SpriteCache();
+                SpriteCache cache = mapcaches[i][j];
+                cache.beginCache();
+            }
+        }
         for (int y = 0; y < ysize; y++) {
             for (int x = 0; x < xsize; x++) {
                 String name = "";
@@ -73,10 +83,19 @@ public class TestMap extends Actor {
                     case Dungeon.tileDownStairs:name="grass02-original"; break;
                     case Dungeon.tileChest:name="cup02-original"; break;
                 }
-                cache.add(textureAtlas.findRegion(name),x<<5,y<<5);
+                mapcaches[x/10][y/10].add(textureAtlas.findRegion(name),x<<5,y<<5);
             }
         }
-        cacheId = cache.endCache();
+        for(int i = 0;i < 10;i++){
+            for (int j = 0;j < 10;j++){
+                SpriteCache cache = mapcaches[i][j];
+                mapcacheids[i][j] = cache.endCache();
+            }
+        }
+
+    }
+    private void setPlayer(){
+
     }
 
     @Override
@@ -91,9 +110,14 @@ public class TestMap extends Actor {
 //            }
 //            cache.end();
 //        }
-        cache.setProjectionMatrix(cam.combined);
-        cache.begin();
-        cache.draw(cacheId);
-        cache.end();
+        for(int i = 0;i < 10;i++){
+            for (int j = 0;j < 10;j++){
+                SpriteCache cache = mapcaches[i][j];
+                cache.setProjectionMatrix(cam.combined);
+                cache.begin();
+                cache.draw(mapcacheids[i][j]);
+                cache.end();
+            }
+        }
     }
 }
