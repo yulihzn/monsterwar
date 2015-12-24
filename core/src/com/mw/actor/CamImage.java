@@ -3,6 +3,7 @@ package com.mw.actor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 /**
@@ -12,6 +13,10 @@ public class CamImage extends Image {
     private OrthographicCamera cam;
 
     public CamImage(Texture texture, OrthographicCamera cam) {
+        super(texture);
+        this.cam = cam;
+    }
+    public CamImage(TextureRegion texture, OrthographicCamera cam) {
         super(texture);
         this.cam = cam;
     }

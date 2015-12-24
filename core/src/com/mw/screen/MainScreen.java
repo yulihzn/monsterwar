@@ -28,6 +28,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mw.actor.CamImage;
+import com.mw.actor.Player;
 import com.mw.actor.TestMap;
 import com.mw.actor.TiledMapActor;
 import com.mw.base.BaseScreen;
@@ -66,6 +67,8 @@ public class MainScreen extends BaseScreen implements Screen{
 
 	private TiledMapActor map01;
 	private TestMap map03;
+	private Player man;
+	private TextureAtlas textureAtlas;
 
 	public MainScreen(MainGame mainGame) {
 		super(mainGame);
@@ -75,6 +78,7 @@ public class MainScreen extends BaseScreen implements Screen{
 		camController = new OrthoCamController(cam);
 		controller = new CameraController(cam);
 		gestureDetector = new GestureDetector(20, 0.5f, 2, 0.15f, controller);
+		textureAtlas = new TextureAtlas(Gdx.files.internal("tiles.pack"));
 
 		map01 = new TiledMapActor(cam);
 		map02 = new CamImage(new Texture(Gdx.files.internal("images/map02.jpg")),cam);
@@ -109,8 +113,15 @@ public class MainScreen extends BaseScreen implements Screen{
 //		stage.addActor(map01);
 //		stage.addActor(map02);b
 		stage.addActor(map03);
+		map03.setZIndex(1);
 		map03.setDungeon();
 		stage.addActor(ib_back);
+		ib_back.setZIndex(3);
+		man = new Player(textureAtlas.findRegion("man"),cam);
+		map03.setCreaturePos("man",5,5);
+		man.setPosition(map03.getCreaturePos("man").x,map03.getCreaturePos("man").y);
+		stage.addActor(man);
+		man.setZIndex(2);
 
 	}
 
@@ -138,6 +149,7 @@ public class MainScreen extends BaseScreen implements Screen{
 		if (TimeUtils.nanoTime() - startTime >= 1000000000) {
 //			Gdx.app.log("TileTest", "fps: " + Gdx.graphics.getFramesPerSecond());
 			startTime = TimeUtils.nanoTime();
+			Gdx.app.log("cam.position", "x=" + cam.position.x + "y="+cam.position.y);
 		}
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();

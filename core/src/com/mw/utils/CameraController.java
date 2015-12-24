@@ -13,6 +13,7 @@ public class CameraController implements GestureDetector.GestureListener{
     private boolean flinging = false;
     private float initialScale = 1;
     private OrthographicCamera camera;
+    private float tapX=-1,tapY=-1;
     public CameraController(OrthographicCamera camera){
         this.camera = camera;
     }
@@ -26,6 +27,8 @@ public class CameraController implements GestureDetector.GestureListener{
     @Override
     public boolean tap(float x, float y, int count, int button) {
         Gdx.app.log("GestureDetectorTest", "tap at " + x + ", " + y + ", count: " + count);
+        tapX = x;
+        tapY = y;
         return false;
     }
 
@@ -77,5 +80,13 @@ public class CameraController implements GestureDetector.GestureListener{
             if (Math.abs(velX) < 0.01f) velX = 0;
             if (Math.abs(velY) < 0.01f) velY = 0;
         }
+    }
+
+    public float getTapX() {
+        return tapX;
+    }
+
+    public float getTapY() {
+        return tapY;
     }
 }

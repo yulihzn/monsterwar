@@ -31,16 +31,23 @@ grass02-original
   orig: 32, 32
   offset: 0, 0
   index: -1
-sand01-original
+man
   rotate: false
   xy: 128, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-stone-original
+sand01-original
   rotate: false
   xy: 160, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+stone-original
+  rotate: false
+  xy: 192, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

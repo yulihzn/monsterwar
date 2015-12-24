@@ -6,9 +6,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.mw.utils.Dungeon;
 
+import java.util.HashMap;
 import java.util.Random;
 
 /**
@@ -26,7 +31,7 @@ public class TestMap extends Actor {
     private TextureAtlas textureAtlas;
 
     private Dungeon dungeon;
-    private static final int ysize = 100,xsize = 100;
+    private static final int ysize = 50,xsize = 50;
     private SpriteCache[] caches = new SpriteCache[LAYERS];
     private SpriteCache cache = new SpriteCache();
     private SpriteCache cache1 = new SpriteCache();
@@ -34,6 +39,8 @@ public class TestMap extends Actor {
     private int cacheId1 = 0;
     private SpriteCache[][] mapcaches = new SpriteCache[10][10];
     private int[][] mapcacheids = new int[10][10];
+
+    private HashMap<String,Vector2> creaturePos = new HashMap<String, Vector2>();
 
     public TestMap(OrthographicCamera cam) {
         this.cam = cam;
@@ -54,12 +61,14 @@ public class TestMap extends Actor {
             layers[i] = cache.endCache();
         }
 //        setDungeon();
+        addListener(inputListener);
+
 
     }
 
     public void setDungeon(){
         dungeon = new Dungeon();
-        dungeon.createDungeon(xsize,ysize,10000);
+        dungeon.createDungeon(xsize,ysize,5000);
         Gdx.app.log("", dungeon.showDungeon());
         int[][] array = dungeon.getDungeonArray();
         for(int i = 0;i < 10;i++){
@@ -94,8 +103,30 @@ public class TestMap extends Actor {
         }
 
     }
-    private void setPlayer(){
 
+    /**
+     * 设置生物位置
+     * @param name 生物名字
+     * @param x 数组坐标
+     * @param y 数组坐标
+     */
+    public void setCreaturePos(String name,int x,int y){
+        if(x >= xsize){
+            x = xsize-1;
+        }
+        if(x < 0){
+            x = 0;
+        }
+        if(y >= ysize){
+            y = ysize-1;
+        }
+        if(y < 0){
+            y = 0;
+        }
+        creaturePos.put(name,new Vector2(x>>5,y>>5));
+    }
+    public  Vector2 getCreaturePos(String name){
+        return creaturePos.get(name);
     }
 
     @Override
@@ -120,4 +151,18 @@ public class TestMap extends Actor {
             }
         }
     }
+
+    private InputListener inputListener = new InputListener(){
+        @Override
+        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+            return super.touchDown(event, x, y, pointer, button);
+        }
+
+        @Override
+        public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+            super.touchUp(event, x, y, pointer, button);
+            Gdx.app.log("touchUp","x="+x+"y="+y);
+        }
+    };
+
 }
