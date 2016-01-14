@@ -41,7 +41,8 @@ import com.mw.utils.OrthoCamController;
 import java.util.Random;
 
 public class MainScreen extends BaseScreen implements Screen{
-	private MapStage stage;
+	private MapStage mapStage;
+	private Stage uiStage;
 	private ImageButton ib_back;
 	private TextureAtlas atlas;
 	private static final float BACKPADDING = 10f;
@@ -84,6 +85,13 @@ public class MainScreen extends BaseScreen implements Screen{
 		map02 = new CamImage(new Texture(Gdx.files.internal("images/map02.jpg")),cam);
 		map03 = new TestMap(cam);
 
+		controller.setOnTouchListener(new CameraController.OnTouchListener() {
+			@Override
+			public void onTap(float x, float y) {
+
+			}
+		});
+
 	}
 
 	@Override
@@ -95,7 +103,8 @@ public class MainScreen extends BaseScreen implements Screen{
 		ib_back.setWidth(Gdx.graphics.getWidth()/10);
 		ib_back.setHeight(Gdx.graphics.getHeight()/10);
 		ib_back.setPosition(BACKPADDING, Gdx.graphics.getHeight()-BACKPADDING-ib_back.getWidth());
-		stage = new MapStage(cam);
+		uiStage = new Stage();
+		mapStage = new MapStage(cam);
 		ib_back.addListener(new ClickListener() {
 
 			@Override
@@ -106,21 +115,20 @@ public class MainScreen extends BaseScreen implements Screen{
 
 		});
 		InputMultiplexer inputMultiplexer = new InputMultiplexer();
-		inputMultiplexer.addProcessor(stage);
-//		inputMultiplexer.addProcessor(camController);
+		inputMultiplexer.addProcessor(mapStage);
+		inputMultiplexer.addProcessor(uiStage);
 		inputMultiplexer.addProcessor(gestureDetector);
 		Gdx.input.setInputProcessor(inputMultiplexer);
-//		stage.addActor(map01);
-//		stage.addActor(map02);b
-		stage.addActor(map03);
+
+		uiStage.addActor(ib_back);
+
+		mapStage.addActor(map03);
 		map03.setZIndex(1);
 		map03.setDungeon();
-		stage.addActor(ib_back);
-		ib_back.setZIndex(3);
 		man = new Player(textureAtlas.findRegion("man"),cam);
 		map03.setCreaturePos("man",5,5);
 		man.setPosition(map03.getCreaturePos("man").x,map03.getCreaturePos("man").y);
-		stage.addActor(man);
+		mapStage.addActor(man);
 		man.setZIndex(2);
 
 	}
@@ -151,8 +159,10 @@ public class MainScreen extends BaseScreen implements Screen{
 			startTime = TimeUtils.nanoTime();
 			Gdx.app.log("cam.position", "x=" + cam.position.x + "y="+cam.position.y);
 		}
-		stage.act(Gdx.graphics.getDeltaTime());
-		stage.draw();
+		mapStage.act(Gdx.graphics.getDeltaTime());
+		mapStage.draw();
+		uiStage.act(Gdx.graphics.getDeltaTime());
+		uiStage.draw();
 
 
 		
@@ -160,8 +170,8 @@ public class MainScreen extends BaseScreen implements Screen{
 
 	@Override
 	public void resize(int width, int height) {
-		stage.getViewport().update(width,height,true);
-		
+		mapStage.getViewport().update(width,height,true);
+		uiStage.getViewport().update(width,height,true);
 	}
 
 	@Override

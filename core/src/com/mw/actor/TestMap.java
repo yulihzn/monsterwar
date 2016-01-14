@@ -31,7 +31,7 @@ public class TestMap extends Actor {
     private TextureAtlas textureAtlas;
 
     private Dungeon dungeon;
-    private static final int ysize = 50,xsize = 50;
+    private static final int ysize = 20,xsize = 20;
     private SpriteCache[] caches = new SpriteCache[LAYERS];
     private SpriteCache cache = new SpriteCache();
     private SpriteCache cache1 = new SpriteCache();
@@ -131,16 +131,6 @@ public class TestMap extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        super.draw(batch, parentAlpha);
-//        for (int i = 0; i < LAYERS; i++) {
-//            SpriteCache cache = caches[i];
-//            cache.setProjectionMatrix(cam.combined);
-//            cache.begin();
-//            for (int j = 0; j < TILES_PER_LAYER; j += BLOCK_TILES) {
-//                cache.draw(layers[i], j, BLOCK_TILES);
-//            }
-//            cache.end();
-//        }
         for(int i = 0;i < 10;i++){
             for (int j = 0;j < 10;j++){
                 SpriteCache cache = mapcaches[i][j];
@@ -150,6 +140,7 @@ public class TestMap extends Actor {
                 cache.end();
             }
         }
+        super.draw(batch, parentAlpha);
     }
 
     private InputListener inputListener = new InputListener(){
