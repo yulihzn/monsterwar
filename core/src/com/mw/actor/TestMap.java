@@ -1,6 +1,7 @@
 package com.mw.actor;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -131,6 +132,7 @@ public class TestMap extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        batch.end();
         for(int i = 0;i < 10;i++){
             for (int j = 0;j < 10;j++){
                 SpriteCache cache = mapcaches[i][j];
@@ -140,7 +142,8 @@ public class TestMap extends Actor {
                 cache.end();
             }
         }
-        super.draw(batch, parentAlpha);
+        batch.begin();
+//        super.draw(batch, parentAlpha);
     }
 
     private InputListener inputListener = new InputListener(){

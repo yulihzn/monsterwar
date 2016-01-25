@@ -130,6 +130,8 @@ public class MainScreen extends BaseScreen implements Screen{
 		man.setPosition(map03.getCreaturePos("man").x,map03.getCreaturePos("man").y);
 		mapStage.addActor(man);
 		man.setZIndex(2);
+		mapStage.addActor(map02);
+		man.setZIndex(3);
 
 	}
 
