@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
@@ -32,14 +33,13 @@ public class TestMap extends Actor {
     private TextureAtlas textureAtlas;
 
     private Dungeon dungeon;
-    private static final int ysize = 20,xsize = 20;
+    private static final int ysize = 100,xsize = 100;
     private SpriteCache[] caches = new SpriteCache[LAYERS];
-    private SpriteCache cache = new SpriteCache();
-    private SpriteCache cache1 = new SpriteCache();
-    private int cacheId = 0;
-    private int cacheId1 = 0;
     private SpriteCache[][] mapcaches = new SpriteCache[10][10];
     private int[][] mapcacheids = new int[10][10];
+
+    private String[][] names = new String[xsize][ysize];
+
 
     private HashMap<String,Vector2> creaturePos = new HashMap<String, Vector2>();
 
@@ -47,20 +47,20 @@ public class TestMap extends Actor {
         this.cam = cam;
         texture = new Texture(Gdx.files.internal("tiles.png"));
         textureAtlas = new TextureAtlas(Gdx.files.internal("tiles.pack"));
-        Random rand = new Random();
-        for (int i = 0; i < LAYERS; i++) {
-            caches[i] = new SpriteCache();
-            SpriteCache cache = caches[i];
-            cache.beginCache();
-            for (int y = 0; y < HEIGHT; y++) {
-                for (int x = 0; x < WIDTH; x++) {
-                    int tileX = rand.nextInt(5);
-                    int tileY = rand.nextInt(5);
-                    cache.add(texture, x << 5, y << 5, 1 + tileX * 33, 1 + tileY * 33, 32, 32);
-                }
-            }
-            layers[i] = cache.endCache();
-        }
+//        Random rand = new Random();
+//        for (int i = 0; i < LAYERS; i++) {
+//            caches[i] = new SpriteCache();
+//            SpriteCache cache = caches[i];
+//            cache.beginCache();
+//            for (int y = 0; y < HEIGHT; y++) {
+//                for (int x = 0; x < WIDTH; x++) {
+//                    int tileX = rand.nextInt(5);
+//                    int tileY = rand.nextInt(5);
+//                    cache.add(texture, x << 5, y << 5, 1 + tileX * 33, 1 + tileY * 33, 32, 32);
+//                }
+//            }
+//            layers[i] = cache.endCache();
+//        }
 //        setDungeon();
         addListener(inputListener);
 
@@ -69,7 +69,7 @@ public class TestMap extends Actor {
 
     public void setDungeon(){
         dungeon = new Dungeon();
-        dungeon.createDungeon(xsize,ysize,5000);
+        dungeon.createDungeon(xsize,ysize,50000);
         Gdx.app.log("", dungeon.showDungeon());
         int[][] array = dungeon.getDungeonArray();
         for(int i = 0;i < 10;i++){
@@ -79,6 +79,7 @@ public class TestMap extends Actor {
                 cache.beginCache();
             }
         }
+        names = new String[xsize][ysize];
         for (int y = 0; y < ysize; y++) {
             for (int x = 0; x < xsize; x++) {
                 String name = "";
@@ -94,6 +95,7 @@ public class TestMap extends Actor {
                     case Dungeon.tileChest:name="cup02-original"; break;
                 }
                 mapcaches[x/10][y/10].add(textureAtlas.findRegion(name),x<<5,y<<5);
+                names[x][y] = name;
             }
         }
         for(int i = 0;i < 10;i++){
@@ -132,18 +134,24 @@ public class TestMap extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.end();
-        for(int i = 0;i < 10;i++){
-            for (int j = 0;j < 10;j++){
-                SpriteCache cache = mapcaches[i][j];
-                cache.setProjectionMatrix(cam.combined);
-                cache.begin();
-                cache.draw(mapcacheids[i][j]);
-                cache.end();
+//        batch.end();
+//        for(int i = 0;i < 10;i++){
+//            for (int j = 0;j < 10;j++){
+//                SpriteCache cache = mapcaches[i][j];
+//                cache.setProjectionMatrix(cam.combined);
+//                cache.begin();
+//                cache.draw(mapcacheids[i][j]);
+//                cache.end();
+//            }
+//        }
+//        batch.begin();
+        super.draw(batch, parentAlpha);
+        batch.setProjectionMatrix(cam.combined);
+        for (int y = 0; y < ysize; y++) {
+            for (int x = 0; x < xsize; x++) {
+                batch.draw(textureAtlas.findRegion(names[x][y]),x<<5,y<<5);
             }
         }
-        batch.begin();
-//        super.draw(batch, parentAlpha);
     }
 
     private InputListener inputListener = new InputListener(){
