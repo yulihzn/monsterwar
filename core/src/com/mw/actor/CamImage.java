@@ -15,10 +15,14 @@ public class CamImage extends Image {
     public CamImage(Texture texture, OrthographicCamera cam) {
         super(texture);
         this.cam = cam;
+        setHeight(texture.getHeight());
+        setWidth(texture.getWidth());
     }
     public CamImage(TextureRegion texture, OrthographicCamera cam) {
         super(texture);
         this.cam = cam;
+        setHeight(texture.getRegionHeight());
+        setWidth(texture.getRegionWidth());
     }
 
     @Override

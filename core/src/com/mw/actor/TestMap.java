@@ -33,7 +33,7 @@ public class TestMap extends Actor {
     private TextureAtlas textureAtlas;
 
     private Dungeon dungeon;
-    private static final int ysize = 100,xsize = 100;
+    public static final int ysize = 100,xsize = 100;
     private SpriteCache[] caches = new SpriteCache[LAYERS];
     private SpriteCache[][] mapcaches = new SpriteCache[10][10];
     private int[][] mapcacheids = new int[10][10];
@@ -126,7 +126,7 @@ public class TestMap extends Actor {
         if(y < 0){
             y = 0;
         }
-        creaturePos.put(name,new Vector2(x>>5,y>>5));
+        creaturePos.put(name,new Vector2(x<<5,y<<5));
     }
     public  Vector2 getCreaturePos(String name){
         return creaturePos.get(name);
@@ -164,7 +164,20 @@ public class TestMap extends Actor {
         public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
             super.touchUp(event, x, y, pointer, button);
             Gdx.app.log("touchUp","x="+x+"y="+y);
+            elementTouch("man",x,y);
         }
     };
+
+    private void elementTouch(String name,float x, float y) {
+        boolean isTouched = false;
+        if(getCreaturePos(name).x <= x && getCreaturePos(name).x + 32> x
+                &&getCreaturePos(name).y <= y && getCreaturePos(name).y + 32> y){
+            isTouched = true;
+        }
+        Gdx.app.log("elementTouch","getCreaturePos(name).x="+getCreaturePos(name).x+"getCreaturePos(name).y="+getCreaturePos(name).y);
+        if(isTouched){
+            Gdx.app.log("elementTouch",name);
+        }
+    }
 
 }

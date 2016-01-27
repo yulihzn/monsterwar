@@ -16,4 +16,5 @@ public class Player extends CamImage {
     public Player(TextureRegion texture, OrthographicCamera cam) {
         super(texture, cam);
     }
+
 }

@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
-public class MapStage extends Stage{
+public class  MapStage extends Stage{
 	private OrthographicCamera camera;
 	public MapStage(OrthographicCamera camera){
 		this.camera = camera;

@@ -20,6 +20,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -70,6 +71,7 @@ public class MainScreen extends BaseScreen implements Screen{
 	private TestMap map03;
 	private Player man;
 	private TextureAtlas textureAtlas;
+	private RandomXS128 randomXS128 = new RandomXS128();
 
 	public MainScreen(MainGame mainGame) {
 		super(mainGame);
@@ -88,7 +90,7 @@ public class MainScreen extends BaseScreen implements Screen{
 		controller.setOnTouchListener(new CameraController.OnTouchListener() {
 			@Override
 			public void onTap(float x, float y) {
-
+				elementTouch("man",x,y);
 			}
 		});
 
@@ -126,11 +128,33 @@ public class MainScreen extends BaseScreen implements Screen{
 		map03.setZIndex(1);
 		map03.setDungeon();
 		man = new Player(textureAtlas.findRegion("man"),cam);
-		map03.setCreaturePos("man",5,5);
+		map03.setCreaturePos("man",1,1);
 		man.setPosition(map03.getCreaturePos("man").x,map03.getCreaturePos("man").y);
 		mapStage.addActor(man);
 		man.setZIndex(2);
+//		man.addListener(new ClickListener(){
+//			@Override
+//			public void clicked(InputEvent event, float x, float y) {
+//				super.clicked(event, x, y);
+//				map03.setCreaturePos("man",randomXS128.nextInt(TestMap.xsize),randomXS128.nextInt(TestMap.ysize));
+//				man.setPosition(map03.getCreaturePos("man").x,map03.getCreaturePos("man").y);
+//			}
+//
+//		});
 
+	}
+	private void elementTouch(String name,float x, float y) {
+		boolean isTouched = false;
+		if(map03.getCreaturePos(name).x <= x && map03.getCreaturePos(name).x + 32> x
+				&&map03.getCreaturePos(name).y <= y && map03.getCreaturePos(name).y + 32> y){
+			isTouched = true;
+		}
+		Gdx.app.log("elementTouch","get.x="+map03.getCreaturePos(name).x+"get.y="+map03.getCreaturePos(name).y);
+		if(isTouched){
+			Gdx.app.log("elementTouch",name);
+			map03.setCreaturePos("man",randomXS128.nextInt(TestMap.xsize),randomXS128.nextInt(TestMap.ysize));
+			man.setPosition(map03.getCreaturePos("man").x,map03.getCreaturePos("man").y);
+		}
 	}
 
 	@Override
@@ -157,7 +181,7 @@ public class MainScreen extends BaseScreen implements Screen{
 		if (TimeUtils.nanoTime() - startTime >= 1000000000) {
 //			Gdx.app.log("TileTest", "fps: " + Gdx.graphics.getFramesPerSecond());
 			startTime = TimeUtils.nanoTime();
-			Gdx.app.log("cam.position", "x=" + cam.position.x + "y="+cam.position.y);
+//			Gdx.app.log("cam.position", "x=" + cam.position.x + "y="+cam.position.y);
 		}
 		mapStage.act(Gdx.graphics.getDeltaTime());
 		mapStage.draw();
