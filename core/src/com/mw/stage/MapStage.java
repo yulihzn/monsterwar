@@ -26,10 +26,17 @@ public class  MapStage extends Stage{
 	public boolean scrolled(int amount) {
 		Gdx.app.log("scrolled",""+amount);
 		if(amount == -1){
-			camera.zoom += camera.zoom*0.05;
+			camera.zoom += 0.1f;
 		}else if(amount == 1){
-			camera.zoom -= camera.zoom*0.05;
+			camera.zoom -= 0.1f;
 		}
+		if(camera.zoom < 0.1f){
+			camera.zoom = 0.1f;
+		}
+		if(camera.zoom > 2.0f){
+			camera.zoom = 2.0f;
+		}
+//		camera.zoom = (float)(Math.round(camera.zoom*10))/10;
 		Gdx.app.log("zoom",""+camera.zoom);
 		return super.scrolled(amount);
 	}

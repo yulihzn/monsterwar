@@ -3,7 +3,10 @@ package com.mw.utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+
+import java.text.DecimalFormat;
 
 /**
  * Created by hezhengnan on 2015/6/16.
@@ -66,6 +69,7 @@ public class CameraController implements GestureDetector.GestureListener{
     public boolean zoom(float initialDistance, float distance) {
         float ratio = initialDistance / distance;
         camera.zoom = initialScale * ratio;
+        camera.zoom = (float)(Math.round(camera.zoom*10))/10;
         System.out.println(camera.zoom);
         return false;
     }

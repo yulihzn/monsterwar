@@ -73,11 +73,14 @@ public class MainScreen extends BaseScreen implements Screen{
 	private TextureAtlas textureAtlas;
 	private RandomXS128 randomXS128 = new RandomXS128();
 
+	private float viewportWidth = 800;
+	private float viewportHeight = 600;
+
 	public MainScreen(MainGame mainGame) {
 		super(mainGame);
 
-		cam = new OrthographicCamera(800, 600);
-		cam.position.set(400, 300, 0);
+		cam = new OrthographicCamera(viewportWidth, viewportHeight);
+		cam.position.set(viewportWidth/2, viewportHeight/2, 0);
 		camController = new OrthoCamController(cam);
 		controller = new CameraController(cam);
 		gestureDetector = new GestureDetector(20, 0.5f, 2, 0.15f, controller);
@@ -145,10 +148,16 @@ public class MainScreen extends BaseScreen implements Screen{
 	}
 	private void elementTouch(String name,float x, float y) {
 		boolean isTouched = false;
-		if(map03.getCreaturePos(name).x <= x && map03.getCreaturePos(name).x + 32> x
-				&&map03.getCreaturePos(name).y <= y && map03.getCreaturePos(name).y + 32> y){
+		float xx = (x+cam.position.x - viewportWidth/2)*cam.zoom;
+		float yy = ((viewportHeight-y)+cam.position.y - viewportHeight/2)*cam.zoom;
+		if(map03.getCreaturePos(name).x <= xx && map03.getCreaturePos(name).x + 32> xx
+				&&map03.getCreaturePos(name).y <= yy && map03.getCreaturePos(name).y + 32> yy){
 			isTouched = true;
 		}
+		Gdx.app.log("elementTouch","cam.position.x="+cam.position.x+"cam.position.y="+cam.position.y);
+		Gdx.app.log("elementTouch","cam.zoom="+cam.zoom);
+		Gdx.app.log("elementTouch","x="+x+"y="+(viewportHeight-y));
+		Gdx.app.log("elementTouch","xx="+xx+"yy="+yy);
 		Gdx.app.log("elementTouch","get.x="+map03.getCreaturePos(name).x+"get.y="+map03.getCreaturePos(name).y);
 		if(isTouched){
 			Gdx.app.log("elementTouch",name);

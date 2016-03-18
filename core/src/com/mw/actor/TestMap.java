@@ -33,7 +33,7 @@ public class TestMap extends Actor {
     private TextureAtlas textureAtlas;
 
     private Dungeon dungeon;
-    public static final int ysize = 100,xsize = 100;
+    public static final int ysize = 20,xsize = 20;
     private SpriteCache[] caches = new SpriteCache[LAYERS];
     private SpriteCache[][] mapcaches = new SpriteCache[10][10];
     private int[][] mapcacheids = new int[10][10];
