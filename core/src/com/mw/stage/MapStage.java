@@ -23,6 +23,11 @@ public class  MapStage extends Stage{
 	}
 
 	@Override
+	public void act() {
+		super.act();
+	}
+
+	@Override
 	public boolean scrolled(int amount) {
 		Gdx.app.log("scrolled",""+amount);
 		if(amount == -1){

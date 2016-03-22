@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -25,6 +26,7 @@ public class TestMap extends Actor {
 
 
     private HashMap<String,Vector2> creaturePos = new HashMap<String, Vector2>();
+    private HashMap<String,Vector2> creaturePosIndex = new HashMap<String, Vector2>();
 
     public TestMap(OrthographicCamera cam) {
         this.cam = cam;
@@ -83,9 +85,13 @@ public class TestMap extends Actor {
             y = 0;
         }
         creaturePos.put(name,new Vector2(x<<5,y<<5));
+        creaturePosIndex.put(name,new Vector2(x,y));
     }
     public  Vector2 getCreaturePos(String name){
         return creaturePos.get(name);
+    }
+    public  Vector2 getCreaturePosIndex(String name){
+        return creaturePosIndex.get(name);
     }
 
     @Override

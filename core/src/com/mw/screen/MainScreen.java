@@ -52,6 +52,9 @@ public class MainScreen extends BaseScreen implements Screen{
 	CameraController controller;
 	GestureDetector gestureDetector;
 	private long startTime = TimeUtils.nanoTime();
+	private long roundTime = TimeUtils.nanoTime();
+	private long roundSecond = 30000000;
+	private boolean isMoving = true;
 
 	private CamImage map02;
 	private float backgroundScale = 1.0f;
@@ -140,6 +143,7 @@ public class MainScreen extends BaseScreen implements Screen{
 
 	}
 	private void elementTouch(String name,float x, float y) {
+		isMoving = !isMoving;
 		boolean isTouched = false;
 //		float xx = (x+cam.position.x - viewportWidth/2)*cam.zoom;
 //		float yy = ((viewportHeight-y)+cam.position.y - viewportHeight/2)*cam.zoom;
@@ -164,12 +168,12 @@ public class MainScreen extends BaseScreen implements Screen{
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		cam.zoom = MathUtils.clamp(cam.zoom, 0.1f, worldWidth/cam.viewportWidth);
-		float effectiveViewportWidth = cam.viewportWidth * cam.zoom;
-		float effectiveViewportHeight = cam.viewportHeight * cam.zoom;
-		cam.position.x = MathUtils.clamp(cam.position.x, effectiveViewportWidth / 2f, worldWidth - effectiveViewportWidth / 2f);
-		cam.position.y = MathUtils.clamp(cam.position.y, effectiveViewportHeight / 2f, worldWidth - effectiveViewportHeight / 2f);
-		cam.update();
+		if (TimeUtils.nanoTime() - roundTime >= roundSecond) {
+			roundTime = TimeUtils.nanoTime();
+			movesLikeJagger();
+
+		}
+
 //		if(Math.abs(cam.zoom)>=5 && Math.abs(cam.zoom)<10){
 //			map01.setVisible(false);
 //			map02.setVisible(true);
@@ -184,18 +188,50 @@ public class MainScreen extends BaseScreen implements Screen{
 //			map03.setVisible(false);
 //		}
 
-		if (TimeUtils.nanoTime() - startTime >= 1000000000) {
-//			Gdx.app.log("TileTest", "fps: " + Gdx.graphics.getFramesPerSecond());
-			startTime = TimeUtils.nanoTime();
-//			Gdx.app.log("cam.position", "x=" + cam.position.x + "y="+cam.position.y);
-		}
 		mapStage.act(Gdx.graphics.getDeltaTime());
 		mapStage.draw();
 		uiStage.act(Gdx.graphics.getDeltaTime());
 		uiStage.draw();
+		if (TimeUtils.nanoTime() - startTime >= 1000000000) {
+//			Gdx.app.log("TileTest", "fps: " + Gdx.graphics.getFramesPerSecond());
+			startTime = TimeUtils.nanoTime();
+//			Gdx.app.log("cam.position", "x=" + cam.position.x + "y="+cam.position.y);
+//			cam.position.set(map03.getCreaturePos("man").x,map03.getCreaturePos("man").y, 0);
+		}
 
+		cam.zoom = MathUtils.clamp(cam.zoom, 0.1f, worldWidth/cam.viewportWidth);
+		float effectiveViewportWidth = cam.viewportWidth * cam.zoom;
+		float effectiveViewportHeight = cam.viewportHeight * cam.zoom;
+		cam.position.x = MathUtils.clamp(cam.position.x, effectiveViewportWidth / 2f, worldWidth - effectiveViewportWidth / 2f);
+		cam.position.y = MathUtils.clamp(cam.position.y, effectiveViewportHeight / 2f, worldWidth - effectiveViewportHeight / 2f);
+		cam.update();
+	}
 
-		
+	private void movesLikeJagger() {
+		int x = (int)map03.getCreaturePosIndex("man").x;
+		int y = (int)map03.getCreaturePosIndex("man").y;
+		int flag_x = 1;
+		int flag_y = 1;
+		if(y >= TestMap.ysize){
+			flag_y = -1;
+		}
+		if(y <= 0){
+			flag_y = 1;
+		}
+		if(x >= TestMap.xsize){
+			flag_x = -1;
+			y+=flag_y;
+		}
+		if(x <= 0){
+			flag_x = 1;
+			y+=flag_y;
+		}
+		x = x + flag_x;
+		map03.setCreaturePos("man",x,y);
+		man.setPosition(map03.getCreaturePos("man").x,map03.getCreaturePos("man").y);
+		if(isMoving){
+			cam.position.set(map03.getCreaturePos("man").x,map03.getCreaturePos("man").y, 0);
+		}
 	}
 
 	@Override
