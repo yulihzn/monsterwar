@@ -53,6 +53,7 @@ public class Dungeon {
         else objects = inobj;
 
         // Adjust the size of the map if it's too small
+
         if (inx < 3) xsize = 3;
         else xsize = inx;
 
@@ -67,6 +68,7 @@ public class Dungeon {
         dungeon_map = new int[xsize * ysize];
 
         //start with making the "standard stuff" on the map
+        //墙
         for (int y = 0; y < ysize; y++) {
             for (int x = 0; x < xsize; x++) {
                 //ie, making the borders of unwalkable walls
@@ -87,6 +89,7 @@ public class Dungeon {
          *******************************************************************************/
 
         //start with making a room in the middle, which we can start building upon
+        //从中间开始建造
         makeRoom(xsize/2, ysize/2, 8, 6, getRand(0,3));
 
         //keep count of the number of "objects" we've made
@@ -366,14 +369,15 @@ public class Dungeon {
         /*******************************************************************************/
 
         //define the dimensions of the room, it should be at least 4x4 tiles (2x2 for walking on, the rest is walls)
-        int xlen = getRand(4, xlength);
-        int ylen = getRand(4, ylength);
+        int xlen = getRand(4, xlength);//4-8房间的左右宽度
+        int ylen = getRand(4, ylength);//4-6房间的上下宽度
 
         //the tile type it's going to be filled with
-        int floor = tileDirtFloor; //jordgolv..
-        int wall = tileDirtWall; //jordv????gg
+        int floor = tileDirtFloor;
+        int wall = tileDirtWall;
 
         //choose the way it's pointing at
+        //开始方向0-3北东南西
         int dir = 0;
         if (direction > 0 && direction < 4) dir = direction;
 

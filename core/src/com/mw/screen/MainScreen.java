@@ -3,27 +3,16 @@ package com.mw.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.maps.tiled.TideMapLoader;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
-import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -73,14 +62,18 @@ public class MainScreen extends BaseScreen implements Screen{
 	private TextureAtlas textureAtlas;
 	private RandomXS128 randomXS128 = new RandomXS128();
 
-	private float viewportWidth = 800;
-	private float viewportHeight = 600;
+	private float worldWidth = TestMap.xsize*32;
+	private float worldtHeight = TestMap.ysize*32;
+	private float camSize = 32*16;
 
 	public MainScreen(MainGame mainGame) {
 		super(mainGame);
 
-		cam = new OrthographicCamera(viewportWidth, viewportHeight);
-		cam.position.set(viewportWidth/2, viewportHeight/2, 0);
+		float w = Gdx.graphics.getWidth();
+		float h = Gdx.graphics.getHeight();
+		cam = new OrthographicCamera(camSize, camSize*(w/h));
+		cam.position.set(worldWidth / 2f, worldtHeight / 2f, 0);
+		cam.update();
 		camController = new OrthoCamController(cam);
 		controller = new CameraController(cam);
 		gestureDetector = new GestureDetector(20, 0.5f, 2, 0.15f, controller);
@@ -131,7 +124,7 @@ public class MainScreen extends BaseScreen implements Screen{
 		map03.setZIndex(1);
 		map03.setDungeon();
 		man = new Player(textureAtlas.findRegion("man"),cam);
-		map03.setCreaturePos("man",1,1);
+		map03.setCreaturePos("man",16,16);
 		man.setPosition(map03.getCreaturePos("man").x,map03.getCreaturePos("man").y);
 		mapStage.addActor(man);
 		man.setZIndex(2);
@@ -148,17 +141,17 @@ public class MainScreen extends BaseScreen implements Screen{
 	}
 	private void elementTouch(String name,float x, float y) {
 		boolean isTouched = false;
-		float xx = (x+cam.position.x - viewportWidth/2)*cam.zoom;
-		float yy = ((viewportHeight-y)+cam.position.y - viewportHeight/2)*cam.zoom;
-		if(map03.getCreaturePos(name).x <= xx && map03.getCreaturePos(name).x + 32> xx
-				&&map03.getCreaturePos(name).y <= yy && map03.getCreaturePos(name).y + 32> yy){
-			isTouched = true;
-		}
-		Gdx.app.log("elementTouch","cam.position.x="+cam.position.x+"cam.position.y="+cam.position.y);
-		Gdx.app.log("elementTouch","cam.zoom="+cam.zoom);
-		Gdx.app.log("elementTouch","x="+x+"y="+(viewportHeight-y));
-		Gdx.app.log("elementTouch","xx="+xx+"yy="+yy);
-		Gdx.app.log("elementTouch","get.x="+map03.getCreaturePos(name).x+"get.y="+map03.getCreaturePos(name).y);
+//		float xx = (x+cam.position.x - viewportWidth/2)*cam.zoom;
+//		float yy = ((viewportHeight-y)+cam.position.y - viewportHeight/2)*cam.zoom;
+//		if(map03.getCreaturePos(name).x <= xx && map03.getCreaturePos(name).x + 32> xx
+//				&&map03.getCreaturePos(name).y <= yy && map03.getCreaturePos(name).y + 32> yy){
+//			isTouched = true;
+//		}
+//		Gdx.app.log("elementTouch","cam.position.x="+cam.position.x+"cam.position.y="+cam.position.y);
+//		Gdx.app.log("elementTouch","cam.zoom="+cam.zoom);
+//		Gdx.app.log("elementTouch","x="+x+"y="+(viewportHeight-y));
+//		Gdx.app.log("elementTouch","xx="+xx+"yy="+yy);
+//		Gdx.app.log("elementTouch","get.x="+map03.getCreaturePos(name).x+"get.y="+map03.getCreaturePos(name).y);
 		if(isTouched){
 			Gdx.app.log("elementTouch",name);
 			map03.setCreaturePos("man",randomXS128.nextInt(TestMap.xsize),randomXS128.nextInt(TestMap.ysize));
@@ -171,7 +164,11 @@ public class MainScreen extends BaseScreen implements Screen{
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-//		controller.update();
+		cam.zoom = MathUtils.clamp(cam.zoom, 0.1f, worldWidth/cam.viewportWidth);
+		float effectiveViewportWidth = cam.viewportWidth * cam.zoom;
+		float effectiveViewportHeight = cam.viewportHeight * cam.zoom;
+		cam.position.x = MathUtils.clamp(cam.position.x, effectiveViewportWidth / 2f, worldWidth - effectiveViewportWidth / 2f);
+		cam.position.y = MathUtils.clamp(cam.position.y, effectiveViewportHeight / 2f, worldWidth - effectiveViewportHeight / 2f);
 		cam.update();
 //		if(Math.abs(cam.zoom)>=5 && Math.abs(cam.zoom)<10){
 //			map01.setVisible(false);
@@ -203,6 +200,9 @@ public class MainScreen extends BaseScreen implements Screen{
 
 	@Override
 	public void resize(int width, int height) {
+		cam.viewportWidth = camSize;
+		cam.viewportHeight = camSize * height/width;
+		cam.update();
 		mapStage.getViewport().update(width,height,true);
 		uiStage.getViewport().update(width,height,true);
 	}

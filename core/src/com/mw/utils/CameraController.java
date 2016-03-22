@@ -69,7 +69,6 @@ public class CameraController implements GestureDetector.GestureListener{
     public boolean zoom(float initialDistance, float distance) {
         float ratio = initialDistance / distance;
         camera.zoom = initialScale * ratio;
-        camera.zoom = (float)(Math.round(camera.zoom*10))/10;
         System.out.println(camera.zoom);
         return false;
     }
