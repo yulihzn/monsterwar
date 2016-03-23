@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -11,7 +12,9 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.mw.utils.Dungeon;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by BanditCat on 2015/12/8.
@@ -23,6 +26,7 @@ public class TestMap extends Actor {
     public static final int ysize = 32,xsize = 32;
 
     private String[][] names = new String[xsize][ysize];
+    private List<GameMapTile> tiles = new ArrayList<GameMapTile>();
 
 
     private HashMap<String,Vector2> creaturePos = new HashMap<String, Vector2>();
@@ -37,6 +41,10 @@ public class TestMap extends Actor {
 
     }
 
+    public List<GameMapTile> getTiles() {
+        return tiles;
+    }
+
     public void setDungeon(){
         setWidth((xsize-1)<<5);
         setHeight((ysize-1)<<5);
@@ -45,6 +53,7 @@ public class TestMap extends Actor {
         Gdx.app.log("", dungeon.showDungeon());
         int[][] array = dungeon.getDungeonArray();
         names = new String[xsize][ysize];
+        tiles.clear();
         for (int y = 0; y < ysize; y++) {
             for (int x = 0; x < xsize; x++) {
                 String name = "";
@@ -60,6 +69,15 @@ public class TestMap extends Actor {
                     case Dungeon.tileChest:name="cup02-original"; break;
                 }
                 names[x][y] = name;
+                GameMapTile tile = new GameMapTile(textureAtlas,name,cam);
+                tile.setWidth(32);
+                tile.setHeight(32);
+                tile.setPosition(x<<5,y<<5);
+                tile.setRegionName(name);
+                tile.setTilePosIndex(new GridPoint2(x, y));
+                tile.setTileIndex(array[x][y]);
+//                tile.setBounds(x<<5,y<<5,32,32);//固定32像素
+                tiles.add(tile);
             }
         }
 

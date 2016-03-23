@@ -52,16 +52,14 @@ public class MainScreen extends BaseScreen implements Screen{
 	CameraController controller;
 	GestureDetector gestureDetector;
 	private long startTime = TimeUtils.nanoTime();
-	private long roundTime = TimeUtils.nanoTime();
-	private long roundSecond = 30000000;
-	private boolean isMoving = true;
+
 
 	private CamImage map02;
 	private float backgroundScale = 1.0f;
 
 	private TiledMapActor map01;
-	private TestMap map03;
-	private Player man;
+//	private TestMap map03;
+//	private Player man;
 	private TextureAtlas textureAtlas;
 	private RandomXS128 randomXS128 = new RandomXS128();
 
@@ -84,7 +82,7 @@ public class MainScreen extends BaseScreen implements Screen{
 
 		map01 = new TiledMapActor(cam);
 		map02 = new CamImage(new Texture(Gdx.files.internal("images/map02.jpg")),cam);
-		map03 = new TestMap(cam);
+//		map03 = new TestMap(cam);
 
 		controller.setOnTouchListener(new CameraController.OnTouchListener() {
 			@Override
@@ -116,21 +114,21 @@ public class MainScreen extends BaseScreen implements Screen{
 
 		});
 		InputMultiplexer inputMultiplexer = new InputMultiplexer();
+		inputMultiplexer.addProcessor(gestureDetector);
 		inputMultiplexer.addProcessor(mapStage);
 		inputMultiplexer.addProcessor(uiStage);
-		inputMultiplexer.addProcessor(gestureDetector);
 		Gdx.input.setInputProcessor(inputMultiplexer);
 
 		uiStage.addActor(ib_back);
 
-		mapStage.addActor(map03);
-		map03.setZIndex(1);
-		map03.setDungeon();
-		man = new Player(textureAtlas.findRegion("man"),cam);
-		map03.setCreaturePos("man",16,16);
-		man.setPosition(map03.getCreaturePos("man").x,map03.getCreaturePos("man").y);
-		mapStage.addActor(man);
-		man.setZIndex(2);
+//		mapStage.addActor(map03);
+//		map03.setZIndex(1);
+//		map03.setDungeon();
+//		man = new Player(textureAtlas.findRegion("man"),cam);
+//		map03.setCreaturePos("man",16,16);
+//		man.setPosition(map03.getCreaturePos("man").x,map03.getCreaturePos("man").y);
+//		mapStage.addActor(man);
+//		man.setZIndex(2);
 //		man.addListener(new ClickListener(){
 //			@Override
 //			public void clicked(InputEvent event, float x, float y) {
@@ -143,7 +141,7 @@ public class MainScreen extends BaseScreen implements Screen{
 
 	}
 	private void elementTouch(String name,float x, float y) {
-		isMoving = !isMoving;
+		mapStage.setIsMoving(!mapStage.isMoving());
 		boolean isTouched = false;
 //		float xx = (x+cam.position.x - viewportWidth/2)*cam.zoom;
 //		float yy = ((viewportHeight-y)+cam.position.y - viewportHeight/2)*cam.zoom;
@@ -156,11 +154,11 @@ public class MainScreen extends BaseScreen implements Screen{
 //		Gdx.app.log("elementTouch","x="+x+"y="+(viewportHeight-y));
 //		Gdx.app.log("elementTouch","xx="+xx+"yy="+yy);
 //		Gdx.app.log("elementTouch","get.x="+map03.getCreaturePos(name).x+"get.y="+map03.getCreaturePos(name).y);
-		if(isTouched){
-			Gdx.app.log("elementTouch",name);
-			map03.setCreaturePos("man",randomXS128.nextInt(TestMap.xsize),randomXS128.nextInt(TestMap.ysize));
-			man.setPosition(map03.getCreaturePos("man").x,map03.getCreaturePos("man").y);
-		}
+//		if(isTouched){
+//			Gdx.app.log("elementTouch",name);
+//			map03.setCreaturePos("man",randomXS128.nextInt(TestMap.xsize),randomXS128.nextInt(TestMap.ysize));
+//			man.setPosition(map03.getCreaturePos("man").x,map03.getCreaturePos("man").y);
+//		}
 	}
 
 	@Override
@@ -168,11 +166,7 @@ public class MainScreen extends BaseScreen implements Screen{
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		if (TimeUtils.nanoTime() - roundTime >= roundSecond) {
-			roundTime = TimeUtils.nanoTime();
-			movesLikeJagger();
 
-		}
 
 //		if(Math.abs(cam.zoom)>=5 && Math.abs(cam.zoom)<10){
 //			map01.setVisible(false);
@@ -207,32 +201,7 @@ public class MainScreen extends BaseScreen implements Screen{
 		cam.update();
 	}
 
-	private void movesLikeJagger() {
-		int x = (int)map03.getCreaturePosIndex("man").x;
-		int y = (int)map03.getCreaturePosIndex("man").y;
-		int flag_x = 1;
-		int flag_y = 1;
-		if(y >= TestMap.ysize){
-			flag_y = -1;
-		}
-		if(y <= 0){
-			flag_y = 1;
-		}
-		if(x >= TestMap.xsize){
-			flag_x = -1;
-			y+=flag_y;
-		}
-		if(x <= 0){
-			flag_x = 1;
-			y+=flag_y;
-		}
-		x = x + flag_x;
-		map03.setCreaturePos("man",x,y);
-		man.setPosition(map03.getCreaturePos("man").x,map03.getCreaturePos("man").y);
-		if(isMoving){
-			cam.position.set(map03.getCreaturePos("man").x,map03.getCreaturePos("man").y, 0);
-		}
-	}
+
 
 	@Override
 	public void resize(int width, int height) {

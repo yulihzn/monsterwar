@@ -32,9 +32,6 @@ public class CameraController implements GestureDetector.GestureListener{
         Gdx.app.log("GestureDetectorTest", "tap at " + x + ", " + y + ", count: " + count);
         tapX = x;
         tapY = y;
-        if(onTouchListener != null){
-            onTouchListener.onTap(x,y);
-        }
         return false;
     }
 
