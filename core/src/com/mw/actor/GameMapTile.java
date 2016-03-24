@@ -30,6 +30,11 @@ public class GameMapTile extends Actor {
         super.draw(batch, parentAlpha);
     }
 
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+    }
+
     public GridPoint2 getTilePosIndex() {
         return tilePosIndex;
     }

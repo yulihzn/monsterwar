@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -17,24 +18,38 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
  * Created by hezhengnan on 2015/12/8.
  */
 public class TiledMapActor extends Actor {
-    private TiledMap map;
-    private TiledMapRenderer renderer;
-    private AssetManager assetManager;
-    private OrthographicCamera cam;
+    private TiledMap tiledMap;
 
-    public TiledMapActor(OrthographicCamera cam) {
-        this.cam = cam;
-        assetManager = new AssetManager();
-        assetManager.setLoader(TiledMap.class,new TmxMapLoader(new InternalFileHandleResolver()));
-        assetManager.load("images/tiles.tmx",TiledMap.class);
-        assetManager.finishLoading();
-        map = assetManager.get("images/tiles.tmx");
-        for (TiledMapTileSet tmts :map.getTileSets()){
-            for(TiledMapTile tmt : tmts){
-                tmt.getTextureRegion().getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-            }
-        }
-        renderer = new OrthogonalTiledMapRenderer(map,1);
+    private TiledMapTileLayer tiledLayer;
+    private TiledMapTileLayer.Cell cell;
+    public TiledMapActor(TiledMap tiledMap, TiledMapTileLayer tiledLayer, TiledMapTileLayer.Cell cell) {
+    this.tiledMap = tiledMap;
+    this.tiledLayer = tiledLayer;
+    this.cell = cell;
+    }
+
+    public TiledMap getTiledMap() {
+        return tiledMap;
+    }
+
+    public void setTiledMap(TiledMap tiledMap) {
+        this.tiledMap = tiledMap;
+    }
+
+    public TiledMapTileLayer getTiledLayer() {
+        return tiledLayer;
+    }
+
+    public void setTiledLayer(TiledMapTileLayer tiledLayer) {
+        this.tiledLayer = tiledLayer;
+    }
+
+    public TiledMapTileLayer.Cell getCell() {
+        return cell;
+    }
+
+    public void setCell(TiledMapTileLayer.Cell cell) {
+        this.cell = cell;
     }
 
     @Override
@@ -45,10 +60,6 @@ public class TiledMapActor extends Actor {
     @Override
     public void act(float delta) {
         super.act(delta);
-        if(this.isVisible()){
-            renderer.setView(cam);
-            renderer.render();
-        }
     }
 
 }
