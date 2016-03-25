@@ -69,7 +69,6 @@ public class MainScreen extends BaseScreen implements Screen{
 		ib_back.setSize(Gdx.graphics.getWidth()/10,Gdx.graphics.getHeight()/10);
 		ib_back.setBounds(BACKPADDING, Gdx.graphics.getHeight()-BACKPADDING-ib_back.getWidth()
 		,Gdx.graphics.getWidth()/10,Gdx.graphics.getHeight()/10);
-		ib_back.setDebug(true);
 		uiStage = new Stage();
 		mapStage = new MapStage(cam);
 //		mapStage.setDebugAll(true);
@@ -93,7 +92,6 @@ public class MainScreen extends BaseScreen implements Screen{
 
 	}
 	private void elementTouch(String name,float x, float y) {
-		mapStage.setIsMoving(!mapStage.isMoving());
 	}
 
 	@Override

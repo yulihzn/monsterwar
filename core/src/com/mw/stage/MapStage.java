@@ -18,36 +18,40 @@ import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
-import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mw.actor.GameMapTile;
 import com.mw.actor.Player;
-import com.mw.actor.TestMap;
 import com.mw.actor.TiledMapActor;
+import com.mw.map.AStarMap;
+import com.mw.map.AStarNode;
+import com.mw.map.DungeonMap;
+import com.mw.utils.Dungeon;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class  MapStage extends Stage{
 	private OrthographicCamera camera;
 	private long roundTime = TimeUtils.nanoTime();
 	private long roundSecond = 30000000;
-	private boolean isMoving = true;
+	private boolean isMoving = false;
 
 	private TiledMap tiledMap;
+	private DungeonMap dungeonMap;
 	private TiledMapRenderer renderer;
 	private AssetManager assetManager;
+	private TextureAtlas textureAtlas;
 
-	public boolean isMoving() {
-		return isMoving;
-	}
+	private Player man;
+	private AStarMap aStarMap;
+	private List<AStarNode> path = new ArrayList<AStarNode>();
+	private int indexAstarNode = 0;
 
-	public void setIsMoving(boolean isMoving) {
-		this.isMoving = isMoving;
-	}
 
 	public MapStage(OrthographicCamera camera){
 		this.camera = camera;
+		textureAtlas = new TextureAtlas(Gdx.files.internal("tiles.pack"));
 		//加载地图资源
 		assetManager = new AssetManager();
 		assetManager.setLoader(TiledMap.class,new TmxMapLoader(new InternalFileHandleResolver()));
@@ -60,13 +64,27 @@ public class  MapStage extends Stage{
 				tmt.getTextureRegion().getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 			}
 		}
+		Dungeon dungeon = new Dungeon();
+		dungeon.createDungeon(DungeonMap.TILE_SIZE,DungeonMap.TILE_SIZE,5000);
+		initAstarArray(dungeon.getDungeonArray());
+		dungeonMap = new DungeonMap(dungeon.getDungeonArray());
+		for(TiledMapTileSet tmts : dungeonMap.getTileSets()){
+			for(TiledMapTile tmt :tmts){
+				tmt.getTextureRegion().getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+			}
+		}
 		//获取渲染
-		renderer = new OrthogonalTiledMapRenderer(tiledMap,1f);
+		renderer = new OrthogonalTiledMapRenderer(dungeonMap,1f);
 		//为每个tile加上actor和相应的监听
-		for (MapLayer layer : tiledMap.getLayers()) {
+		for (MapLayer layer : dungeonMap.getLayers()) {
 			TiledMapTileLayer tiledLayer = (TiledMapTileLayer)layer;
 			createActorsForLayer(tiledLayer);
 		}
+
+		man = new Player(textureAtlas,"man",camera);
+		man.setTilePosIndex(new GridPoint2(DungeonMap.TILE_SIZE/2,DungeonMap.TILE_SIZE/2));
+		man.setPosition((DungeonMap.TILE_SIZE/2)<<5,(DungeonMap.TILE_SIZE/2)<<5);
+		addActor(man);
 	}
 	private void createActorsForLayer(TiledMapTileLayer tiledLayer) {
 		for (int x = 0; x < tiledLayer.getWidth(); x++) {
@@ -74,7 +92,7 @@ public class  MapStage extends Stage{
 				TiledMapTileLayer.Cell cell = tiledLayer.getCell(x, y);
 				TiledMapActor actor;
 				if(cell != null){
-					actor = new TiledMapActor(tiledMap, tiledLayer, cell);
+					actor = new TiledMapActor(dungeonMap, tiledLayer, cell,new GridPoint2(x,y));
 					actor.setBounds(x * tiledLayer.getTileWidth(), y * tiledLayer.getTileHeight(), tiledLayer.getTileWidth(),
 							tiledLayer.getTileHeight());
 					addActor(actor);
@@ -95,6 +113,7 @@ public class  MapStage extends Stage{
 		super.dispose();
 		//释放地图
 		tiledMap.dispose();
+		dungeonMap.dispose();
 	}
 
 	@Override
@@ -107,7 +126,7 @@ public class  MapStage extends Stage{
 		renderer.render();
 		if (TimeUtils.nanoTime() - roundTime >= roundSecond) {
 			roundTime = TimeUtils.nanoTime();
-//			movesLikeJagger();
+			movesLikeJagger();
 
 		}
 		super.act(delta);
@@ -129,33 +148,46 @@ public class  MapStage extends Stage{
 		Gdx.app.log("zoom",""+camera.zoom);
 		return super.scrolled(amount);
 	}
+	private void initAstarArray(int[][] array){
+		aStarMap = new AStarMap(DungeonMap.TILE_SIZE,DungeonMap.TILE_SIZE);
+		int[][] aStarData = new int[DungeonMap.TILE_SIZE][DungeonMap.TILE_SIZE];
+		for (int i = 0; i < DungeonMap.TILE_SIZE; i++) {
+			for (int j = 0; j < DungeonMap.TILE_SIZE; j++) {
+				if(array[i][j] == Dungeon.tileStoneWall
+						||array[i][j]== Dungeon.tileDirtWall
+						||array[i][j]== Dungeon.tileUnused){
+					aStarData[j][i] = 1;
+				}else{
+					aStarData[j][i] = 0;
+				}
+			}
+		}
+		aStarMap.loadData(aStarData,1,0);
 
-//	private void movesLikeJagger() {
-//		int x = (int)map.getCreaturePosIndex("man").x;
-//		int y = (int)map.getCreaturePosIndex("man").y;
-//		int flag_x = 1;
-//		int flag_y = 1;
-//		if(y >= TestMap.ysize){
-//			flag_y = -1;
-//		}
-//		if(y <= 0){
-//			flag_y = 1;
-//		}
-//		if(x >= TestMap.xsize){
-//			flag_x = -1;
-//			y+=flag_y;
-//		}
-//		if(x <= 0){
-//			flag_x = 1;
-//			y+=flag_y;
-//		}
-//		x = x + flag_x;
-//		map.setCreaturePos("man",x,y);
-//		man.setPosition(map.getCreaturePos("man").x,map.getCreaturePos("man").y);
-//		if(isMoving){
-//			camera.position.set(map.getCreaturePos("man").x,map.getCreaturePos("man").y, 0);
-//		}
-//	}
+	}
+
+	private void movesLikeJagger() {
+
+		if(isMoving){
+//			camera.position.set(man.getX(),man.getY(), 0);
+			indexAstarNode++;
+			if(indexAstarNode > path.size()-1){
+				indexAstarNode = 0;
+				isMoving = false;
+				return;
+			}
+			try{
+				synchronized (path){
+					AStarNode n = path.get(indexAstarNode);
+					man.setTilePosIndex(new GridPoint2(n.getX(),n.getY()));
+					man.setPosition(n.getX()<<5,n.getY()<<5);
+					Gdx.app.log("man","x="+(n.getX()<<5)+", y="+(n.getY()<<5));
+				}
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+		}
+	}
 
 	public class TiledMapClickListener extends ClickListener {
 
@@ -167,9 +199,16 @@ public class  MapStage extends Stage{
 
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
-			System.out.println(actor.getX()+","+actor.getY() + " has been clicked.");
+			System.out.println(actor.getX()+","+actor.getY() +"value = "+actor.getCell().getTile().getId()+ " has been clicked.");
 			if(null != actor.getCell()){
-				actor.getCell().setRotation(1);
+//				actor.getCell().setRotation(1);
+			}
+			aStarMap.setSource(new AStarNode(man.getTilePosIndex().x,man.getTilePosIndex().y));
+			aStarMap.setTarget(new AStarNode(actor.getTilePosIndex().x,actor.getTilePosIndex().y));
+			synchronized (path){
+				path = aStarMap.find();
+				indexAstarNode = 0;
+				isMoving = true;
 			}
 		}
 	}

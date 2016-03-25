@@ -12,6 +12,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 /**
@@ -19,13 +20,15 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
  */
 public class TiledMapActor extends Actor {
     private TiledMap tiledMap;
+    private GridPoint2 tilePosIndex = new GridPoint2(0,0);
 
     private TiledMapTileLayer tiledLayer;
     private TiledMapTileLayer.Cell cell;
-    public TiledMapActor(TiledMap tiledMap, TiledMapTileLayer tiledLayer, TiledMapTileLayer.Cell cell) {
-    this.tiledMap = tiledMap;
-    this.tiledLayer = tiledLayer;
-    this.cell = cell;
+    public TiledMapActor(TiledMap tiledMap, TiledMapTileLayer tiledLayer, TiledMapTileLayer.Cell cell,GridPoint2 tilePosIndex) {
+        this.tiledMap = tiledMap;
+        this.tiledLayer = tiledLayer;
+        this.cell = cell;
+        this.tilePosIndex = tilePosIndex;
     }
 
     public TiledMap getTiledMap() {
@@ -60,6 +63,14 @@ public class TiledMapActor extends Actor {
     @Override
     public void act(float delta) {
         super.act(delta);
+    }
+
+    public GridPoint2 getTilePosIndex() {
+        return tilePosIndex;
+    }
+
+    public void setTilePosIndex(GridPoint2 tilePosIndex) {
+        this.tilePosIndex = tilePosIndex;
     }
 
 }
