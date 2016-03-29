@@ -3,9 +3,12 @@ package com.mw.stage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
@@ -18,9 +21,12 @@ import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.mw.actor.CamImage;
 import com.mw.actor.GameMapTile;
+import com.mw.actor.MapShadow;
 import com.mw.actor.Player;
 import com.mw.actor.TiledMapActor;
 import com.mw.map.AStarMap;
@@ -47,6 +53,8 @@ public class  MapStage extends Stage{
 	private AStarMap aStarMap;
 	private List<AStarNode> path = new ArrayList<AStarNode>();
 	private int indexAstarNode = 0;
+
+	private MapShadow mapShadow;
 
 
 	public MapStage(OrthographicCamera camera){
@@ -85,6 +93,13 @@ public class  MapStage extends Stage{
 		man.setTilePosIndex(new GridPoint2(DungeonMap.TILE_SIZE/2,DungeonMap.TILE_SIZE/2));
 		man.setPosition((DungeonMap.TILE_SIZE/2)<<5,(DungeonMap.TILE_SIZE/2)<<5);
 		addActor(man);
+
+
+		mapShadow = new MapShadow(camera,DungeonMap.TILE_SIZE<<5,DungeonMap.TILE_SIZE<<5);
+		mapShadow.setPosition(0,0);
+		addActor(mapShadow);
+
+
 	}
 	private void createActorsForLayer(TiledMapTileLayer tiledLayer) {
 		for (int x = 0; x < tiledLayer.getWidth(); x++) {
@@ -114,10 +129,13 @@ public class  MapStage extends Stage{
 		//释放地图
 		tiledMap.dispose();
 		dungeonMap.dispose();
+		mapShadow.dispose();
 	}
 
 	@Override
 	public void act (float delta) {
+		mapShadow.getSightPosIndex().x = man.getTilePosIndex().x;
+		mapShadow.getSightPosIndex().y = man.getTilePosIndex().y;
 		//同步摄像头
 		this.getViewport().setCamera(camera);
 		//地图绘制设置摄像头

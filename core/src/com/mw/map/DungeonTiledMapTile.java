@@ -7,8 +7,8 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 /**
  * Created by BanditCat on 2016/3/25.
  */
-public class DungenTiledMapTile extends StaticTiledMapTile {
-    public DungenTiledMapTile(TextureRegion textureRegion) {
+public class DungeonTiledMapTile extends StaticTiledMapTile {
+    public DungeonTiledMapTile(TextureRegion textureRegion) {
         super(textureRegion);
     }
 }
