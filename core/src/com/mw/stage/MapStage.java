@@ -95,7 +95,7 @@ public class  MapStage extends Stage{
 		addActor(man);
 
 
-		mapShadow = new MapShadow(camera,DungeonMap.TILE_SIZE<<5,DungeonMap.TILE_SIZE<<5);
+		mapShadow = new MapShadow(camera,DungeonMap.TILE_SIZE<<5,DungeonMap.TILE_SIZE<<5,dungeon.getDungeonArray());
 		mapShadow.setPosition(0,0);
 		addActor(mapShadow);
 
@@ -188,6 +188,7 @@ public class  MapStage extends Stage{
 
 		if(isMoving){
 //			camera.position.set(man.getX(),man.getY(), 0);
+			mapShadow.updateLines();
 			indexAstarNode++;
 			if(indexAstarNode > path.size()-1){
 				indexAstarNode = 0;
