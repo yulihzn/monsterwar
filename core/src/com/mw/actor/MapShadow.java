@@ -69,12 +69,53 @@ public class MapShadow extends Actor{
         //画线
         shapeRenderer.setColor(Color.GREEN);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        float sx = (sightPosIndex.x*32)+16;//视野的横坐标
+        float sy = (sightPosIndex.y*32)+16;//视野的纵坐标
         for (EdgeLine ed:lines
              ) {
             if(ed.isNeedToDraw()){
+                shapeRenderer.setColor(Color.GREEN);
                 shapeRenderer.line(ed.getStart().x,ed.getStart().y,ed.getEnd().x,ed.getEnd().y);
+//                if(ed.getStart().x == ed.getEnd().x && ed.getStart().y < ed.getEnd().y){
+//                    shapeRenderer.setColor(Color.RED);
+//                    shapeRenderer.line(ed.getStart().x,ed.getStart().y+5,ed.getEnd().x,ed.getEnd().y-5);
+//                }else if(ed.getStart().x == ed.getEnd().x && ed.getStart().y > ed.getEnd().y){
+//                    shapeRenderer.setColor(Color.RED);
+//                    shapeRenderer.line(ed.getStart().x,ed.getStart().y-5,ed.getEnd().x,ed.getEnd().y+5);
+//                }else if(ed.getStart().y == ed.getEnd().y && ed.getStart().x > ed.getEnd().x){
+//                    shapeRenderer.setColor(Color.GREEN);
+//                    shapeRenderer.line(ed.getStart().x-5,ed.getStart().y,ed.getEnd().x+5,ed.getEnd().y);
+//                }else if(ed.getStart().y == ed.getEnd().y && ed.getStart().x < ed.getEnd().x){
+//                    shapeRenderer.setColor(Color.GREEN);
+//                    shapeRenderer.line(ed.getStart().x+5,ed.getStart().y,ed.getEnd().x-5,ed.getEnd().y);
+//                }
+                if(ed.getNext() == -1){
+                    shapeRenderer.setColor(Color.BLUE);
+                    shapeRenderer.line(sx,sy,ed.getEnd().x,ed.getEnd().y);
+                }
+                if(ed.getPrev() == -1){
+                    shapeRenderer.setColor(Color.BLUE);
+                    shapeRenderer.line(sx,sy,ed.getStart().x,ed.getStart().y);
+                }
             }
         }
+//        shapeRenderer.setColor(Color.ORANGE);
+//        EdgeLine e  ;
+//        for (int i = 0; i < lines.size; i++) {
+//            if(lines.get(i).getNext() != -1){//找到第一个下条没断开的
+//                e = lines.get(i);
+//                int id = e.getId();//获取当前边缘的id
+//                while (id != e.getNext()){//下一条和初始id相同跳出
+//                    if(e.getNext() == -1){
+//                        break;
+//                    }
+//                    shapeRenderer.line(e.getStart().x,e.getStart().y,e.getEnd().x,e.getEnd().y);
+//                    shapeRenderer.line(e.getEnd().x,e.getEnd().y,lines.get(e.getNext()).getStart().x,lines.get(e.getNext()).getStart().y);
+//                    e = lines.get(e.getNext());
+//                }
+//                break;
+//            }
+//        }
         shapeRenderer.end();
 
         Gdx.gl.glDisable(GL20.GL_BLEND);
@@ -221,67 +262,75 @@ public class MapShadow extends Actor{
         for (EdgeLine e:lines
                 ) {
             if(e.getNext() == -1){
-                for (int i = 0; i < lines.size; i++) {
+                for (int i = e.getId()+1; i < lines.size; i++) {
                     EdgeLine ed = lines.get(i);
                     Vector2 p = getIntersection(sx,sy,e.getEnd().x,e.getEnd().y,
                     ed.getStart().x,ed.getStart().y,ed.getEnd().x,ed.getEnd().y);
                     if(p.x != -1 && p.y != -1){
                         ed.getStart().x = p.x;
                         ed.getStart().y = p.y;
-                        e.setNeedToDraw(false);
-                        ed.setNeedToDraw(true);
+                        e.setNext(ed.getId());
+                        ed.setPrev(e.getId());
                         break;
                     }
                 }
             }
             if(e.getPrev() == -1){
-                for (int i = 0; i < lines.size; i++) {
+                for (int i = e.getId()+1; i < lines.size; i++) {
                     EdgeLine ed = lines.get(i);
                     Vector2 p = getIntersection(sx,sy,e.getStart().x,e.getStart().y,
                             ed.getStart().x,ed.getStart().y,ed.getEnd().x,ed.getEnd().y);
                     if(p.x != -1 && p.y != -1){
-                        ed.getStart().x = p.x;
-                        ed.getStart().y = p.y;
-                        e.setNeedToDraw(false);
-                        ed.setNeedToDraw(true);
+                        ed.getEnd().x = p.x;
+                        ed.getEnd().y = p.y;
+                        e.setPrev(e.getId());
+                        ed.setNext(ed.getId());
                         break;
                     }
                 }
             }
         }
     }
-    private Vector2 getIntersection(float x1,float y1,float x2,float y2,float x3,float y3,float x4,float y4){
+    private Vector2 getIntersection(double x1,double y1,double x2,double y2,double x3,double y3,double x4,double y4){
         try {
+            if(x1 - x2 == 0){
+                return  new Vector2(-1,-1);
+            }
             //第一条直线
-            float a = (y1 - y2) / (x1 - x2);
-            float b = (x1 * y2 - x2 * y1) / (x1 - x2);
+            double a = (y1 - y2) / (x1 - x2);
+            double b = (x1 * y2 - x2 * y1) / (x1 - x2);
             System.out.println("求出该直线方程为: y=" + a + "x + " + b);
-
+            if(x3 - x4 == 0){
+                return  new Vector2(-1,-1);
+            }
             //第二条
-            float c = (y3 - y4) / (x3 - x4);
-            float d = (x3 * y4 - x4 * y3) / (x3 - x4);
+            double c = (y3 - y4) / (x3 - x4);
+            double d = (x3 * y4 - x4 * y3) / (x3 - x4);
             System.out.println("求出该直线方程为: y=" + c + "x + " + d);
+            if((x3 - x4) * (y1 - y2) - (x1 - x2) * (y3 - y4) == 0){
+                return  new Vector2(-1,-1);
+            }
 
-            float x = ((x1 - x2) * (x3 * y4 - x4 * y3) - (x3 - x4) * (x1 * y2 - x2 * y1))
+            double x = ((x1 - x2) * (x3 * y4 - x4 * y3) - (x3 - x4) * (x1 * y2 - x2 * y1))
                     / ((x3 - x4) * (y1 - y2) - (x1 - x2) * (y3 - y4));
 
-            float y = ((y1 - y2) * (x3 * y4 - x4 * y3) - (x1 * y2 - x2 * y1) * (y3 - y4))
+            double y = ((y1 - y2) * (x3 * y4 - x4 * y3) - (x1 * y2 - x2 * y1) * (y3 - y4))
                     / ((y1 - y2) * (x3 - x4) - (x1 - x2) * (y3 - y4));
 
             System.out.println("他们的交点为: (" + x + "," + y + ")");
             //判断是否在线段上
             boolean isOnSegment = true;
-            if((x > x1 && x > x2) ||(x < x1 && x < x2)){
+            if((x > x3 && x > x4) ||(x < x3 && x < x4)){
                 isOnSegment = false;
             }
-            if((y > y1 && y > y2) ||(y < y1 && y < y2)){
+            if((y > y3 && y > y4) ||(y < y3 && y < y4)){
                 isOnSegment = false;
             }
-            if(isOnSegment){
+            if(!isOnSegment){
                 x = -1;
                 y = -1;
             }
-            return  new Vector2(x,y);
+            return  new Vector2((float) x,(float)y);
         }catch (Exception e){
             Gdx.app.log("exec","除0异常");
             return  new Vector2(-1,-1);
