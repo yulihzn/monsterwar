@@ -1,14 +1,12 @@
 package com.mw.stage;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
@@ -18,14 +16,12 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.mw.actor.CamImage;
-import com.mw.actor.GameMapTile;
 import com.mw.actor.MapShadow;
 import com.mw.actor.Player;
 import com.mw.actor.TiledMapActor;
@@ -33,6 +29,7 @@ import com.mw.map.AStarMap;
 import com.mw.map.AStarNode;
 import com.mw.map.DungeonMap;
 import com.mw.utils.Dungeon;
+import com.mw.utils.KeyBoardController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,6 +116,42 @@ public class  MapStage extends Stage{
 	}
 
 	@Override
+	public boolean keyDown(int keyCode) {
+		Gdx.app.log("keyDown","keyCode="+keyCode);
+		int startX=man.getTilePosIndex().x;
+		int startY=man.getTilePosIndex().y;
+		int endX=startX;int endY=startY;
+		switch (KeyBoardController.getInstance().getKeyType(keyCode)){
+			case KeyBoardController.UP:
+				if(endY+1<DungeonMap.TILE_SIZE){
+					endY+=1;
+				}
+				findWays(startX,startY,endX,endY);
+				break;
+			case KeyBoardController.DOWN:
+				if(endY-1>=0){
+					endY-=1;
+				}
+				findWays(startX,startY,endX,endY);
+				break;
+			case KeyBoardController.LEFT:
+				if(endX-1>=0){
+					endX-=1;
+				}
+				findWays(startX,startY,endX,endY);
+				break;
+			case KeyBoardController.RIGHT:
+				if(endX+1<DungeonMap.TILE_SIZE){
+					endX+=1;
+				}
+				findWays(startX,startY,endX,endY);
+				break;
+
+		}
+		return super.keyDown(keyCode);
+	}
+
+	@Override
 	public void draw() {
 		super.draw();
 	}
@@ -149,6 +182,7 @@ public class  MapStage extends Stage{
 		}
 		super.act(delta);
 	}
+
 	@Override
 	public boolean scrolled(int amount) {
 		Gdx.app.log("scrolled",""+amount);
@@ -207,6 +241,15 @@ public class  MapStage extends Stage{
 			}
 		}
 	}
+	private void findWays(int startX,int startY,int endX,int endY){
+		aStarMap.setSource(new AStarNode(startX,startY));
+		aStarMap.setTarget(new AStarNode(endX,endY));
+		synchronized (path){
+			path = aStarMap.find();
+			indexAstarNode = 0;
+			isMoving = true;
+		}
+	}
 
 	public class TiledMapClickListener extends ClickListener {
 
@@ -222,13 +265,8 @@ public class  MapStage extends Stage{
 			if(null != actor.getCell()){
 //				actor.getCell().setRotation(1);
 			}
-			aStarMap.setSource(new AStarNode(man.getTilePosIndex().x,man.getTilePosIndex().y));
-			aStarMap.setTarget(new AStarNode(actor.getTilePosIndex().x,actor.getTilePosIndex().y));
-			synchronized (path){
-				path = aStarMap.find();
-				indexAstarNode = 0;
-				isMoving = true;
-			}
+			findWays(man.getTilePosIndex().x,man.getTilePosIndex().y
+			,actor.getTilePosIndex().x,actor.getTilePosIndex().y);
 		}
 	}
 }
