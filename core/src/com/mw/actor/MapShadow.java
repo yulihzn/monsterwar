@@ -256,40 +256,40 @@ public class MapShadow extends Actor{
                 }
             }
         }
-        //按距离从近到远排序
-        lines.sort();
-        //切割边缘
-        for (EdgeLine e:lines
-                ) {
-            if(e.getNext() == -1){
-                for (int i = e.getId()+1; i < lines.size; i++) {
-                    EdgeLine ed = lines.get(i);
-                    Vector2 p = getIntersection(sx,sy,e.getEnd().x,e.getEnd().y,
-                    ed.getStart().x,ed.getStart().y,ed.getEnd().x,ed.getEnd().y);
-                    if(p.x != -1 && p.y != -1){
-                        ed.getStart().x = p.x;
-                        ed.getStart().y = p.y;
-                        e.setNext(ed.getId());
-                        ed.setPrev(e.getId());
-                        break;
-                    }
-                }
-            }
-            if(e.getPrev() == -1){
-                for (int i = e.getId()+1; i < lines.size; i++) {
-                    EdgeLine ed = lines.get(i);
-                    Vector2 p = getIntersection(sx,sy,e.getStart().x,e.getStart().y,
-                            ed.getStart().x,ed.getStart().y,ed.getEnd().x,ed.getEnd().y);
-                    if(p.x != -1 && p.y != -1){
-                        ed.getEnd().x = p.x;
-                        ed.getEnd().y = p.y;
-                        e.setPrev(e.getId());
-                        ed.setNext(ed.getId());
-                        break;
-                    }
-                }
-            }
-        }
+//        //按距离从近到远排序
+//        lines.sort();
+//        //切割边缘
+//        for (EdgeLine e:lines
+//                ) {
+//            if(e.getNext() == -1){
+//                for (int i = e.getId()+1; i < lines.size; i++) {
+//                    EdgeLine ed = lines.get(i);
+//                    Vector2 p = getIntersection(sx,sy,e.getEnd().x,e.getEnd().y,
+//                    ed.getStart().x,ed.getStart().y,ed.getEnd().x,ed.getEnd().y);
+//                    if(p.x != -1 && p.y != -1){
+//                        ed.getStart().x = p.x;
+//                        ed.getStart().y = p.y;
+//                        e.setNext(ed.getId());
+//                        ed.setPrev(e.getId());
+//                        break;
+//                    }
+//                }
+//            }
+//            if(e.getPrev() == -1){
+//                for (int i = e.getId()+1; i < lines.size; i++) {
+//                    EdgeLine ed = lines.get(i);
+//                    Vector2 p = getIntersection(sx,sy,e.getStart().x,e.getStart().y,
+//                            ed.getStart().x,ed.getStart().y,ed.getEnd().x,ed.getEnd().y);
+//                    if(p.x != -1 && p.y != -1){
+//                        ed.getEnd().x = p.x;
+//                        ed.getEnd().y = p.y;
+//                        e.setPrev(e.getId());
+//                        ed.setNext(ed.getId());
+//                        break;
+//                    }
+//                }
+//            }
+//        }
     }
     private Vector2 getIntersection(double x1,double y1,double x2,double y2,double x3,double y3,double x4,double y4){
         try {
