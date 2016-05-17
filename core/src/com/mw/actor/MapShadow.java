@@ -25,7 +25,7 @@ public class MapShadow extends Actor{
     private ShapeRenderer shapeRenderer;
     private GridPoint2 sightPosIndex = new GridPoint2(0,0);
     private int width = 0,height = 0;
-    private int sightRadius = 4;
+    private int sightRadius = 3;
     private Array<EdgeLine> lines = new Array<EdgeLine>();
     private int[][] dungeonArray;
 
@@ -56,7 +56,7 @@ public class MapShadow extends Actor{
         int sightWidth = 32*(sightRadius*2+1);
         int sightHeight = 32*(sightRadius*2+1);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(new Color(0,0,0,0.9f));
+        shapeRenderer.setColor(new Color(0,0,0,0.3f));
         shapeRenderer.rect(sightX,sightY,sightWidth,sightHeight);
         //画阴影
         shapeRenderer.setColor(new Color(0,0,0,0.75f));
@@ -256,40 +256,42 @@ public class MapShadow extends Actor{
                 }
             }
         }
-//        //按距离从近到远排序
-//        lines.sort();
+        //按距离从近到远排序
+        lines.sort();
 //        //切割边缘
-//        for (EdgeLine e:lines
-//                ) {
-//            if(e.getNext() == -1){
-//                for (int i = e.getId()+1; i < lines.size; i++) {
-//                    EdgeLine ed = lines.get(i);
-//                    Vector2 p = getIntersection(sx,sy,e.getEnd().x,e.getEnd().y,
-//                    ed.getStart().x,ed.getStart().y,ed.getEnd().x,ed.getEnd().y);
-//                    if(p.x != -1 && p.y != -1){
-//                        ed.getStart().x = p.x;
-//                        ed.getStart().y = p.y;
-//                        e.setNext(ed.getId());
-//                        ed.setPrev(e.getId());
-//                        break;
-//                    }
-//                }
-//            }
-//            if(e.getPrev() == -1){
-//                for (int i = e.getId()+1; i < lines.size; i++) {
-//                    EdgeLine ed = lines.get(i);
-//                    Vector2 p = getIntersection(sx,sy,e.getStart().x,e.getStart().y,
-//                            ed.getStart().x,ed.getStart().y,ed.getEnd().x,ed.getEnd().y);
-//                    if(p.x != -1 && p.y != -1){
-//                        ed.getEnd().x = p.x;
-//                        ed.getEnd().y = p.y;
-//                        e.setPrev(e.getId());
-//                        ed.setNext(ed.getId());
-//                        break;
-//                    }
-//                }
-//            }
-//        }
+        for (EdgeLine e:lines
+                ) {
+            if(e.getNext() == -1){//当前线段的下一条不存在
+                for (int i = e.getId()+1; i < lines.size; i++) {//从列表当前线段的下一条开始读取
+                    EdgeLine ed = lines.get(i);
+                    //获取下一条线段是否和当前线段有交点
+                    Vector2 p = getIntersection(sx,sy,e.getEnd().x,e.getEnd().y,
+                    ed.getStart().x,ed.getStart().y,ed.getEnd().x,ed.getEnd().y);
+                    //如果有交点，下一条的头是交点，设置当前线段的下一条
+                    if(p.x != -1 && p.y != -1){
+                        ed.getStart().x = p.x;
+                        ed.getStart().y = p.y;
+                        e.setNext(ed.getId());
+                        ed.setPrev(e.getId());
+                        break;
+                    }
+                }
+            }
+            if(e.getPrev() == -1){
+                for (int i = e.getId()+1; i < lines.size; i++) {
+                    EdgeLine ed = lines.get(i);
+                    Vector2 p = getIntersection(sx,sy,e.getStart().x,e.getStart().y,
+                            ed.getStart().x,ed.getStart().y,ed.getEnd().x,ed.getEnd().y);
+                    if(p.x != -1 && p.y != -1){
+                        ed.getEnd().x = p.x;
+                        ed.getEnd().y = p.y;
+                        e.setPrev(e.getId());
+                        ed.setNext(ed.getId());
+                        break;
+                    }
+                }
+            }
+        }
     }
     private Vector2 getIntersection(double x1,double y1,double x2,double y2,double x3,double y3,double x4,double y4){
         try {

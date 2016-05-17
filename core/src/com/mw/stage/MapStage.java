@@ -38,7 +38,8 @@ public class  MapStage extends Stage{
 	private OrthographicCamera camera;
 	private long roundTime = TimeUtils.nanoTime();
 	private long roundSecond = 30000000;
-	private boolean isMoving = false;
+	private boolean isMoving = false;//是否移动
+	private boolean isFocus = false;//是否锁定移动目标
 
 	private TiledMap tiledMap;
 	private DungeonMap dungeonMap;
@@ -126,24 +127,28 @@ public class  MapStage extends Stage{
 				if(endY+1<DungeonMap.TILE_SIZE){
 					endY+=1;
 				}
+				isFocus = true;
 				findWays(startX,startY,endX,endY);
 				break;
 			case KeyBoardController.DOWN:
 				if(endY-1>=0){
 					endY-=1;
 				}
+				isFocus = true;
 				findWays(startX,startY,endX,endY);
 				break;
 			case KeyBoardController.LEFT:
 				if(endX-1>=0){
 					endX-=1;
 				}
+				isFocus = true;
 				findWays(startX,startY,endX,endY);
 				break;
 			case KeyBoardController.RIGHT:
 				if(endX+1<DungeonMap.TILE_SIZE){
 					endX+=1;
 				}
+				isFocus = true;
 				findWays(startX,startY,endX,endY);
 				break;
 
@@ -221,7 +226,10 @@ public class  MapStage extends Stage{
 	private void movesLikeJagger() {
 
 		if(isMoving){
-//			camera.position.set(man.getX(),man.getY(), 0);
+			if(isFocus){
+				isFocus = false;
+			camera.position.set(man.getX(),man.getY(), 0);
+			}
 			mapShadow.updateLines();
 			indexAstarNode++;
 			if(indexAstarNode > path.size()-1){
