@@ -5,16 +5,15 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
+import com.mw.utils.DPoint;
 import com.mw.utils.Dungeon;
 
+import java.awt.Point;
 import java.util.Collections;
 
 /**
@@ -245,14 +244,23 @@ public class MapShadow extends Actor{
                 }
             }
         }
-        for (EdgeLine e:lines
-             ) {
-            for (int i = 0; i < lines.size; i++) {
-                EdgeLine ed = lines.get(i);
+        for (int i=0; i<this.lines.size; i++) {
+            EdgeLine eNow = lines.get(i);
+            if (eNow.getPrev() != -1 && eNow.getNext() != -1) {
+                continue;
+            }
+            for(int j=0; j<lines.size; j++) {
+                if (i == j) {
+                    continue;
+                }
+                EdgeLine eCheck = lines.get(j);
+                if (eCheck.getPrev() != -1 && eCheck.getNext() != -1) {
+                    continue;
+                }
                 //如果一条边的头是另一条边的尾，那么这条边的prev是另一条，另一条的next是这一条
-                if(e.getStart().x == ed.getEnd().x && e.getStart().y == ed.getEnd().y){
-                    e.setPrev(ed.getId());
-                    ed.setNext(e.getId());
+                if (eNow.getEnd().x == eCheck.getStart().x && eNow.getEnd().y == eCheck.getStart().y) {
+                    eNow.setNext(eCheck.getId());;
+                    eCheck.setPrev(eNow.getId());
                 }
             }
         }
@@ -262,8 +270,11 @@ public class MapShadow extends Actor{
         for (EdgeLine e:lines
                 ) {
             if(e.getNext() == -1){//当前线段的下一条不存在
-                for (int i = e.getId()+1; i < lines.size; i++) {//从列表当前线段的下一条开始读取
+                for (int i = 0; i < lines.size; i++) {//从列表当前线段的下一条开始读取
                     EdgeLine ed = lines.get(i);
+                    if(ed.getId()==e.getId()){
+                        continue;
+                    }
                     //获取下一条线段是否和当前线段有交点
                     Vector2 p = getIntersection(sx,sy,e.getEnd().x,e.getEnd().y,
                     ed.getStart().x,ed.getStart().y,ed.getEnd().x,ed.getEnd().y);
@@ -278,8 +289,11 @@ public class MapShadow extends Actor{
                 }
             }
             if(e.getPrev() == -1){
-                for (int i = e.getId()+1; i < lines.size; i++) {
+                for (int i = 0; i < lines.size; i++) {
                     EdgeLine ed = lines.get(i);
+                    if(ed.getId()==e.getId()){
+                        continue;
+                    }
                     Vector2 p = getIntersection(sx,sy,e.getStart().x,e.getStart().y,
                             ed.getStart().x,ed.getStart().y,ed.getEnd().x,ed.getEnd().y);
                     if(p.x != -1 && p.y != -1){
@@ -294,48 +308,101 @@ public class MapShadow extends Actor{
         }
     }
     private Vector2 getIntersection(double x1,double y1,double x2,double y2,double x3,double y3,double x4,double y4){
-        try {
-            if(x1 - x2 == 0){
-                return  new Vector2(-1,-1);
-            }
-            //第一条直线
-            double a = (y1 - y2) / (x1 - x2);
-            double b = (x1 * y2 - x2 * y1) / (x1 - x2);
-            System.out.println("求出该直线方程为: y=" + a + "x + " + b);
-            if(x3 - x4 == 0){
-                return  new Vector2(-1,-1);
-            }
-            //第二条
-            double c = (y3 - y4) / (x3 - x4);
-            double d = (x3 * y4 - x4 * y3) / (x3 - x4);
-            System.out.println("求出该直线方程为: y=" + c + "x + " + d);
-            if((x3 - x4) * (y1 - y2) - (x1 - x2) * (y3 - y4) == 0){
-                return  new Vector2(-1,-1);
-            }
-
-            double x = ((x1 - x2) * (x3 * y4 - x4 * y3) - (x3 - x4) * (x1 * y2 - x2 * y1))
-                    / ((x3 - x4) * (y1 - y2) - (x1 - x2) * (y3 - y4));
-
-            double y = ((y1 - y2) * (x3 * y4 - x4 * y3) - (x1 * y2 - x2 * y1) * (y3 - y4))
-                    / ((y1 - y2) * (x3 - x4) - (x1 - x2) * (y3 - y4));
-
-            System.out.println("他们的交点为: (" + x + "," + y + ")");
-            //判断是否在线段上
-            boolean isOnSegment = true;
-            if((x > x3 && x > x4) ||(x < x3 && x < x4)){
-                isOnSegment = false;
-            }
-            if((y > y3 && y > y4) ||(y < y3 && y < y4)){
-                isOnSegment = false;
-            }
-            if(!isOnSegment){
-                x = -1;
-                y = -1;
-            }
-            return  new Vector2((float) x,(float)y);
-        }catch (Exception e){
-            Gdx.app.log("exec","除0异常");
-            return  new Vector2(-1,-1);
+        DPoint dp1 = new DPoint(x1,y1);
+        DPoint dp2 = new DPoint(x2,y2);
+        DPoint dp3 = new DPoint(x3,y3);
+        DPoint dp4 = new DPoint(x4,y4);
+        boolean isMeet = Meet(dp1,dp2,dp3,dp4);
+        DPoint dp = new DPoint(-1,-1);
+        if(isMeet){
+            dp = Inter(dp1,dp2,dp3,dp4);
         }
+        return  new Vector2((float) dp.x,(float) dp.y);
+//        try {
+//            if(x1 - x2 == 0){
+//                return  new Vector2(-1,-1);
+//            }
+//            //第一条直线
+//            double a = (y1 - y2) / (x1 - x2);
+//            double b = (x1 * y2 - x2 * y1) / (x1 - x2);
+////            System.out.println("求出该直线方程为: y=" + a + "x + " + b);
+//            if(x3 - x4 == 0){
+//                return  new Vector2(-1,-1);
+//            }
+//            //第二条
+//            double c = (y3 - y4) / (x3 - x4);
+//            double d = (x3 * y4 - x4 * y3) / (x3 - x4);
+////            System.out.println("求出该直线方程为: y=" + c + "x + " + d);
+//            if((x3 - x4) * (y1 - y2) - (x1 - x2) * (y3 - y4) == 0){
+//                return  new Vector2(-1,-1);
+//            }
+//
+//            double x = ((x1 - x2) * (x3 * y4 - x4 * y3) - (x3 - x4) * (x1 * y2 - x2 * y1))
+//                    / ((x3 - x4) * (y1 - y2) - (x1 - x2) * (y3 - y4));
+//
+//            double y = ((y1 - y2) * (x3 * y4 - x4 * y3) - (x1 * y2 - x2 * y1) * (y3 - y4))
+//                    / ((y1 - y2) * (x3 - x4) - (x1 - x2) * (y3 - y4));
+//
+//            System.out.println("他们的交点为: (" + x + "," + y + ")");
+//            //判断是否在线段上
+//            boolean isOnSegment = true;
+//            if((x > x3 && x > x4) ||(x < x3 && x < x4)){
+//                isOnSegment = false;
+//            }
+//            if((y > y3 && y > y4) ||(y < y3 && y < y4)){
+//                isOnSegment = false;
+//            }
+//            if(!isOnSegment){
+//                x = -1;
+//                y = -1;
+//            }
+//            return  new Vector2((float) x,(float)y);
+//        }catch (Exception e){
+//            Gdx.app.log("exec","除0异常");
+//            return  new Vector2(-1,-1);
+//        }
+    }
+
+    final double eps = 1e-6;
+
+    final double Pi = Math.acos(-1.0);
+
+
+    int sgn(double x)
+    {
+        int i = -1;
+        if(x>-eps){
+            i = 1;
+        }
+        return i;
+    }
+
+    double Cross(DPoint p1, DPoint p2, DPoint p3, DPoint p4)
+    {
+        return (p2.x-p1.x)*(p4.y-p3.y) - (p2.y-p1.y)*(p4.x-p3.x);
+    }
+
+    double Area(DPoint p1,DPoint p2,DPoint p3)
+    {
+        return Cross(p1,p2,p1,p3);
+    }
+
+    double fArea(DPoint p1,DPoint p2,DPoint p3)
+    {
+        return Math.abs(Area(p1,p2,p3));
+    }
+
+    boolean Meet(DPoint p1,DPoint p2,DPoint p3,DPoint p4)
+    {
+        return Math.max(Math.min(p1.x,p2.x),Math.min(p3.x,p4.x)) <= Math.min(Math.max(p1.x,p2.x),Math.max(p3.x,p4.x))
+                && Math.max(Math.min(p1.y,p2.y),Math.min(p3.y,p4.y)) <= Math.min(Math.max(p1.y,p2.y),Math.max(p3.y,p4.y))
+                && sgn(Cross(p3,p2,p3,p4) * Cross(p3,p4,p3,p1)) >= 0
+                && sgn(Cross(p1,p4,p1,p2) * Cross(p1,p2,p1,p3)) >= 0;
+    }
+
+    DPoint Inter(DPoint p1,DPoint p2,DPoint p3,DPoint p4)
+    {
+        double k = fArea(p1,p2,p3) / fArea(p1,p2,p4);
+        return new DPoint((p3.x + k*p4.x)/(1+k),(p3.y + k*p4.y)/(1+k));
     }
 }
