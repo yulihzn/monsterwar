@@ -48,6 +48,14 @@ public class EdgeLine implements Comparable<EdgeLine> {
         this.end = end;
     }
 
+    public void setEnd(Vector2 end) {
+        this.end = end;
+    }
+
+    public void setStart(Vector2 start) {
+        this.start = start;
+    }
+
     public Vector2 getStart() {
         return start;
     }

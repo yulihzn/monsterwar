@@ -37,7 +37,7 @@ import java.util.List;
 public class  MapStage extends Stage{
 	private OrthographicCamera camera;
 	private long roundTime = TimeUtils.nanoTime();
-	private long roundSecond = 30000000;
+	private long roundSecond = 10000000;
 	private boolean isMoving = false;//是否移动
 	private boolean isFocus = false;//是否锁定移动目标
 

@@ -10,10 +10,12 @@ import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
+import com.mw.utils.DPoint;
 import com.mw.utils.Dungeon;
 
 import java.awt.Point;
 import java.util.Collections;
+import java.util.HashMap;
 
 /**
  * Created by BanditCat on 2016/3/29.
@@ -50,6 +52,9 @@ public class MapShadow extends Actor{
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA,GL20.GL_ONE_MINUS_SRC_ALPHA);
         shapeRenderer.setProjectionMatrix(camera.combined);
+        if(shapeRenderer.isDrawing()){
+            return;
+        }
         //画视野
         int sightX = 32*getSightPosIndex().x-32*sightRadius;
         int sightY = 32*getSightPosIndex().y-32*sightRadius;
@@ -73,26 +78,41 @@ public class MapShadow extends Actor{
         float sy = (sightPosIndex.y*32)+16;//视野的纵坐标
         for (int i = 0;i < lines.size;i++){
             EdgeLine ed = lines.get(i);
-            if(ed.isNeedToDraw()){
-                shapeRenderer.setColor(Color.GREEN);
+            shapeRenderer.setColor(Color.GREEN);
+            shapeRenderer.line(ed.getStart().x,ed.getStart().y,ed.getEnd().x,ed.getEnd().y);
+            if(ed.getNext() != -1){
+                EdgeLine en = lines.get(ed.getNext());
+                shapeRenderer.setColor(Color.BLUE);
+                shapeRenderer.line(ed.getEnd().x,ed.getEnd().y,en.getStart().x,en.getStart().y);
+            }
+            if(ed.getPrev() != -1){
                 shapeRenderer.line(ed.getStart().x,ed.getStart().y,ed.getEnd().x,ed.getEnd().y);
-                if(ed.getNext() != -1){
-                    shapeRenderer.setColor(Color.BLUE);
-                    shapeRenderer.line(ed.getEnd().x,ed.getEnd().y,
-                            lines.get(ed.getNext()).getStart().x,lines.get(ed.getNext()).getStart().y);
-                }
-                if(ed.getPrev() != -1){
-                    shapeRenderer.setColor(Color.BLUE);
-                    shapeRenderer.line( lines.get(ed.getPrev()).getStart().x,lines.get(ed.getPrev()).getStart().y
-                    ,ed.getStart().x,ed.getStart().y);
-                }
+                EdgeLine ep = lines.get(ed.getPrev());
+                shapeRenderer.setColor(Color.BLUE);
+                shapeRenderer.line( ep.getEnd().x,ep.getEnd().y,ed.getStart().x,ed.getStart().y);
             }
         }
-        //画点
-        shapeRenderer.setColor(Color.ORANGE);
-        for (Vector2 v : points){
-            shapeRenderer.point(v.x,v.y,0);
-        }
+//        if(lines.size>0){
+//            shapeRenderer.setColor(Color.BLUE);
+//            EdgeLine ed = lines.get(0);
+//            int next = ed.getNext();
+//            int pre = ed.getPrev();
+//            shapeRenderer.line(ed.getStart().x,ed.getStart().y,ed.getEnd().x,ed.getEnd().y);
+//            while (next > 0){
+//                EdgeLine en = lines.get(next);
+//                shapeRenderer.line(ed.getEnd().x,ed.getEnd().y,en.getStart().x,en.getStart().y);
+//                shapeRenderer.line(en.getStart().x,en.getStart().y,en.getEnd().x,en.getEnd().y);
+//                next = en.getNext();
+//                ed = en;
+//            }
+//            while (pre > 0){
+//                EdgeLine ep = lines.get(pre);
+//                shapeRenderer.line(ep.getEnd().x,ep.getEnd().y,ed.getStart().x,ed.getStart().y);
+//                shapeRenderer.line(ep.getStart().x,ep.getStart().y,ep.getEnd().x,ep.getEnd().y);
+//                pre = ep.getPrev();
+//                ed = ep;
+//            }
+//        }
         shapeRenderer.end();
 
         Gdx.gl.glDisable(GL20.GL_BLEND);
@@ -225,6 +245,12 @@ public class MapShadow extends Actor{
                 }
             }
         }
+        connectEdges();
+        calculateProjections();
+
+
+    }
+    private void connectEdges(){
         //按距离从近到远排序
         lines.sort();
         for (int i=0; i<this.lines.size; i++) {
@@ -247,12 +273,14 @@ public class MapShadow extends Actor{
                 }
             }
         }
-
-//        //切割边缘
+    }
+    private void calculateEdges(){
+        int sx = (sightPosIndex.x*32)+16;//视野的横坐标
+        int sy = (sightPosIndex.y*32)+16;//视野的纵坐标
+        //切割边缘
         points.clear();
         for (int k = 0;k < lines.size;k++) {
             EdgeLine e = lines.get(k);
-            boolean getOne = false;
             if(e.getNext() == -1){//当前线段的下一条不存在
                 for (int i = k+1; i < lines.size; i++) {//从列表当前线段的下一条开始读取
                     EdgeLine ed = lines.get(i);
@@ -261,7 +289,7 @@ public class MapShadow extends Actor{
                     }
                     //获取下一条线段是否和当前线段有交点
                     Vector2 p = getIntersection(sx,sy,e.getEnd().x,e.getEnd().y,
-                    ed.getStart().x,ed.getStart().y,ed.getEnd().x,ed.getEnd().y);
+                            ed.getStart().x,ed.getStart().y,ed.getEnd().x,ed.getEnd().y);
                     //如果有交点，下一条的头是交点，设置当前线段的下一条
                     if(p.x != -1 && p.y != -1){
                         points.add(p);
@@ -269,13 +297,9 @@ public class MapShadow extends Actor{
                         ed.getStart().y = p.y;
                         e.setNext(i);
                         ed.setPrev(k);
-                        getOne = true;
                         break;
                     }
                 }
-            }
-            if(getOne){
-//                break;
             }
             if(e.getPrev() == -1){
                 for (int i = k+1; i < lines.size; i++) {
@@ -299,6 +323,9 @@ public class MapShadow extends Actor{
     }
     private Vector2 getIntersection(double x1,double y1,double x2,double y2,double x3,double y3,double x4,double y4){
         try {
+            if((x2 == x3&&y2==y3) || (x2 == x4&&y2==y4)){//重合
+                return new Vector2(-1,-1);
+            }
             if(x1 - x2 == 0){
                 return  new Vector2(-1,-1);
             }
@@ -323,7 +350,7 @@ public class MapShadow extends Actor{
             double y = ((y1 - y2) * (x3 * y4 - x4 * y3) - (x1 * y2 - x2 * y1) * (y3 - y4))
                     / ((y1 - y2) * (x3 - x4) - (x1 - x2) * (y3 - y4));
 
-            System.out.println("他们的交点为: (" + x + "," + y + ")");
+//            System.out.println("他们的交点为: (" + x + "," + y + ")");
             //判断是否在线段上
             boolean isOnSegment = true;
             if((x > x3 && x > x4) ||(x < x3 && x < x4)){
@@ -350,6 +377,153 @@ public class MapShadow extends Actor{
             Gdx.app.log("exec","除0异常");
             return  new Vector2(-1,-1);
         }
+    }
+
+    private void calculateProjections(){
+        int sx = (sightPosIndex.x*32)+16;//视野的横坐标
+        int sy = (sightPosIndex.y*32)+16;//视野的纵坐标
+        Vector2 lightSource = new Vector2(sx,sy);
+        // Start from the beginning to project lines
+        for(int i = 0;i<lines.size;i++){
+            EdgeLine e = lines.get(i);
+            // Find not connected point for next
+            if(e.getNext() == -1){
+                float[]abc = getLineABC(e.getEnd(),lightSource);
+                float[]intersectionData = checkIntersection(abc,e.getEnd(),i);
+                // if found intersection point then split the edge at intersection point
+                if (intersectionData[2] != -1) {
+                    updateEdge(i, (int)intersectionData[2],new Vector2(intersectionData[0],intersectionData[1]), true);
+                }
+            }
+            // Find not connected point for prev
+            if (e.getPrev() == -1) {
+                float[]abc = getLineABC(e.getEnd(),lightSource);
+                abc = this.getLineABC(e.getStart(), lightSource);
+                float[]intersectionData = checkIntersection(abc,e.getStart(),i);
+                // if found intersection point then split the edge at intersection point
+                if (intersectionData[2] != -1) {
+                    this.updateEdge(i, (int)intersectionData[2],new Vector2(intersectionData[0],intersectionData[1]), false);
+                }
+            }
+
+        }
+    }
+
+    private void updateEdge(int edgeID, int targetEdgeID, Vector2 p, boolean isNext) {
+        // The edge that start the projection
+        EdgeLine edgeStart = lines.get(edgeID);
+        // The target edge
+        EdgeLine edgeToBeSliced = lines.get(targetEdgeID);
+
+        // Calculate for the edge to be kept
+        if (isNext) {
+            edgeStart.setNext(targetEdgeID);
+            edgeToBeSliced.setStart(p);
+            edgeToBeSliced.setPrev(edgeID);
+        } else {
+            edgeStart.setPrev(targetEdgeID);
+            edgeToBeSliced.setEnd(p);
+            edgeToBeSliced.setNext(edgeID);
+        }
+
+        // Update all the 3 edges
+        lines.set(edgeID,edgeStart);
+        lines.set(targetEdgeID,edgeToBeSliced);
+    }
+
+    private float[] getLineABC(Vector2 pt1, Vector2 pt2){
+        float[] abc = {0,0,0};
+        if((pt1.y==pt2.y)&&(pt1.x==pt2.x)){
+            abc[0]=0;abc[1]=0;abc[2]=0;
+        }else if(pt1.x == pt2.x){
+            abc[0]=1;abc[1]=0;abc[2]=-pt1.x;
+        }else {
+            abc[0]=-(pt2.y - pt1.y) / (pt2.x - pt1.x);abc[1]=1;abc[2]=pt1.x * (pt2.y - pt1.y) / (pt2.x - pt1.x) - pt1.y;
+        }
+        return abc;
+    }
+   private Vector2 getIntersectionPoint(float[]abc1, float[]abc2) {
+        Vector2 p = new Vector2(0,0);
+        float x = 0,y = 0;
+        float a1 = abc1[0], b1 = abc1[1], c1 = abc1[2],
+                a2 = abc2[0], b2 = abc2[1], c2 = abc2[2];
+
+        if ((b1 == 0) && (b2 == 0)) {
+            return p;
+        } else if (b1 == 0) {
+            x = -c1;
+            y = -(a2 * x + c2) / b2;
+        } else if (b2 == 0) {
+            x = -c2;
+            y = -(a1 * x + c1) / b1;
+        } else {
+            if ((a1 / b1) == (a2 / b1)) {
+                return p;
+            } else {
+                x = (c1 - c2) / (a2  - a1);
+                y = -(a1 * x) - c1;
+            }
+        }
+       p.x = x;p.y=y;
+        return p;
+    }
+    private float[] checkIntersection(float[] lineABC,Vector2 point,float currentID){
+        boolean found = false;
+        int sx = (sightPosIndex.x*32)+16;//视野的横坐标
+        int sy = (sightPosIndex.y*32)+16;//视野的纵坐标
+        Vector2 lightSource = new Vector2(sx,sy);
+        Vector2 p = new Vector2(0,0);
+        int i;
+
+        for (i=0; i<lines.size; i++) {
+            // Skip current point
+            if (i != currentID) {
+                EdgeLine edge = lines.get(i);
+
+               float[] abc = this.getLineABC(edge.getStart(), edge.getEnd());
+                p = this.getIntersectionPoint(abc, lineABC);
+
+                if ((p.x == point.x) && (p.y == point.y))   continue;   // Skip current point, confirm
+
+                // check direction, intersections in the middle will be ignored
+                if ((lightSource.x > point.x) && (p.x > point.x))   continue;
+                if ((lightSource.x < point.x) && (p.x < point.x))   continue;
+                if ((lightSource.y > point.y) && (p.y > point.y))   continue;
+                if ((lightSource.y < point.y) && (p.y < point.y))   continue;
+
+                // check if the intersection point is not on the edge
+                float bigX, bigY, smallX, smallY;
+                if (edge.getStart().x > edge.getEnd().x) {
+                    bigX = edge.getStart().x;       smallX = edge.getEnd().x;
+                } else {
+                    bigX = edge.getEnd().x;       smallX = edge.getStart().x;
+                }
+
+                if (edge.getStart().y > edge.getEnd().y) {
+                    bigY = edge.getStart().y;       smallY = edge.getEnd().y;
+                } else {
+                    bigY = edge.getEnd().y;       smallY = edge.getStart().y;
+                }
+
+                // If the intersection point is note on the edge, ignore it
+                if ((p.x < smallX) || (p.x > bigX) || (p.y < smallY) || (p.y > bigY))
+                    continue;
+
+                found = true;
+                break;
+
+            } // end if
+
+        } // end for
+
+        // if not found, marked as not found with zero filled
+        if (!found) {
+            p.x =0;p.y=0;
+            i = -1;
+        }
+
+        // return intersection point and intersect id
+        return new float[]{ p.x, p.y, i};
     }
 
 }
