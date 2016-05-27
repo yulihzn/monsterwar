@@ -4,12 +4,19 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.PolygonRegion;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.FloatArray;
+import com.badlogic.gdx.utils.ShortArray;
 import com.mw.utils.DPoint;
 import com.mw.utils.Dungeon;
 
@@ -29,7 +36,10 @@ public class MapShadow extends Actor{
     private Array<EdgeLine> lines = new Array<EdgeLine>();
     private int[][] dungeonArray;
     //test
-    private Array<Vector2> points = new Array<Vector2>();
+    private FloatArray floatArray = new FloatArray();
+
+    public boolean isChangedPos = false;
+    private EarClippingTriangulator earClippingTriangulator = new EarClippingTriangulator();
 
     public MapShadow(OrthographicCamera camera,int width,int height,int[][] dungeonArray) {
         this.dungeonArray = dungeonArray;
@@ -51,6 +61,7 @@ public class MapShadow extends Actor{
         //混合模式
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA,GL20.GL_ONE_MINUS_SRC_ALPHA);
+
         shapeRenderer.setProjectionMatrix(camera.combined);
         if(shapeRenderer.isDrawing()){
             return;
@@ -71,40 +82,47 @@ public class MapShadow extends Actor{
         shapeRenderer.rect(sightX,sightY+sightHeight,sightWidth,height-sightY-sightHeight);
         shapeRenderer.end();
 
-        //画线
-        shapeRenderer.setColor(Color.GREEN);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        float sx = (sightPosIndex.x*32)+16;//视野的横坐标
-        float sy = (sightPosIndex.y*32)+16;//视野的纵坐标
-        for (int i = 0;i < lines.size;i++){
-            EdgeLine ed = lines.get(i);
-            shapeRenderer.setColor(Color.GREEN);
-            shapeRenderer.line(ed.getStart().x, ed.getStart().y, ed.getEnd().x, ed.getEnd().y);
-            if(ed.getPrev() != -1&&ed.getNext() != -1) {
-                shapeRenderer.setColor(Color.BLUE);
-                EdgeLine en = lines.get(ed.getNext());
-                shapeRenderer.line(ed.getEnd().x,ed.getEnd().y,en.getStart().x,en.getStart().y);
-                shapeRenderer.setColor(Color.ORANGE);
-                EdgeLine ep = lines.get(ed.getPrev());
-                shapeRenderer.line( ep.getEnd().x,ep.getEnd().y,ed.getStart().x,ed.getStart().y);
-            }
-        }
         if(lines.size>0){
+            //画线
+            shapeRenderer.setColor(Color.GREEN);
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            float sx = (sightPosIndex.x*32)+16;//视野的横坐标
+            float sy = (sightPosIndex.y*32)+16;//视野的纵坐标
             shapeRenderer.setColor(Color.PURPLE);
             EdgeLine ed = lines.get(0);
             int next = ed.getNext();
-            int i = next;
-            shapeRenderer.line(ed.getStart().x,ed.getStart().y,ed.getEnd().x,ed.getEnd().y);
-            while (next > 0||next == i){
-                Gdx.app.log("next",next+"");
+            floatArray.clear();
+            while (next >= 0){
+                if(isChangedPos){
+                    Gdx.app.log("next",next+"");
+                }
                 EdgeLine en = lines.get(next);
-                shapeRenderer.line(ed.getEnd().x,ed.getEnd().y,en.getStart().x,en.getStart().y);
-                shapeRenderer.line(en.getStart().x,en.getStart().y,en.getEnd().x,en.getEnd().y);
+                floatArray.add(ed.getEnd().x);
+                floatArray.add(ed.getEnd().y);
+                floatArray.add(en.getStart().x);
+                floatArray.add(en.getStart().y);
+                floatArray.add(en.getEnd().x);
+                floatArray.add(en.getEnd().y);
+                if(next == 0){
+                    break;
+                }
                 next = en.getNext();
                 ed = en;
             }
+            float[] arr = floatArray.toArray();
+            shapeRenderer.setColor(Color.PINK);
+            if(arr.length>0){
+                shapeRenderer.polygon(arr);
+            }
+            isChangedPos = false;
+            shapeRenderer.end();
+//            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+//            shapeRenderer.setColor(Color.BLUE);
+//            for(int i = 0;i+5< arr.length;i+=6){
+//                shapeRenderer.triangle(arr[i],arr[i+1],arr[i+2],arr[i+3],arr[i+4],arr[i+5]);
+//            }
+//            shapeRenderer.end();
         }
-        shapeRenderer.end();
 
         Gdx.gl.glDisable(GL20.GL_BLEND);
     }
@@ -184,16 +202,16 @@ public class MapShadow extends Actor{
                 x3 = x+1*32;
                 y3 = y;
                 //添加边围住视野
-                if(j==jMin&&i!=iMax-1&&i!=iMin){//中心点下层
+                if(j==jMin&&i!=iMax-1&&i!=iMin&&!isBlock(i,j+1)){//中心点下层
                     lines.add(getEdgeLine(x1,y1,x2,y2));
                 }
-                if(i==iMin&&j!=jMax-1&&j!=jMin){//中心点左层
+                if(i==iMin&&j!=jMax-1&&j!=jMin&&!isBlock(i+1,j)){//中心点左层
                     lines.add(getEdgeLine(x2,y2,x3,y3));
                 }
-                if(j==jMax-1&&i!=iMax-1&&i!=iMin){//中心点上层
+                if(j==jMax-1&&i!=iMax-1&&i!=iMin&&!isBlock(i,j-1)){//中心点上层
                     lines.add(getEdgeLine(x3,y3,x,y));
                 }
-                if(i==iMax-1&&j!=jMax-1&&j!=jMin){//中心点右层
+                if(i==iMax-1&&j!=jMax-1&&j!=jMin&&!isBlock(i-1,j)){//中心点右层
                     lines.add(getEdgeLine(x,y,x1,y1));
                 }
                 if(i==iMin||j==jMin||i==iMax-1||j==jMax-1){

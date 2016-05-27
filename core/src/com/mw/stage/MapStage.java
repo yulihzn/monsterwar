@@ -54,6 +54,8 @@ public class  MapStage extends Stage{
 
 	private MapShadow mapShadow;
 
+	private int[][]dungeonArray;
+
 
 	public MapStage(OrthographicCamera camera){
 		this.camera = camera;
@@ -72,8 +74,9 @@ public class  MapStage extends Stage{
 		}
 		Dungeon dungeon = new Dungeon();
 		dungeon.createDungeon(DungeonMap.TILE_SIZE,DungeonMap.TILE_SIZE,5000);
-		initAstarArray(dungeon.getDungeonArray());
-		dungeonMap = new DungeonMap(dungeon.getDungeonArray());
+		dungeonArray =dungeon.getDungeonArray();
+		initAstarArray(dungeonArray);
+		dungeonMap = new DungeonMap(dungeonArray);
 		for(TiledMapTileSet tmts : dungeonMap.getTileSets()){
 			for(TiledMapTile tmt :tmts){
 				tmt.getTextureRegion().getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
@@ -96,8 +99,26 @@ public class  MapStage extends Stage{
 		mapShadow = new MapShadow(camera,DungeonMap.TILE_SIZE<<5,DungeonMap.TILE_SIZE<<5,dungeon.getDungeonArray());
 		mapShadow.setPosition(0,0);
 		addActor(mapShadow);
+		adjustPlayerPos();
 
+	}
+	//调整玩家位置让他不卡墙
+	private void adjustPlayerPos(){
+		for(int i = -1;i < 2;i++){
+			for(int j = -1;j < 2;j++){
+				if(!isBlock(man.getTilePosIndex().x+i,man.getTilePosIndex().y+j)){
+					findWays(man.getTilePosIndex().x,man.getTilePosIndex().y,man.getTilePosIndex().x+i,man.getTilePosIndex().y+j);
+					return;
+				}
+			}
+		}
+		findWays(man.getTilePosIndex().x,man.getTilePosIndex().y,man.getTilePosIndex().x,man.getTilePosIndex().y);
 
+	}
+	private boolean isBlock(int i,int j){
+		return !(dungeonArray[i][j] != Dungeon.tileStoneWall
+				&&dungeonArray[i][j]!= Dungeon.tileDirtWall
+				&&dungeonArray[i][j]!= Dungeon.tileUnused);
 	}
 	private void createActorsForLayer(TiledMapTileLayer tiledLayer) {
 		for (int x = 0; x < tiledLayer.getWidth(); x++) {
@@ -172,6 +193,10 @@ public class  MapStage extends Stage{
 
 	@Override
 	public void act (float delta) {
+		if(man.getTilePosIndex().x != mapShadow.getSightPosIndex().x
+				||man.getTilePosIndex().y != mapShadow.getSightPosIndex().y){
+			mapShadow.isChangedPos = true;
+		}
 		mapShadow.getSightPosIndex().x = man.getTilePosIndex().x;
 		mapShadow.getSightPosIndex().y = man.getTilePosIndex().y;
 		//同步摄像头
