@@ -3,26 +3,18 @@ package com.mw.actor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.PolygonRegion;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
-import com.badlogic.gdx.utils.ShortArray;
-import com.mw.utils.DPoint;
 import com.mw.utils.Dungeon;
-
-import java.awt.Point;
-import java.util.Collections;
-import java.util.HashMap;
 
 /**
  * Created by BanditCat on 2016/3/29.
@@ -35,11 +27,17 @@ public class MapShadow extends Actor{
     private int sightRadius = 5;
     private Array<EdgeLine> lines = new Array<EdgeLine>();
     private int[][] dungeonArray;
-    //test
+    //视野多边形
     private FloatArray floatArray = new FloatArray();
 
     public boolean isChangedPos = false;
     private EarClippingTriangulator earClippingTriangulator = new EarClippingTriangulator();
+
+    private Rectangle sightRectangle = new Rectangle(0,0,0,0);
+    private FloatArray polygonLeftTop = new FloatArray();
+    private FloatArray polygonLeftBottom = new FloatArray();
+    private FloatArray polygonRightTop = new FloatArray();
+    private FloatArray polygonRightBottom = new FloatArray();
 
     public MapShadow(OrthographicCamera camera,int width,int height,int[][] dungeonArray) {
         this.dungeonArray = dungeonArray;
@@ -67,28 +65,65 @@ public class MapShadow extends Actor{
             return;
         }
         //画视野
-        int sightX = 32*getSightPosIndex().x-32*sightRadius;
-        int sightY = 32*getSightPosIndex().y-32*sightRadius;
-        int sightWidth = 32*(sightRadius*2+1);
-        int sightHeight = 32*(sightRadius*2+1);
+        float sightX = sightRectangle.x;
+        float sightY = sightRectangle.y;
+        float sightWidth = sightRectangle.width;
+        float sightHeight = sightRectangle.height;
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(new Color(0,0,0,0.9f));
+        shapeRenderer.setColor(new Color(0,0,0,0.6f));
         shapeRenderer.rect(sightX,sightY,sightWidth,sightHeight);
         //画阴影
-        shapeRenderer.setColor(new Color(0,0,0,0.75f));
+        shapeRenderer.setColor(new Color(0,0,0,0.9f));
         shapeRenderer.rect(0,0,sightX,height);
         shapeRenderer.rect(sightX,0,sightWidth,sightY);
         shapeRenderer.rect(sightX+sightWidth,0,width-sightX-sightWidth,height);
         shapeRenderer.rect(sightX,sightY+sightHeight,sightWidth,height-sightY-sightHeight);
         shapeRenderer.end();
 
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.PINK);
+        float[] arr = floatArray.toArray();
+        if(arr.length>0){
+            shapeRenderer.polygon(arr);
+        }
+        shapeRenderer.end();
+        float sx = (sightPosIndex.x*32)+16;//视野的横坐标
+        float sy = (sightPosIndex.y*32)+16;//视野的纵坐标
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(new Color(0,1,0,0.2f));
+        for(int i = 0;i+3< arr.length;i+=2){
+            shapeRenderer.triangle(sx,sy,arr[i],arr[i+1],arr[i+2],arr[i+3]);
+        }
+        float[]arrLeftBottom = polygonLeftBottom.toArray();
+        float[]arrLeftTop = polygonLeftTop.toArray();
+        float[]arrRightBottom = polygonRightBottom.toArray();
+        float[]arrRightTop = polygonRightTop.toArray();
+//        renderSightOther(sightRectangle.x,sightRectangle.y,arrLeftBottom);
+//        renderSightOther(sightRectangle.x,sightRectangle.y+sightRectangle.height,arrLeftTop);
+//        renderSightOther(sightRectangle.x+sightRectangle.width,sightRectangle.y,arrRightBottom);
+//        renderSightOther(sightRectangle.x+sightRectangle.width,sightRectangle.y+sightRectangle.height,arrRightTop);
+//        renderSightOther(sightRectangle.x,sightRectangle.y,arr);
+//        shapeRenderer.setColor(new Color(0,0,1,0.2f));
+//        renderSightOther(sightRectangle.x,sightRectangle.y+sightRectangle.height,arr);
+//        shapeRenderer.setColor(new Color(1,0,0,0.2f));
+//        renderSightOther(sightRectangle.x+sightRectangle.width,sightRectangle.y,arr);
+//        shapeRenderer.setColor(new Color(1,0,1,0.2f));
+//        renderSightOther(sightRectangle.x+sightRectangle.width,sightRectangle.y+sightRectangle.height,arr);
+        shapeRenderer.end();
+        Gdx.gl.glDisable(GL20.GL_BLEND);
+
+    }
+    private void renderSightOther(float x, float y, float[] arr){
+        for(int i = 0;i+3< arr.length;i+=2){
+            shapeRenderer.triangle(x,y,arr[i],arr[i+1],arr[i+2],arr[i+3]);
+        }
+//        for (int i = 0; i+1 < arr.length; i+=2) {
+//            shapeRenderer.line(x,y,arr[i],arr[i+1]);
+//        }
+    }
+
+    private void upDateShadowLines(){
         if(lines.size>0){
-            //画线
-            shapeRenderer.setColor(Color.GREEN);
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-            float sx = (sightPosIndex.x*32)+16;//视野的横坐标
-            float sy = (sightPosIndex.y*32)+16;//视野的纵坐标
-            shapeRenderer.setColor(Color.PURPLE);
             EdgeLine ed = lines.get(0);
             int next = ed.getNext();
             floatArray.clear();
@@ -109,22 +144,94 @@ public class MapShadow extends Actor{
                 next = en.getNext();
                 ed = en;
             }
-            float[] arr = floatArray.toArray();
-            shapeRenderer.setColor(Color.PINK);
-            if(arr.length>0){
-                shapeRenderer.polygon(arr);
-            }
             isChangedPos = false;
-            shapeRenderer.end();
-//            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-//            shapeRenderer.setColor(Color.BLUE);
-//            for(int i = 0;i+5< arr.length;i+=6){
-//                shapeRenderer.triangle(arr[i],arr[i+1],arr[i+2],arr[i+3],arr[i+4],arr[i+5]);
-//            }
-//            shapeRenderer.end();
+            Vector2
+            lbY=new Vector2(width,0),rbY=new Vector2(0,0)
+            ,ltY=new Vector2(width,0),rtY=new Vector2(0,0)
+            ,ltX=new Vector2(0,0),lbX=new Vector2(0,height)
+            ,rtX=new Vector2(0,0),rbX=new Vector2(0,height);
+            float maxx=0,maxy=0,minx=width,miny=height;
+            for (int i = 0; i+1 < floatArray.size; i+=2) {
+                float x = floatArray.get(i);
+                float y = floatArray.get(i+1);
+                if(x >= maxx){//最大x值的y轴，轴上有rtX,rbX
+                    maxx = x;
+                    rbX.x = x;
+                    if(y<=rbX.y){
+                        rbX.y = y;
+                    }
+                    rtX.x = x;
+                    if(y>=rtX.y){
+                        rtX.y = y;
+                    }
+                }
+                if(y >= maxy){//最大y值的x轴，轴上有ltY,rtY
+                    maxy = y;
+                    ltY.y = y;
+                    if(x <= ltY.x){
+                        ltY.x = x;
+                    }
+                    rtY.y= y;
+                    if(x >= rtY.x){
+                        rtY.x = x;
+                    }
+                }
+                if(x <= minx){//最小x值的y轴，轴上有ltX,lbX
+                    minx = x;
+                    ltX.x = x;
+                    if(y >= ltX.y){
+                        ltX.y = y;
+                    }
+                    lbX.x = x;
+                    if(y <= lbX.y){
+                        lbX.y = y;
+                    }
+                }
+                if(y <= miny){//最小y值的x轴，轴上有lbY,rbY
+                    miny = y;
+                    lbY.y = y;
+                    if(x <= lbY.x){
+                        lbY.x = x;
+                    }
+                    rbY.y = y;
+                    if(x >= rbY.x){
+                        rbY.x = x;
+                    }
+                }
+            }
+            sightRectangle.x = minx;
+            sightRectangle.y = miny;
+            sightRectangle.width = maxx-minx;
+            sightRectangle.height = maxy-miny;
+            polygonLeftBottom.clear();
+            polygonLeftTop.clear();
+            polygonRightBottom.clear();
+            polygonRightTop.clear();
+            for (int i = 0; i+1 < floatArray.size; i+=2) {
+                float x = floatArray.get(i);
+                float y = floatArray.get(i+1);
+                //左下
+                if(x <=lbY.x && y <=lbX.y){
+                    polygonLeftBottom.add(x);
+                    polygonLeftBottom.add(y);
+                }
+//                //左上
+//                if(x <=maxY.x && y >=minX.y){
+//                    polygonLeftTop.add(x);
+//                    polygonLeftTop.add(y);
+//                }
+//                //右下
+//                if(x >= minY.x && y <=maxX.y){
+//                    polygonRightBottom.add(x);
+//                    polygonRightBottom.add(y);
+//                }
+//                //右上
+//                if(x >=minY.x && y >=maxX.y){
+//                    polygonRightTop.add(x);
+//                    polygonRightTop.add(y);
+//                }
+            }
         }
-
-        Gdx.gl.glDisable(GL20.GL_BLEND);
     }
 
     public GridPoint2 getSightPosIndex() {
@@ -242,7 +349,7 @@ public class MapShadow extends Actor{
         }
         connectEdges();
         calculateProjections();
-
+        upDateShadowLines();
 
     }
     private void connectEdges(){
