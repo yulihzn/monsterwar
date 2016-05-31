@@ -5,10 +5,16 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -39,6 +45,7 @@ public class MapShadow extends Actor{
     private FloatArray polygonRightTop = new FloatArray();
     private FloatArray polygonRightBottom = new FloatArray();
 
+
     public MapShadow(OrthographicCamera camera,int width,int height,int[][] dungeonArray) {
         this.dungeonArray = dungeonArray;
         this.camera = camera;
@@ -65,12 +72,12 @@ public class MapShadow extends Actor{
             return;
         }
         //画视野
-        float sightX = sightRectangle.x;
-        float sightY = sightRectangle.y;
-        float sightWidth = sightRectangle.width;
-        float sightHeight = sightRectangle.height;
+        float sightX = (sightPosIndex.x - sightRadius)*32;
+        float sightY = (sightPosIndex.y - sightRadius)*32;
+        float sightWidth = (sightRadius*2+1)*32;
+        float sightHeight = (sightRadius*2+1)*32;
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(new Color(0,0,0,0.6f));
+        shapeRenderer.setColor(new Color(0,0,0,0.9f));
         shapeRenderer.rect(sightX,sightY,sightWidth,sightHeight);
         //画阴影
         shapeRenderer.setColor(new Color(0,0,0,0.9f));
@@ -90,7 +97,7 @@ public class MapShadow extends Actor{
         float sx = (sightPosIndex.x*32)+16;//视野的横坐标
         float sy = (sightPosIndex.y*32)+16;//视野的纵坐标
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(new Color(0,1,0,0.2f));
+        shapeRenderer.setColor(new Color(255,255,255,0.1f));
         for(int i = 0;i+3< arr.length;i+=2){
             shapeRenderer.triangle(sx,sy,arr[i],arr[i+1],arr[i+2],arr[i+3]);
         }
@@ -111,7 +118,6 @@ public class MapShadow extends Actor{
 //        renderSightOther(sightRectangle.x+sightRectangle.width,sightRectangle.y+sightRectangle.height,arr);
         shapeRenderer.end();
         Gdx.gl.glDisable(GL20.GL_BLEND);
-
     }
     private void renderSightOther(float x, float y, float[] arr){
         for(int i = 0;i+3< arr.length;i+=2){
@@ -121,6 +127,7 @@ public class MapShadow extends Actor{
 //            shapeRenderer.line(x,y,arr[i],arr[i+1]);
 //        }
     }
+
 
     private void upDateShadowLines(){
         if(lines.size>0){
@@ -352,6 +359,8 @@ public class MapShadow extends Actor{
         upDateShadowLines();
 
     }
+
+
     private void connectEdges(){
         //按距离从近到远排序
         lines.sort();
