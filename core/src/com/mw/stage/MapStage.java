@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -179,6 +180,9 @@ public class  MapStage extends Stage{
 
 	@Override
 	public void draw() {
+		//地图绘制
+		renderer.render();
+		//余下actor绘制
 		super.draw();
 	}
 
@@ -203,8 +207,7 @@ public class  MapStage extends Stage{
 		this.getViewport().setCamera(camera);
 		//地图绘制设置摄像头
 		renderer.setView(camera);
-		//地图绘制
-		renderer.render();
+
 		if (TimeUtils.nanoTime() - roundTime >= roundSecond) {
 			roundTime = TimeUtils.nanoTime();
 			movesLikeJagger();
