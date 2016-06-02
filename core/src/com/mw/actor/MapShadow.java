@@ -37,7 +37,7 @@ public class MapShadow extends Actor{
     private Pixmap pixmap;
     private Texture texture;
 
-    private float sx_old=-1,sy_old=-1;
+    private float sx_old=-1,sy_old=-1;int r_old = -1;
 
 
 
@@ -132,10 +132,10 @@ public class MapShadow extends Actor{
         pixmap.setColor(new Color(0,0,0,0.6f));
 //        pixmap.fillCircle((int)sx,(int)(height-sy),(sightRadius+1)*32);
 //        pixmap.fillRectangle((int)sx-sightWidth/2,(int)(height-sy)-sightHeight/2,sightWidth,sightHeight);
-        int r = (int)(sightRectangle.width>sightRectangle.height?sightRectangle.width/2+32:sightRectangle.height/2+32);
-        pixmap.fillCircle((int)sx,(int)(height-sy),(sightRadius)*32);
-        if(sx_old != -1 && sy_old != -1){
-            pixmap.fillCircle((int)sx_old,(int)(height-sx_old),(sightRadius)*32);
+        int r = (int)((sightRectangle.width>sightRectangle.height?sightRectangle.width/2+32:sightRectangle.height/2+32)*1.414);
+        pixmap.fillCircle((int)sx,(int)(height-sy),r);
+        if(sx_old != -1 && sy_old != -1&&r_old!=-1){
+            pixmap.fillCircle((int)sx_old,(int)(height-sy_old),r_old);
         }
         //坐标系y是反过来的
         pixmap.setColor(new Color(0,0,0,0.3f));
@@ -143,6 +143,7 @@ public class MapShadow extends Actor{
             pixmap.fillTriangle((int)sx,(int)(height-sy),(int)arr[i],(int)(height-arr[i+1]),(int)arr[i+2],(int)(height-arr[i+3]));
         }
         sx_old = sx;sy_old = sy;
+        r_old = r;
         texture.draw(pixmap,0,0);
 
     }
