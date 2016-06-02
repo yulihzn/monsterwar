@@ -3,18 +3,12 @@ package com.mw.actor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -30,7 +24,7 @@ public class MapShadow extends Actor{
     private ShapeRenderer shapeRenderer;
     private GridPoint2 sightPosIndex = new GridPoint2(0,0);
     private int width = 0,height = 0;
-    private int sightRadius = 5;
+    private int sightRadius = 6;
     private Array<EdgeLine> lines = new Array<EdgeLine>();
     private int[][] dungeonArray;
     //视野多边形
@@ -40,9 +34,11 @@ public class MapShadow extends Actor{
 
     private Rectangle sightRectangle = new Rectangle(0,0,0,0);
 
-    private TextureRegion region;
-    private Texture texture;
     private Pixmap pixmap;
+    private Texture texture;
+
+    private float sx_old=-1,sy_old=-1;
+
 
 
     public MapShadow(OrthographicCamera camera,int width,int height,int[][] dungeonArray) {
@@ -58,10 +54,9 @@ public class MapShadow extends Actor{
         texture = new Texture(width, height, Pixmap.Format.RGBA8888); // Pixmap.Format.RGBA8888);
         texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Linear);
         texture.setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);
-        pixmap.setColor(new Color(0,0,1,0.5f));
-        pixmap.fillRectangle(100,100,100,100);
+        pixmap.setColor(new Color(0,0,0,1f));
+        pixmap.fillRectangle(0,0,width,height);
         texture.draw(pixmap, 0, 0);
-        region = new TextureRegion(texture, 0, 0, width, height);
     }
 
     @Override
@@ -71,67 +66,85 @@ public class MapShadow extends Actor{
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        super.draw(batch, parentAlpha);
+        //混合模式
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA,GL20.GL_ONE_MINUS_SRC_ALPHA);
         batch.setProjectionMatrix(camera.combined);
         batch.draw(texture,0,0);
-//        shapeRenderer.setProjectionMatrix(camera.combined);
-//        if(shapeRenderer.isDrawing()){
-//            return;
-//        }
-//        //混合模式
-//        Gdx.gl.glEnable(GL20.GL_BLEND);
-//        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA,GL20.GL_ONE_MINUS_SRC_ALPHA);
-//
-////        //画视野
-////        float sightX = (sightPosIndex.x - sightRadius)*32;
-////        float sightY = (sightPosIndex.y - sightRadius)*32;
-////        float sightWidth = (sightRadius*2+1)*32;
-////        float sightHeight = (sightRadius*2+1)*32;
-////        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-////        shapeRenderer.setColor(new Color(0,0,0,0.9f));
-////        shapeRenderer.rect(sightX,sightY,sightWidth,sightHeight);
-////        //画阴影
-////        shapeRenderer.setColor(new Color(0,0,0,0.9f));
-////        shapeRenderer.rect(0,0,sightX,height);
-////        shapeRenderer.rect(sightX,0,sightWidth,sightY);
-////        shapeRenderer.rect(sightX+sightWidth,0,width-sightX-sightWidth,height);
-////        shapeRenderer.rect(sightX,sightY+sightHeight,sightWidth,height-sightY-sightHeight);
-//
-//        float sx = (sightPosIndex.x*32)+16;//视野的横坐标
-//        float sy = (sightPosIndex.y*32)+16;//视野的纵坐标
-//        float[] arr = floatArray.toArray();
-//
+        super.draw(batch, parentAlpha);
+//        drawShadowShape();
+        Gdx.gl.glDisable(GL20.GL_BLEND);
+
+    }
+    private void drawShadowShape(){
+        shapeRenderer.setProjectionMatrix(camera.combined);
+        if(shapeRenderer.isDrawing()){
+            return;
+        }
+//        //画视野
+//        float sightX = (sightPosIndex.x - sightRadius)*32;
+//        float sightY = (sightPosIndex.y - sightRadius)*32;
+//        float sightWidth = (sightRadius*2+1)*32;
+//        float sightHeight = (sightRadius*2+1)*32;
 //        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 //        shapeRenderer.setColor(new Color(0,0,0,0.9f));
-//        shapeRenderer.rect(0,0,width,height);
-//        shapeRenderer.end();
-//
-//        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-////        Gdx.gl.glBlendFunc(GL20.GL_ZERO,GL20.GL_ONE);
-//        shapeRenderer.setColor(new Color(0,0,0,0f));
-//        for(int i = 0;i+3< arr.length;i+=2){
-//            shapeRenderer.triangle(sx,sy,arr[i],arr[i+1],arr[i+2],arr[i+3]);
-//        }
-//        shapeRenderer.end();
-//
-//        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-//        shapeRenderer.setColor(Color.PINK);
-//        if(arr.length>0){
-//            shapeRenderer.polygon(arr);
-//        }
-//        shapeRenderer.end();
-//        Gdx.gl.glDisable(GL20.GL_BLEND);
+//        shapeRenderer.rect(sightX,sightY,sightWidth,sightHeight);
+//        //画阴影
+//        shapeRenderer.setColor(new Color(0,0,0,0.9f));
+//        shapeRenderer.rect(0,0,sightX,height);
+//        shapeRenderer.rect(sightX,0,sightWidth,sightY);
+//        shapeRenderer.rect(sightX+sightWidth,0,width-sightX-sightWidth,height);
+//        shapeRenderer.rect(sightX,sightY+sightHeight,sightWidth,height-sightY-sightHeight);
 
+        float sx = (sightPosIndex.x*32)+16;//视野的横坐标
+        float sy = (sightPosIndex.y*32)+16;//视野的纵坐标
+        float[] arr = floatArray.toArray();
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(new Color(0,0,0,0.9f));
+        shapeRenderer.rect(0,0,width,height);
+        shapeRenderer.end();
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(new Color(0,1,0,0f));
+        for(int i = 0;i+3< arr.length;i+=2){
+            shapeRenderer.triangle(sx,sy,arr[i],arr[i+1],arr[i+2],arr[i+3]);
+        }
+        shapeRenderer.end();
+
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.PINK);
+        if(arr.length>0){
+            shapeRenderer.polygon(arr);
+        }
+        shapeRenderer.end();
     }
     private void drawShadow() {
         float[] arr = floatArray.toArray();
         float sx = (sightPosIndex.x*32)+16;//视野的横坐标
         float sy = (sightPosIndex.y*32)+16;//视野的纵坐标
-        pixmap.setColor(new Color(0,1,0,0.5f));
-        for(int i = 0;i+3< arr.length;i+=2){
-            pixmap.fillTriangle((int)sx,(int)sy,(int)arr[i],(int)arr[i+1],(int)arr[i+2],(int)arr[i+3]);
+        int sightX = (sightPosIndex.x - sightRadius)*32;
+        int sightY = (sightPosIndex.y - sightRadius)*32;
+        int sightWidth = (sightRadius*2+1)*32;
+        int sightHeight = (sightRadius*2+1)*32;
+        Pixmap.setBlending(Pixmap.Blending.None);
+        pixmap.setColor(new Color(0,0,0,0.6f));
+//        pixmap.fillCircle((int)sx,(int)(height-sy),(sightRadius+1)*32);
+//        pixmap.fillRectangle((int)sx-sightWidth/2,(int)(height-sy)-sightHeight/2,sightWidth,sightHeight);
+        int r = (int)(sightRectangle.width>sightRectangle.height?sightRectangle.width/2+32:sightRectangle.height/2+32);
+        pixmap.fillCircle((int)sx,(int)(height-sy),(sightRadius)*32);
+        if(sx_old != -1 && sy_old != -1){
+            pixmap.fillCircle((int)sx_old,(int)(height-sx_old),(sightRadius)*32);
         }
+        //坐标系y是反过来的
+        pixmap.setColor(new Color(0,0,0,0.3f));
+        for(int i = 0;i+3< arr.length;i+=2){
+            pixmap.fillTriangle((int)sx,(int)(height-sy),(int)arr[i],(int)(height-arr[i+1]),(int)arr[i+2],(int)(height-arr[i+3]));
+        }
+        sx_old = sx;sy_old = sy;
         texture.draw(pixmap,0,0);
+
     }
 
     private void upDateShadowLines(){
@@ -224,6 +237,8 @@ public class MapShadow extends Actor{
 
     public void dispose(){
         shapeRenderer.dispose();
+        texture.dispose();
+        pixmap.dispose();
     }
 
     private EdgeLine getEdgeLine(int x,int y,int x1,int y1){
@@ -271,16 +286,16 @@ public class MapShadow extends Actor{
             iMin = 0;
         }
         int iMax = sightPosIndex.x + sightRadius+1;
-        if(iMax > 32-1){
-            iMax = 32-1;
+        if(iMax > 32){
+            iMax = 32;
         }
         int jMin = sightPosIndex.y - sightRadius;
         if(jMin < 0){
             jMin = 0;
         }
         int jMax = sightPosIndex.y + sightRadius+1;
-        if(jMax > 32-1){
-            jMax = 32-1;
+        if(jMax > 32){
+            jMax = 32;
         }
         for (int i = iMin; i < iMax; i++) {
             for (int j = jMin; j < jMax; j++) {

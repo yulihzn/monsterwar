@@ -61,7 +61,8 @@ public class DungeonMap extends TiledMap {
                 TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
                 String name = "";
                 switch(dungeonArray[x][y]) {
-                    case Dungeon.tileUnused:name="empty-original";break;
+//                    case Dungeon.tileUnused:name="empty-original";break;
+                    case Dungeon.tileUnused:name="block01-original";break;
                     case Dungeon.tileDirtWall:name="block01-original"; break;
                     case Dungeon.tileDirtFloor:name="sand01-original"; break;
                     case Dungeon.tileStoneWall:name="stone-original"; break;
