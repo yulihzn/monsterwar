@@ -59,6 +59,7 @@ public class  MapStage extends Stage{
 	private MapShadow mapShadow;
 
 	private int[][]dungeonArray;
+	private boolean isArrow = false;
 
 
 	public MapStage(OrthographicCamera camera){
@@ -178,6 +179,7 @@ public class  MapStage extends Stage{
 				break;
 
 		}
+		isArrow = isFocus;
 		return super.keyDown(keyCode);
 	}
 
@@ -257,10 +259,6 @@ public class  MapStage extends Stage{
 	private void movesLikeJagger() {
 
 		if(isMoving){
-			if(isFocus){
-				isFocus = false;
-			camera.position.set(man.getX(),man.getY(), 0);
-			}
 			mapShadow.updateLines();
 			indexAstarNode++;
 			if(indexAstarNode > path.size()-1){
@@ -272,12 +270,23 @@ public class  MapStage extends Stage{
 				synchronized (path){
 					AStarNode n = path.get(indexAstarNode);
 					man.setTilePosIndex(new GridPoint2(n.getX(),n.getY()));
-					man.setPosition(n.getX()<<5,n.getY()<<5);
+					if(isArrow){
+						isArrow = false;
+						MoveToAction moveToAction = Actions.moveTo(n.getX()<<5,n.getY()<<5);
+						moveToAction.setDuration(0.1f);
+						man.addAction(moveToAction);
+					}else{
+						man.setPosition(n.getX()<<5,n.getY()<<5);
+					}
 					Gdx.app.log("man","x="+(n.getX()<<5)+", y="+(n.getY()<<5));
 				}
 			}catch (Exception e){
 				e.printStackTrace();
 			}
+		}
+		if(isFocus){
+			isFocus = false;
+			camera.position.set(man.getX(),man.getY(), 0);
 		}
 	}
 	private void findWays(int startX,int startY,int endX,int endY){
