@@ -64,12 +64,12 @@ public class DungeonMap extends TiledMap {
 //                    case Dungeon.tileUnused:name="empty-original";break;
                     case Dungeon.tileUnused:name="block01-original";break;
                     case Dungeon.tileDirtWall:name="block01-original"; break;
-                    case Dungeon.tileDirtFloor:name="sand01-original"; break;
+                    case Dungeon.tileDirtFloor:name="block02"; break;
                     case Dungeon.tileStoneWall:name="stone-original"; break;
-                    case Dungeon.tileCorridor:name="sand01-original"; break;
-                    case Dungeon.tileDoor:name="sand01-original"; break;
-                    case Dungeon.tileUpStairs:name="grass02-original"; break;
-                    case Dungeon.tileDownStairs:name="grass02-original"; break;
+                    case Dungeon.tileCorridor:name="block02"; break;
+                    case Dungeon.tileDoor:name="door"; break;
+                    case Dungeon.tileUpStairs:name="upstair"; break;
+                    case Dungeon.tileDownStairs:name="downstair"; break;
                     case Dungeon.tileChest:name="cup02-original"; break;
                 }
                 DungeonTiledMapTile tiledMapTile = new DungeonTiledMapTile(textureAtlas.findRegion(name));

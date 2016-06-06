@@ -25,6 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mw.actor.MapShadow;
 import com.mw.actor.Player;
@@ -52,6 +53,7 @@ public class  MapStage extends Stage{
 	private TextureAtlas textureAtlas;
 
 	private Player man;
+	private Player ghost;
 	private AStarMap aStarMap;
 	private List<AStarNode> path = new ArrayList<AStarNode>();
 	private int indexAstarNode = 0;
@@ -100,6 +102,10 @@ public class  MapStage extends Stage{
 		man.setPosition((DungeonMap.TILE_SIZE/2)<<5,(DungeonMap.TILE_SIZE/2)<<5);
 		addActor(man);
 
+		ghost = new Player(textureAtlas,"ghost",camera);
+		ghost.setTilePosIndex(new GridPoint2(DungeonMap.TILE_SIZE/2,DungeonMap.TILE_SIZE/2));
+		ghost.setPosition((DungeonMap.TILE_SIZE/2)<<5,(DungeonMap.TILE_SIZE/2)<<5);
+		addActor(ghost);
 
 		mapShadow = new MapShadow(camera,DungeonMap.TILE_SIZE<<5,DungeonMap.TILE_SIZE<<5,dungeon.getDungeonArray());
 		mapShadow.setPosition(0,0);
@@ -109,15 +115,28 @@ public class  MapStage extends Stage{
 	}
 	//调整玩家位置让他不卡墙
 	private void adjustPlayerPos(){
+		boolean a = false;
+		boolean b = false;
 		for(int i = -1;i < 2;i++){
 			for(int j = -1;j < 2;j++){
 				if(!isBlock(man.getTilePosIndex().x+i,man.getTilePosIndex().y+j)){
 					findWays(man.getTilePosIndex().x,man.getTilePosIndex().y,man.getTilePosIndex().x+i,man.getTilePosIndex().y+j);
-					return;
+					i = 2;
+					break;
 				}
 			}
 		}
-		findWays(man.getTilePosIndex().x,man.getTilePosIndex().y,man.getTilePosIndex().x,man.getTilePosIndex().y);
+		for(int i = -1;i < 2;i++){
+			for(int j = -1;j < 2;j++){
+				if(!isBlock(ghost.getTilePosIndex().x+i,ghost.getTilePosIndex().y+j)){
+					if(!(ghost.getTilePosIndex().x+i == man.getTilePosIndex().x
+							&&ghost.getTilePosIndex().y+j == man.getTilePosIndex().y))
+					findWays(ghost.getTilePosIndex().x,ghost.getTilePosIndex().y,ghost.getTilePosIndex().x+i,ghost.getTilePosIndex().y+j);
+					i = 2;
+					break;
+				}
+			}
+		}
 
 	}
 	private boolean isBlock(int i,int j){
@@ -216,9 +235,17 @@ public class  MapStage extends Stage{
 		if (TimeUtils.nanoTime() - roundTime >= roundSecond) {
 			roundTime = TimeUtils.nanoTime();
 			movesLikeJagger();
+			logic();
 
 		}
+
 		super.act(delta);
+	}
+
+	private void logic() {
+		if(dungeonArray[man.getTilePosIndex().x][man.getTilePosIndex().y]== Dungeon.tileDownStairs){
+
+		}
 	}
 
 	@Override
