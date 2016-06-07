@@ -1,10 +1,13 @@
 package com.mw.map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.mw.utils.Dungeon;
 
 /**
@@ -46,7 +49,34 @@ public class DungeonMap extends TiledMap {
         this.dungeonArray = dungeon.getDungeonArray();
         initDungeon();
     }
+
+    public DungeonMap() {
+        this.height = TILE_SIZE;
+        this.width = TILE_SIZE;
+        this.tileLayer = new TiledMapTileLayer(width,height,TILE_SIZE,TILE_SIZE);
+        this.creatureLayer = new TiledMapTileLayer(width,height,TILE_SIZE,TILE_SIZE);
+        this.shadowLayer = new TiledMapTileLayer(width,height,TILE_SIZE,TILE_SIZE);
+        dungeon = new Dungeon();
+        dungeon.createDungeon(width,height,5000);
+        this.dungeonArray = dungeon.getDungeonArray();
+        initDungeon();
+    }
+
+    public int[][] getDungeonArray() {
+        return dungeonArray;
+    }
+
+    public void setDungeonArray(int[][] dungeonArray) {
+        this.dungeonArray = dungeonArray;
+    }
+
     private void initDungeon(){
+        //去黑线
+        for(TiledMapTileSet tmts : getTileSets()){
+            for(TiledMapTile tmt :tmts){
+                tmt.getTextureRegion().getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+            }
+        }
         MapLayers layers = this.getLayers();
         tileLayer.setName(LAYER_FLOOR);
         creatureLayer.setName(LAYER_CREATURE);
@@ -79,6 +109,25 @@ public class DungeonMap extends TiledMap {
             }
         }
 
+    }
+    public void changeTileType(int value,int x,int y){
+        String name = "";
+        switch(value) {
+            case Dungeon.tileUnused:name="block01-original";break;
+            case Dungeon.tileDirtWall:name="block01-original"; break;
+            case Dungeon.tileDirtFloor:name="block02"; break;
+            case Dungeon.tileStoneWall:name="stone-original"; break;
+            case Dungeon.tileCorridor:name="block02"; break;
+            case Dungeon.tileDoor:name="door"; break;
+            case Dungeon.tileUpStairs:name="upstair"; break;
+            case Dungeon.tileDownStairs:name="downstair"; break;
+            case Dungeon.tileChest:name="cup02-original"; break;
+        }
+        if(name.equals("")){
+            return;
+        }
+        this.tileLayer.getCell(x,y).getTile().setTextureRegion(textureAtlas.findRegion(name));
+        dungeonArray[x][y] = value;
     }
     public void addCreature(String name,int x,int y){
         if(x < 0){

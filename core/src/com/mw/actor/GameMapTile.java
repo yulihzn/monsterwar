@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.mw.map.DungeonMap;
 
 /**
  * Created by BanditCat on 2016/3/23 0023.
@@ -40,7 +41,8 @@ public class GameMapTile extends Actor {
     }
 
     public void setTilePosIndex(GridPoint2 tilePosIndex) {
-        this.tilePosIndex = tilePosIndex;
+        this.tilePosIndex = tilePosIndex;//设置下标
+        setPosition(tilePosIndex.x<<5,tilePosIndex.y<<5);//设置actor位置
     }
 
     public int getTileIndex() {
