@@ -20,14 +20,14 @@ import java.util.List;
  * Created by BanditCat on 2016/6/7.
  */
 public class Character extends GameMapTile {
-    private AStarMap aStarMap;
-    private List<AStarNode> path = new ArrayList<AStarNode>();//路径
-    private int indexAstarNode = 0;
-    private boolean isMoving = false;//是否移动
-    private long roundTime = TimeUtils.nanoTime();//回合时间用来和时间间隔对比
-    private boolean isFocus = false;//是否镜头跟随
-    private OrthographicCamera camera;
-    private DungeonMap dungeonMap;
+    protected AStarMap aStarMap;
+    protected List<AStarNode> path = new ArrayList<AStarNode>();//路径
+    protected int indexAstarNode = 0;
+    protected boolean isMoving = false;//是否移动
+    protected long roundTime = TimeUtils.nanoTime();//回合时间用来和时间间隔对比
+    protected boolean isFocus = false;//是否镜头跟随
+    protected OrthographicCamera camera;
+    protected DungeonMap dungeonMap;
     public Character(TextureAtlas textureAtlas, String regionName, OrthographicCamera cam,DungeonMap dungeonMap) {
         super(textureAtlas, regionName, cam);
         this.dungeonMap = dungeonMap;
@@ -90,7 +90,8 @@ public class Character extends GameMapTile {
 
     }
     //移动的逻辑
-    private void moveLogic(int x, int y) {
+    protected void moveLogic(int x, int y) {
+        //碰到门停下来，再次穿过打开
         if(dungeonMap.getDungeonArray()[x][y] == Dungeon.tileDoor){
             stopMoving();
             if(indexAstarNode == 1){

@@ -35,6 +35,7 @@ import com.mw.map.AStarMap;
 import com.mw.map.AStarNode;
 import com.mw.map.DungeonMap;
 import com.mw.utils.Dungeon;
+import com.mw.utils.GameDataHelper;
 import com.mw.utils.KeyBoardController;
 
 import java.util.ArrayList;
@@ -268,4 +269,5 @@ public class  MapStage extends Stage{
 			ghost.findWays(man.getTilePosIndex().x,man.getTilePosIndex().y);
 		}
 	}
+
 }

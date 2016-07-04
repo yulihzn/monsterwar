@@ -9,6 +9,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.mw.utils.Dungeon;
+import com.mw.utils.GameDataHelper;
 
 /**
  * Created by BanditCat on 2016/3/25.
@@ -28,25 +29,16 @@ public class DungeonMap extends TiledMap {
     public static String LAYER_CREATURE = "LAYER_CREATURE";
     public static String LAYER_SHADOW = "LAYER_SHADOW";
 
-    public DungeonMap(int[][] dungeonArray) {
+    private int level = 0;
+
+    public DungeonMap(int[][] dungeonArray,int level) {
+        this.level = level;
         this.dungeonArray = dungeonArray;
         this.width = dungeonArray.length;
         this.height = dungeonArray[0].length;
         this.tileLayer = new TiledMapTileLayer(width,height,TILE_SIZE,TILE_SIZE);
         this.creatureLayer = new TiledMapTileLayer(width,height,TILE_SIZE,TILE_SIZE);
         this.shadowLayer = new TiledMapTileLayer(width,height,TILE_SIZE,TILE_SIZE);
-        initDungeon();
-    }
-
-    public DungeonMap(int width, int height) {
-        this.height = height;
-        this.width = width;
-        this.tileLayer = new TiledMapTileLayer(width,height,TILE_SIZE,TILE_SIZE);
-        this.creatureLayer = new TiledMapTileLayer(width,height,TILE_SIZE,TILE_SIZE);
-        this.shadowLayer = new TiledMapTileLayer(width,height,TILE_SIZE,TILE_SIZE);
-        dungeon = new Dungeon();
-        dungeon.createDungeon(width,height,5000);
-        this.dungeonArray = dungeon.getDungeonArray();
         initDungeon();
     }
 
@@ -71,6 +63,8 @@ public class DungeonMap extends TiledMap {
     }
 
     private void initDungeon(){
+        //保存地图
+        GameDataHelper.getInstance().saveGameMap(dungeonArray,level);
         //去黑线
         for(TiledMapTileSet tmts : getTileSets()){
             for(TiledMapTile tmt :tmts){
