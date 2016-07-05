@@ -34,20 +34,21 @@ public class DungeonMap extends TiledMap {
     public DungeonMap(int[][] dungeonArray,int level) {
         this.level = level;
         this.dungeonArray = dungeonArray;
-        this.width = dungeonArray.length;
-        this.height = dungeonArray[0].length;
-        this.tileLayer = new TiledMapTileLayer(width,height,TILE_SIZE,TILE_SIZE);
-        this.creatureLayer = new TiledMapTileLayer(width,height,TILE_SIZE,TILE_SIZE);
-        this.shadowLayer = new TiledMapTileLayer(width,height,TILE_SIZE,TILE_SIZE);
+        this.height = TILE_SIZE;
+        this.width = TILE_SIZE;
+        if(dungeonArray == null){
+            dungeon = new Dungeon();
+            dungeon.createDungeon(width,height,5000);
+            this.dungeonArray = dungeon.getDungeonArray();
+            GameDataHelper.getInstance().setCurrentLevel(level);
+        }
+
         initDungeon();
     }
 
     public DungeonMap() {
         this.height = TILE_SIZE;
         this.width = TILE_SIZE;
-        this.tileLayer = new TiledMapTileLayer(width,height,TILE_SIZE,TILE_SIZE);
-        this.creatureLayer = new TiledMapTileLayer(width,height,TILE_SIZE,TILE_SIZE);
-        this.shadowLayer = new TiledMapTileLayer(width,height,TILE_SIZE,TILE_SIZE);
         dungeon = new Dungeon();
         dungeon.createDungeon(width,height,5000);
         this.dungeonArray = dungeon.getDungeonArray();
@@ -65,6 +66,11 @@ public class DungeonMap extends TiledMap {
     private void initDungeon(){
         //保存地图
         GameDataHelper.getInstance().saveGameMap(dungeonArray,level);
+
+        this.tileLayer = new TiledMapTileLayer(width,height,TILE_SIZE,TILE_SIZE);
+        this.creatureLayer = new TiledMapTileLayer(width,height,TILE_SIZE,TILE_SIZE);
+        this.shadowLayer = new TiledMapTileLayer(width,height,TILE_SIZE,TILE_SIZE);
+
         //去黑线
         for(TiledMapTileSet tmts : getTileSets()){
             for(TiledMapTile tmt :tmts){
@@ -122,6 +128,7 @@ public class DungeonMap extends TiledMap {
         }
         this.tileLayer.getCell(x,y).getTile().setTextureRegion(textureAtlas.findRegion(name));
         dungeonArray[x][y] = value;
+        GameDataHelper.getInstance().saveGameMap(dungeonArray,level);
     }
     public void addCreature(String name,int x,int y){
         if(x < 0){

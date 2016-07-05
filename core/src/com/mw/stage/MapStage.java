@@ -56,6 +56,8 @@ public class  MapStage extends Stage{
 	private Character ghost;
 	private MapShadow mapShadow;
 
+	private int level = 0;
+
 //	private int[][]dungeonArray;
 
 
@@ -79,7 +81,8 @@ public class  MapStage extends Stage{
 //		dungeonArray =dungeon.getDungeonArray();
 */
 		//初始化地图
-		dungeonMap = new DungeonMap();
+		level = GameDataHelper.getInstance().getCurrentLevel();
+		dungeonMap = new DungeonMap(GameDataHelper.getInstance().getGameMap(level),level);
 		//获取渲染
 		renderer = new OrthogonalTiledMapRenderer(dungeonMap,1f);
 		//为每个tile加上actor和相应的监听
@@ -96,26 +99,38 @@ public class  MapStage extends Stage{
 		man = new Player(textureAtlas,"man",camera,dungeonMap);
 		man.setTilePosIndex(new GridPoint2(DungeonMap.TILE_SIZE/2,DungeonMap.TILE_SIZE/2));
 		man.setZIndex(2);
+		man.setPlayerActionListener(playerActionListener);
 		addActor(man);
-
-
-
+		adjustPlayerPos();
 		mapShadow = new MapShadow(camera,DungeonMap.TILE_SIZE<<5,DungeonMap.TILE_SIZE<<5,dungeonMap.getDungeonArray());
 		mapShadow.setPosition(0,0);
 		mapShadow.setZIndex(3);
 		addActor(mapShadow);
-		adjustPlayerPos();
+
+	}
+
+	private Player.PlayerActionListener playerActionListener = new Player.PlayerActionListener() {
+		@Override
+		public void move(int action, int x, int y) {
+			switch (action){
+				case Player.ACTION_DOWN:break;
+				case Player.ACTION_UP:break;
+			}
+		}
+	};
+	private void nextStairs(int nextLevel){
+		if(nextLevel > 0){
+		}
 
 	}
 	//调整玩家位置让他不卡墙
 	private void adjustPlayerPos(){
-		boolean a = false;
-		boolean b = false;
-		for(int i = -1;i < 2;i++){
-			for(int j = -1;j < 2;j++){
-				if(!isBlock(man.getTilePosIndex().x+i,man.getTilePosIndex().y+j)){
-					man.findWays(man.getTilePosIndex().x+i,man.getTilePosIndex().y+j);
-					i = 2;
+		//设置玩家出生位置
+		for (int i = 0; i < dungeonMap.getDungeonArray().length; i++) {
+			for (int j = 0; j < dungeonMap.getDungeonArray()[0].length; j++) {
+				if(dungeonMap.getDungeonArray()[i][j]==Dungeon.tileUpStairs){
+					man.setTilePosIndex(new GridPoint2(i,j));
+					i = dungeonMap.getDungeonArray().length;
 					break;
 				}
 			}

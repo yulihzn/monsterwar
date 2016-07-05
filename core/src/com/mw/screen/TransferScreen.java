@@ -15,7 +15,7 @@ public class TransferScreen extends BaseScreen implements Screen {
 	private LoadingImage image_loading;
 	private TextureAtlas atlas;
 	private Stage stage;
-	private static final float DURATION = 0.5f;
+	private static final float DURATION = 0.1f;
 	private Timer timer = new Timer();
 	private BaseScreen baseScreen;
 
