@@ -22,7 +22,7 @@ import java.util.List;
 public class Character extends GameMapTile {
     protected AStarMap aStarMap;
     protected List<AStarNode> path = new ArrayList<AStarNode>();//路径
-    protected int indexAstarNode = 0;
+    protected int indexAstarNode = -1;
     protected boolean isMoving = false;//是否移动
     protected long roundTime = TimeUtils.nanoTime();//回合时间用来和时间间隔对比
     protected boolean isFocus = false;//是否镜头跟随
@@ -68,10 +68,11 @@ public class Character extends GameMapTile {
                 indexAstarNode++;//下标+1
                 //下标重置返回，停止移动
                 if(indexAstarNode > path.size()-1){
-                    indexAstarNode = 0;
+                    indexAstarNode = -1;
                     isMoving = false;
                 }
-                if(indexAstarNode == 0){
+                //当下标走完归零，如果路径长度大于1返回，如果小于等于1说明是点击自身
+                if(indexAstarNode == -1){
                     return;
                 }
                 //按list设置每一步的位置
@@ -137,7 +138,7 @@ public class Character extends GameMapTile {
         aStarMap.setTarget(new AStarNode(endX,endY));
          synchronized (path){
             path = aStarMap.find();
-            indexAstarNode = 0;
+            indexAstarNode = -1;
             isMoving = true;
         }
     }
