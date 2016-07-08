@@ -4,12 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonWriter;
-import com.mw.actor.Player;
-import com.sun.org.apache.xalan.internal.xsltc.util.IntegerArray;
-
-import java.util.HashMap;
 
 /**
  * Created by BanditCat on 2016/7/4.
@@ -86,7 +80,7 @@ public class GameDataHelper {
         preferences.flush();
     }
     public GridPoint2 getCharacterPos(String name){
-        return new GridPoint2(preferences.getInteger(name+"x"),preferences.getInteger(name+"y"));
+        return new GridPoint2(preferences.getInteger(name+"x",-1),preferences.getInteger(name+"y",-1));
     }
     public void setCurrentLevel(int level){
         preferences.putInteger("level",level);

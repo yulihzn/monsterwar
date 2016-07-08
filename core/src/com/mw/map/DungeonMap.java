@@ -85,6 +85,14 @@ public class DungeonMap extends TiledMap {
         layers.add(creatureLayer);
         layers.add(shadowLayer);
         textureAtlas = new TextureAtlas(Gdx.files.internal("tiles.pack"));
+        upDateTilesType();
+
+    }
+
+    /**
+     * 更新数组贴图
+     */
+    public void upDateTilesType(){
         for(int x = 0; x < this.width;x++){
             for (int y = 0; y < this.height;y++){
                 int tileType = this.dungeonArray[x][y];
@@ -108,7 +116,6 @@ public class DungeonMap extends TiledMap {
                 this.tileLayer.setCell(x,y,cell);
             }
         }
-
     }
     public void changeTileType(int value,int x,int y){
         String name = "";
@@ -130,6 +137,25 @@ public class DungeonMap extends TiledMap {
         dungeonArray[x][y] = value;
         GameDataHelper.getInstance().saveGameMap(dungeonArray,level);
     }
+
+    /**
+     * 生成一层地牢，如果传入了数组直接读取，如果为null生成新的地牢
+     * @param dungeonArray
+     * @param level
+     */
+    public void generateNextDungeon(int[][] dungeonArray,int level){
+        if(dungeonArray != null){
+            this.dungeonArray = dungeonArray;
+        }else{
+            dungeon = new Dungeon();
+            dungeon.createDungeon(width,height,5000);
+            this.dungeonArray = dungeon.getDungeonArray();
+        }
+        upDateTilesType();
+        GameDataHelper.getInstance().setCurrentLevel(level);
+        GameDataHelper.getInstance().saveGameMap(dungeonArray,level);
+    }
+
     public void addCreature(String name,int x,int y){
         if(x < 0){
             x = 0;

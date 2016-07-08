@@ -70,6 +70,8 @@ public class Character extends GameMapTile {
                 if(indexAstarNode > path.size()-1){
                     indexAstarNode = 0;
                     isMoving = false;
+                }
+                if(indexAstarNode == 0){
                     return;
                 }
                 //按list设置每一步的位置
@@ -133,7 +135,7 @@ public class Character extends GameMapTile {
     public void findWays(int endX, int endY){
         aStarMap.setSource(new AStarNode(getTilePosIndex().x,getTilePosIndex().y));
         aStarMap.setTarget(new AStarNode(endX,endY));
-        synchronized (path){
+         synchronized (path){
             path = aStarMap.find();
             indexAstarNode = 0;
             isMoving = true;

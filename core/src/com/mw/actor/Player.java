@@ -25,14 +25,16 @@ public class Player extends Character{
     protected void moveLogic(int x, int y) {
         super.moveLogic(x, y);
         //上下
-        if(getTilePosIndex().x == x&&getTilePosIndex().y==y){
-            if(playerActionListener != null){
-                playerActionListener.move(ACTION_UP,x,y);
-            }
-            if(dungeonMap.getDungeonArray()[x][y] == Dungeon.tileUpStairs){
-            }else if(dungeonMap.getDungeonArray()[x][y] == Dungeon.tileDownStairs){
+        if(path.size() == 1){
+            if(getTilePosIndex().x == x&&getTilePosIndex().y==y){
                 if(playerActionListener != null){
-                    playerActionListener.move(ACTION_DOWN,x,y);
+                    playerActionListener.move(ACTION_UP,x,y);
+                }
+                if(dungeonMap.getDungeonArray()[x][y] == Dungeon.tileUpStairs){
+                }else if(dungeonMap.getDungeonArray()[x][y] == Dungeon.tileDownStairs){
+                    if(playerActionListener != null){
+                        playerActionListener.move(ACTION_DOWN,x,y);
+                    }
                 }
             }
         }

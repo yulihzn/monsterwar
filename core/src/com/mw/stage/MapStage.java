@@ -58,8 +58,11 @@ public class  MapStage extends Stage{
 
 	private int level = 0;
 
-//	private int[][]dungeonArray;
+	private GameEventListener gameEventListener;
 
+	public void setGameEventListener(GameEventListener gameEventListener) {
+		this.gameEventListener = gameEventListener;
+	}
 
 	public MapStage(OrthographicCamera camera){
 		this.camera = camera;
@@ -101,39 +104,81 @@ public class  MapStage extends Stage{
 		man.setZIndex(2);
 		man.setPlayerActionListener(playerActionListener);
 		addActor(man);
-		adjustPlayerPos();
+		adjustPlayerPos(-1);
 		mapShadow = new MapShadow(camera,DungeonMap.TILE_SIZE<<5,DungeonMap.TILE_SIZE<<5,dungeonMap.getDungeonArray());
 		mapShadow.setPosition(0,0);
 		mapShadow.setZIndex(3);
 		addActor(mapShadow);
-
 	}
 
 	private Player.PlayerActionListener playerActionListener = new Player.PlayerActionListener() {
 		@Override
 		public void move(int action, int x, int y) {
 			switch (action){
-				case Player.ACTION_DOWN:break;
-				case Player.ACTION_UP:break;
+				case Player.ACTION_DOWN:
+					generateNextStairs(level+1);
+					//调整玩家位置
+					adjustPlayerPos(action);
+					//阴影重置
+//					mapShadow.reSet();
+					break;
+				case Player.ACTION_UP:
+					generateNextStairs(level-1);
+					//调整玩家位置
+					adjustPlayerPos(action);
+					//阴影重置
+//					mapShadow.reSet();
+					break;
 			}
 		}
 	};
-	private void nextStairs(int nextLevel){
-		if(nextLevel > 0){
+
+	/**
+	 * 进入下一层
+	 * @param nextLevel
+     */
+	private void generateNextStairs(int nextLevel){
+		//层数限制
+		if(nextLevel < 0||nextLevel > 20){
+			Gdx.app.log("tips","arrive limit!");
+			return;
 		}
+		//生成下一关或者上一关
+		dungeonMap.generateNextDungeon(GameDataHelper.getInstance().getGameMap(nextLevel),nextLevel);
+		level = nextLevel;
 
 	}
 	//调整玩家位置让他不卡墙
-	private void adjustPlayerPos(){
-		//设置玩家出生位置
-		for (int i = 0; i < dungeonMap.getDungeonArray().length; i++) {
-			for (int j = 0; j < dungeonMap.getDungeonArray()[0].length; j++) {
-				if(dungeonMap.getDungeonArray()[i][j]==Dungeon.tileUpStairs){
-					man.setTilePosIndex(new GridPoint2(i,j));
-					i = dungeonMap.getDungeonArray().length;
-					break;
+	private void adjustPlayerPos(int action){
+		int type = -1;
+		if(GameDataHelper.getInstance().getCharacterPos(man.getRegionName()).x == -1){
+			type = -2;
+		}
+		switch (action){
+			case Player.ACTION_DOWN:
+				type = Dungeon.tileUpStairs;
+				break;
+			case Player.ACTION_UP:
+				type = Dungeon.tileDownStairs;
+				break;
+			default:
+				if(type == -2){
+					type = Dungeon.tileUpStairs;
+				}
+				break;
+		}
+		if(type != -1){
+			for (int i = 0; i < dungeonMap.getDungeonArray().length; i++) {
+				for (int j = 0; j < dungeonMap.getDungeonArray()[0].length; j++) {
+					if(dungeonMap.getDungeonArray()[i][j]==type){
+						man.setTilePosIndex(new GridPoint2(i,j));
+						i = dungeonMap.getDungeonArray().length;
+						break;
+					}
 				}
 			}
+		}else{
+			man.setTilePosIndex(GameDataHelper.getInstance().getCharacterPos(man.getRegionName()));
 		}
 		for(int i = -1;i < 2;i++){
 			for(int j = -1;j < 2;j++){
@@ -281,8 +326,12 @@ public class  MapStage extends Stage{
 		public void clicked(InputEvent event, float x, float y) {
 			System.out.println(actor.getX()+","+actor.getY() +"value = "+actor.getCell().getTile().getId()+ " has been clicked.");
 			man.findWays(actor.getTilePosIndex().x,actor.getTilePosIndex().y);
-			ghost.findWays(man.getTilePosIndex().x,man.getTilePosIndex().y);
+//			ghost.findWays(man.getTilePosIndex().x,man.getTilePosIndex().y);
 		}
+	}
+
+	public interface GameEventListener{
+		void onActionChanged(int action);
 	}
 
 }

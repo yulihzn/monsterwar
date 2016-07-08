@@ -59,6 +59,15 @@ public class MapShadow extends Actor{
         texture.draw(pixmap, 0, 0);
     }
 
+    /**
+     * 复位
+     */
+    public void reSet(){
+        pixmap.setColor(new Color(0,0,0,1f));
+        pixmap.fillRectangle(0,0,width,height);
+        texture.draw(pixmap, 0, 0);
+    }
+
     @Override
     public void act(float delta) {
         super.act(delta);
