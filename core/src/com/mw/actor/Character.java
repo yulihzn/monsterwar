@@ -35,6 +35,10 @@ public class Character extends GameMapTile {
         initAStarArray(dungeonMap.getDungeonArray());
     }
 
+    public void upDateAstarArray(){
+        initAStarArray(dungeonMap.getDungeonArray());
+    }
+
     /**
      * 初始化AStar数组，元素只有0,1,0代表可以通过1代表障碍
      * @param array
@@ -97,7 +101,7 @@ public class Character extends GameMapTile {
         //碰到门停下来，再次穿过打开
         if(dungeonMap.getDungeonArray()[x][y] == Dungeon.tileDoor){
             stopMoving();
-            if(indexAstarNode == 1){
+            if(indexAstarNode == 0||indexAstarNode == 1){
                 dungeonMap.getDungeonArray()[x][y]=Dungeon.tileCorridor;
                 dungeonMap.changeTileType(Dungeon.tileCorridor,x,y);
             }

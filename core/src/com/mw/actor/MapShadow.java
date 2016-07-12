@@ -27,6 +27,8 @@ public class MapShadow extends Actor{
     private int sightRadius = 6;
     private Array<EdgeLine> lines = new Array<EdgeLine>();
     private int[][] dungeonArray;
+    //阴影数组：0 纯黑 1 半黑 2 透明，
+    private int[][] shadowArray;
     //视野多边形
     private FloatArray floatArray = new FloatArray();
 
@@ -57,15 +59,25 @@ public class MapShadow extends Actor{
         pixmap.setColor(new Color(0,0,0,1f));
         pixmap.fillRectangle(0,0,width,height);
         texture.draw(pixmap, 0, 0);
+
+        initShadowArray(dungeonArray);
     }
 
     /**
      * 复位
      */
     public void reSet(){
-        pixmap.setColor(new Color(0,0,0,1f));
-        pixmap.fillRectangle(0,0,width,height);
-        texture.draw(pixmap, 0, 0);
+    }
+
+    public void initShadowArray(int[][] dungeonArray){
+        //复制一个地牢数组
+        shadowArray = dungeonArray.clone();
+        //初始为0
+        for (int i = 0; i < shadowArray.length; i++) {
+            for (int j = 0; j < shadowArray[0].length; j++) {
+                shadowArray[i][j] = 0;
+            }
+        }
     }
 
     @Override
@@ -138,21 +150,34 @@ public class MapShadow extends Actor{
         int sightWidth = (sightRadius*2+1)*32;
         int sightHeight = (sightRadius*2+1)*32;
         Pixmap.setBlending(Pixmap.Blending.None);
+        //画第一层纯黑阴影
+        pixmap.setColor(new Color(0,0,0,1f));
+        pixmap.fillRectangle(0,0,width,height);
+        //画半黑阴影
         pixmap.setColor(new Color(0,0,0,0.6f));
-//        pixmap.fillCircle((int)sx,(int)(height-sy),(sightRadius+1)*32);
-//        pixmap.fillRectangle((int)sx-sightWidth/2,(int)(height-sy)-sightHeight/2,sightWidth,sightHeight);
-        int r = (int)((sightRectangle.width>sightRectangle.height?sightRectangle.width/2+32:sightRectangle.height/2+32)*1.414);
-        pixmap.fillCircle((int)sx,(int)(height-sy),r);
-        if(sx_old != -1 && sy_old != -1&&r_old!=-1){
-            pixmap.fillCircle((int)sx_old,(int)(height-sy_old),r_old);
+        pixmap.fillRectangle((int)sx-sightWidth/2,(int)(height-sy)-sightHeight/2,sightWidth,sightHeight);
+
+        for (int i = 0; i < shadowArray.length; i++) {
+            for (int j = 0; j < shadowArray[0].length; j++) {
+                if(shadowArray[i][j]==1){
+                    pixmap.fillRectangle(i*32,j*32,(i+1)*32,(j-1)*32);
+                }
+            }
         }
+//        pixmap.fillRectangle((int)sightRectangle.x,(int)sightRectangle.y,(int)sightRectangle.width,(int)sightRectangle.height);
+//        int r = (int)((sightRectangle.width>sightRectangle.height?sightRectangle.width/2+32:sightRectangle.height/2+32)*1.414);
+//        pixmap.fillCircle((int)sx,(int)(height-sy),r);
+//        if(sx_old != -1 && sy_old != -1&&r_old!=-1){
+//            pixmap.fillCircle((int)sx_old,(int)(height-sy_old),r_old);
+//        }
+        //画透明阴影
         //坐标系y是反过来的
         pixmap.setColor(new Color(0,0,0,0.3f));
         for(int i = 0;i+3< arr.length;i+=2){
             pixmap.fillTriangle((int)sx,(int)(height-sy),(int)arr[i],(int)(height-arr[i+1]),(int)arr[i+2],(int)(height-arr[i+3]));
         }
         sx_old = sx;sy_old = sy;
-        r_old = r;
+//        r_old = r;
         texture.draw(pixmap,0,0);
 
     }

@@ -119,6 +119,7 @@ public class  MapStage extends Stage{
 					generateNextStairs(level+1);
 					//调整玩家位置
 					adjustPlayerPos(action);
+					man.setFocus(true);
 					//阴影重置
 //					mapShadow.reSet();
 					break;
@@ -126,6 +127,7 @@ public class  MapStage extends Stage{
 					generateNextStairs(level-1);
 					//调整玩家位置
 					adjustPlayerPos(action);
+					man.setFocus(true);
 					//阴影重置
 //					mapShadow.reSet();
 					break;
@@ -146,6 +148,8 @@ public class  MapStage extends Stage{
 		//生成下一关或者上一关
 		dungeonMap.generateNextDungeon(GameDataHelper.getInstance().getGameMap(nextLevel),nextLevel);
 		level = nextLevel;
+		man.upDateAstarArray();
+		ghost.upDateAstarArray();
 
 	}
 	//调整玩家位置让他不卡墙
