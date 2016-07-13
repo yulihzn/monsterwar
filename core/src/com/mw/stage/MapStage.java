@@ -1,45 +1,27 @@
 package com.mw.stage;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mw.actor.Character;
 import com.mw.actor.MapShadow;
 import com.mw.actor.Player;
 import com.mw.actor.TiledMapActor;
-import com.mw.map.AStarMap;
-import com.mw.map.AStarNode;
 import com.mw.map.DungeonMap;
 import com.mw.utils.Dungeon;
 import com.mw.utils.GameDataHelper;
 import com.mw.utils.KeyBoardController;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class  MapStage extends Stage{
 	private OrthographicCamera camera;
@@ -100,15 +82,20 @@ public class  MapStage extends Stage{
 		addActor(ghost);
 
 		man = new Player(textureAtlas,"man",camera,dungeonMap);
-		man.setTilePosIndex(new GridPoint2(DungeonMap.TILE_SIZE/2,DungeonMap.TILE_SIZE/2));
+		man.setPosition(-100,-100);
 		man.setZIndex(2);
 		man.setPlayerActionListener(playerActionListener);
 		addActor(man);
+		man.setFocus(true);
 		adjustPlayerPos(-1);
 		mapShadow = new MapShadow(camera,DungeonMap.TILE_SIZE<<5,DungeonMap.TILE_SIZE<<5,dungeonMap.getDungeonArray());
 		mapShadow.setPosition(0,0);
 		mapShadow.setZIndex(3);
 		addActor(mapShadow);
+		mapShadow.getSightPosIndex().x = man.getTilePosIndex().x;
+		mapShadow.getSightPosIndex().y = man.getTilePosIndex().y;
+		mapShadow.updateLines();
+
 	}
 
 	private Player.PlayerActionListener playerActionListener = new Player.PlayerActionListener() {
@@ -121,7 +108,7 @@ public class  MapStage extends Stage{
 					adjustPlayerPos(action);
 					man.setFocus(true);
 					//阴影重置
-//					mapShadow.reSet();
+					mapShadow.updateLines();
 					break;
 				case Player.ACTION_UP:
 					generateNextStairs(level-1);
@@ -129,7 +116,7 @@ public class  MapStage extends Stage{
 					adjustPlayerPos(action);
 					man.setFocus(true);
 					//阴影重置
-//					mapShadow.reSet();
+					mapShadow.updateLines();
 					break;
 			}
 		}
@@ -150,7 +137,6 @@ public class  MapStage extends Stage{
 		level = nextLevel;
 		man.upDateAstarArray();
 		ghost.upDateAstarArray();
-
 	}
 	//调整玩家位置让他不卡墙
 	private void adjustPlayerPos(int action){
@@ -195,7 +181,6 @@ public class  MapStage extends Stage{
 				}
 			}
 		}
-
 	}
 	private boolean isBlock(int i,int j){
 		int v = dungeonMap.getDungeonArray()[i][j];

@@ -3,28 +3,23 @@ package com.mw.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.mw.actor.CamImage;
 import com.mw.actor.TestMap;
 import com.mw.base.BaseScreen;
 import com.mw.game.MainGame;
 import com.mw.stage.MapStage;
+import com.mw.stage.UiStage;
 import com.mw.utils.CameraController;
-
-import java.util.Random;
 
 public class MainScreen extends BaseScreen implements Screen{
 	private MapStage mapStage;
@@ -70,7 +65,7 @@ public class MainScreen extends BaseScreen implements Screen{
 		ib_back.setSize(Gdx.graphics.getWidth()/10,Gdx.graphics.getHeight()/10);
 		ib_back.setBounds(BACKPADDING, Gdx.graphics.getHeight()-BACKPADDING-ib_back.getWidth()
 		,Gdx.graphics.getWidth()/10,Gdx.graphics.getHeight()/10);
-		uiStage = new Stage();
+		uiStage = new UiStage(cam);
 		mapStage = new MapStage(cam);
 //		mapStage.setDebugAll(true);
 		ib_back.addListener(new ClickListener() {
@@ -89,7 +84,6 @@ public class MainScreen extends BaseScreen implements Screen{
 		Gdx.input.setInputProcessor(inputMultiplexer);
 
 		uiStage.addActor(ib_back);
-
 
 	}
 	private void elementTouch(String name,float x, float y) {
