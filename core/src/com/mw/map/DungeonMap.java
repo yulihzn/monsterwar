@@ -31,6 +31,8 @@ public class DungeonMap extends TiledMap {
 
     private int level = 0;
 
+    public static final int MESSAGE_GENERATE_SUCCESS = 1;
+
     public DungeonMap(int[][] dungeonArray,int level) {
         this.level = level;
         this.dungeonArray = dungeonArray;
@@ -135,7 +137,7 @@ public class DungeonMap extends TiledMap {
         }
         this.tileLayer.getCell(x,y).getTile().setTextureRegion(textureAtlas.findRegion(name));
         dungeonArray[x][y] = value;
-        GameDataHelper.getInstance().saveGameMap(dungeonArray,level);
+        GameDataHelper.getInstance().saveGameMap(dungeonArray,GameDataHelper.getInstance().getCurrentLevel());
     }
 
     /**
@@ -146,14 +148,20 @@ public class DungeonMap extends TiledMap {
     public void generateNextDungeon(int[][] dungeonArray,int level){
         if(dungeonArray != null){
             this.dungeonArray = dungeonArray;
+            if(onEventChangedListener != null){
+                onEventChangedListener.onEventFinish(MESSAGE_GENERATE_SUCCESS);
+            }
         }else{
             dungeon = new Dungeon();
             dungeon.createDungeon(width,height,5000);
             this.dungeonArray = dungeon.getDungeonArray();
+            if(onEventChangedListener != null){
+                onEventChangedListener.onEventFinish(MESSAGE_GENERATE_SUCCESS);
+            }
         }
         upDateTilesType();
         GameDataHelper.getInstance().setCurrentLevel(level);
-        GameDataHelper.getInstance().saveGameMap(dungeonArray,level);
+        GameDataHelper.getInstance().saveGameMap(this.dungeonArray,level);
     }
 
     public void addCreature(String name,int x,int y){
@@ -177,4 +185,13 @@ public class DungeonMap extends TiledMap {
 
 
     }
+    public interface OnEventChangedListener{
+        void onEventFinish(int type);
+    }
+
+    public void setOnEventChangedListener(OnEventChangedListener onEventChangedListener) {
+        this.onEventChangedListener = onEventChangedListener;
+    }
+
+    private OnEventChangedListener onEventChangedListener;
 }

@@ -27,14 +27,13 @@ public class Player extends Character{
         //上下
         if(path.size() == 1){
             if(getTilePosIndex().x == x&&getTilePosIndex().y==y){
-                if(playerActionListener != null){
-                    playerActionListener.move(ACTION_UP,x,y);
+                if(playerActionListener == null){
+                    return;
                 }
                 if(dungeonMap.getDungeonArray()[x][y] == Dungeon.tileUpStairs){
+                    playerActionListener.move(ACTION_UP,x,y);
                 }else if(dungeonMap.getDungeonArray()[x][y] == Dungeon.tileDownStairs){
-                    if(playerActionListener != null){
-                        playerActionListener.move(ACTION_DOWN,x,y);
-                    }
+                    playerActionListener.move(ACTION_DOWN,x,y);
                 }
             }
         }

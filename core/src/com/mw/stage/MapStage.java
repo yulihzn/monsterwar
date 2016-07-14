@@ -104,19 +104,9 @@ public class  MapStage extends Stage{
 			switch (action){
 				case Player.ACTION_DOWN:
 					generateNextStairs(level+1);
-					//调整玩家位置
-					adjustPlayerPos(action);
-					man.setFocus(true);
-					//阴影重置
-					mapShadow.updateLines();
 					break;
 				case Player.ACTION_UP:
 					generateNextStairs(level-1);
-					//调整玩家位置
-					adjustPlayerPos(action);
-					man.setFocus(true);
-					//阴影重置
-					mapShadow.updateLines();
 					break;
 			}
 		}
@@ -126,17 +116,38 @@ public class  MapStage extends Stage{
 	 * 进入下一层
 	 * @param nextLevel
      */
-	private void generateNextStairs(int nextLevel){
+	private void generateNextStairs(final int nextLevel){
+		int act = Player.ACTION_DOWN;
+		if(nextLevel<level){
+			act = Player.ACTION_UP;
+		}
+		final int action = act;
 		//层数限制
 		if(nextLevel < 0||nextLevel > 20){
 			Gdx.app.log("tips","arrive limit!");
 			return;
 		}
 		//生成下一关或者上一关
+		dungeonMap.setOnEventChangedListener(new DungeonMap.OnEventChangedListener() {
+			@Override
+			public void onEventFinish(int type) {
+				switch (type){
+					case DungeonMap.MESSAGE_GENERATE_SUCCESS:
+						man.upDateAStarArray(dungeonMap);
+						ghost.upDateAStarArray(dungeonMap);
+						level = nextLevel;
+						//调整玩家位置
+						adjustPlayerPos(action);
+						man.setFocus(true);
+						//阴影重置
+						mapShadow.reSet(dungeonMap);
+						mapShadow.updateLines();
+						break;
+				}
+			}
+		});
 		dungeonMap.generateNextDungeon(GameDataHelper.getInstance().getGameMap(nextLevel),nextLevel);
-		level = nextLevel;
-		man.upDateAstarArray();
-		ghost.upDateAstarArray();
+
 	}
 	//调整玩家位置让他不卡墙
 	private void adjustPlayerPos(int action){

@@ -16,6 +16,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
+import com.mw.map.DungeonMap;
 import com.mw.utils.Dungeon;
 import com.mw.utils.GameDataHelper;
 
@@ -67,8 +68,10 @@ public class MapShadow extends Actor{
 
     /**
      * 复位
+     * @param dungeonMap
      */
-    public void reSet(){
+    public void reSet(DungeonMap dungeonMap){
+        this.dungeonArray = dungeonMap.getDungeonArray();
     }
 
     public void initShadowArray(){

@@ -35,7 +35,8 @@ public class Character extends GameMapTile {
         initAStarArray(dungeonMap.getDungeonArray());
     }
 
-    public void upDateAstarArray(){
+    public void upDateAStarArray(DungeonMap dungeonMap){
+        this.dungeonMap = dungeonMap;
         initAStarArray(dungeonMap.getDungeonArray());
     }
 
