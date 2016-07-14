@@ -20,7 +20,7 @@ public class DungeonMap extends TiledMap {
     private TiledMapTileLayer shadowLayer;
     private int width,height;
     private int[][] dungeonArray;
-    public static final int TILE_SIZE = 32;
+    public static final int TILE_SIZE = 16;
     private TextureAtlas textureAtlas;
     private Dungeon dungeon;
     public static String LAYER_FLOOR = "LAYER_FLOOR";
@@ -40,7 +40,7 @@ public class DungeonMap extends TiledMap {
         this.width = TILE_SIZE;
         if(dungeonArray == null){
             dungeon = new Dungeon();
-            dungeon.createDungeon(width,height,5000);
+            dungeon.createDungeon(width,height,1000);
             this.dungeonArray = dungeon.getDungeonArray();
             GameDataHelper.getInstance().setCurrentLevel(level);
         }
@@ -69,9 +69,9 @@ public class DungeonMap extends TiledMap {
         //保存地图
         GameDataHelper.getInstance().saveGameMap(dungeonArray,level);
 
-        this.tileLayer = new TiledMapTileLayer(width,height,TILE_SIZE,TILE_SIZE);
-        this.creatureLayer = new TiledMapTileLayer(width,height,TILE_SIZE,TILE_SIZE);
-        this.shadowLayer = new TiledMapTileLayer(width,height,TILE_SIZE,TILE_SIZE);
+        this.tileLayer = new TiledMapTileLayer(width,height,32,32);
+        this.creatureLayer = new TiledMapTileLayer(width,height,32,32);
+        this.shadowLayer = new TiledMapTileLayer(width,height,32,32);
 
         //去黑线
         for(TiledMapTileSet tmts : getTileSets()){

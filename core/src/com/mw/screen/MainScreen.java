@@ -14,9 +14,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.mw.actor.TestMap;
 import com.mw.base.BaseScreen;
 import com.mw.game.MainGame;
+import com.mw.map.DungeonMap;
 import com.mw.stage.MapStage;
 import com.mw.stage.UiStage;
 import com.mw.utils.CameraController;
@@ -33,9 +33,9 @@ public class MainScreen extends BaseScreen implements Screen{
 	GestureDetector gestureDetector;
 	private long startTime = TimeUtils.nanoTime();
 
-	private float worldWidth = TestMap.xsize*32;
-	private float worldtHeight = TestMap.ysize*32;
-	private float camSize = 32*20;
+	private float worldWidth = DungeonMap.TILE_SIZE*32;
+	private float worldtHeight = DungeonMap.TILE_SIZE*32;
+	private float camSize = 32*16;
 
 	public MainScreen(MainGame mainGame) {
 		super(mainGame);

@@ -325,16 +325,16 @@ public class MapShadow extends Actor{
             iMin = 0;
         }
         int iMax = sightPosIndex.x + sightRadius+1;
-        if(iMax > 32){
-            iMax = 32;
+        if(iMax > DungeonMap.TILE_SIZE){
+            iMax =  DungeonMap.TILE_SIZE;
         }
         int jMin = sightPosIndex.y - sightRadius;
         if(jMin < 0){
             jMin = 0;
         }
         int jMax = sightPosIndex.y + sightRadius+1;
-        if(jMax > 32){
-            jMax = 32;
+        if(jMax >  DungeonMap.TILE_SIZE){
+            jMax =  DungeonMap.TILE_SIZE;
         }
         for (int i = iMin; i < iMax; i++) {
             for (int j = jMin; j < jMax; j++) {

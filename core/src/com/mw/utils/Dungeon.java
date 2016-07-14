@@ -4,7 +4,12 @@ package com.mw.utils;
 // Designed by Mike Andersen
 // Java version by "Solarnus"
 
+import com.badlogic.gdx.math.GridPoint2;
+
+import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 public class Dungeon {
@@ -200,11 +205,24 @@ public class Dungeon {
         int newy = 0;
         int ways = 0; //from how many directions we can reach the random spot from
         int state = 0; //the state the loop is in, start with the stairs
+        int newindex = 0;
+        //此处修改了出口入口的生成，随机抽取坐标，判断是否可以生成，并将不可用坐标从随机坐标列表中舍弃
 
+        List<GridPoint2> indexList = new ArrayList<GridPoint2>();
+        for (int i = 1; i < xsize; i++) {
+            for (int j = 1; j < ysize-1; j++) {
+                indexList.add(new GridPoint2(i,j));
+            }
+        }
         while (state != 10) {
-            for (int testing = 0; testing < 1000; testing++) {
+            while (indexList.size()!=0) {
+                newindex = getRand(0,indexList.size()-1);
                 newx = getRand(1, xsize-1);
                 newy = getRand(1, ysize-2); //cheap bugfix, pulls down newy to 0<y<24, from 0<y<25
+                newx = indexList.get(newindex).x;
+                newy = indexList.get(newindex).y;
+                indexList.remove(newindex);
+
                 //System.out.println("x: " + newx + "\ty: " + newy);
                 ways = 4; //the lower the better
 
@@ -234,7 +252,7 @@ public class Dungeon {
                 }
 
                 if (state == 0) {
-                    if (ways == 0) {
+                    if (ways < 3) {
                         //we're in state 0, let's place a "upstairs" thing
                         setCell(newx, newy, tileUpStairs);
                         state = 1;
@@ -243,7 +261,7 @@ public class Dungeon {
                 }
 
                 else if (state == 1) {
-                    if (ways == 0) {
+                    if (ways < 3) {
                         //state 1, place a "downstairs"
                         setCell(newx, newy, tileDownStairs);
                         state = 10;
