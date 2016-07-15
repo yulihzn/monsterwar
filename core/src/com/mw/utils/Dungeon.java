@@ -94,8 +94,8 @@ public class Dungeon {
          *******************************************************************************/
 
         //start with making a room in the middle, which we can start building upon
-        //从中间开始建造
-        makeRoom(xsize/2, ysize/2, 8, 6, getRand(0,3));
+        //从中间开始建造这里的while循环防止房间生成失败，失败原因还在查找
+        while(!makeRoom(xsize/2, ysize/2, 8, 6, getRand(0,3)));
 
         //keep count of the number of "objects" we've made
         int currentFeatures = 1; //+1 for the first room we just made
@@ -273,6 +273,7 @@ public class Dungeon {
 
         //all done with the map generation, tell the user about it and finish
         System.out.println(msgNumObjects + currentFeatures);
+        showDungeon();
 
     }
 
