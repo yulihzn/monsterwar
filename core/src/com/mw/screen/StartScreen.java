@@ -55,7 +55,7 @@ public class StartScreen extends BaseScreen implements Screen{
 			
 		});
 		//test
-		mainGame.setScreen(new TransferScreen(mainGame,new MainScreen(mainGame)));
+//		mainGame.setScreen(new TransferScreen(mainGame,new MainScreen(mainGame)));
 		stage.addActor(background);
 		stage.addActor(ib_start);
 		Gdx.input.setInputProcessor(stage);

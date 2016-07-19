@@ -18,6 +18,7 @@ import com.mw.actor.MapShadow;
 import com.mw.actor.Player;
 import com.mw.actor.TiledMapActor;
 import com.mw.map.DungeonMap;
+import com.mw.screen.MainScreen;
 import com.mw.utils.Dungeon;
 import com.mw.utils.GameDataHelper;
 import com.mw.utils.KeyBoardController;
@@ -46,7 +47,7 @@ public class  MapStage extends Stage{
 		this.gameEventListener = gameEventListener;
 	}
 
-	public MapStage(OrthographicCamera camera){
+	public MapStage(OrthographicCamera camera, MainScreen mainScreen){
 		this.camera = camera;
 		textureAtlas = new TextureAtlas(Gdx.files.internal("tiles.pack"));
 /*		//加载地图资源

@@ -1,12 +1,21 @@
 package com.mw.stage;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.mw.screen.MainScreen;
+import com.mw.screen.StartScreen;
+import com.mw.screen.TransferScreen;
 import com.mw.utils.GameDataHelper;
 
 
@@ -18,15 +27,37 @@ public class UiStage extends Stage {
     private FreeTypeFontGenerator generator;
     private FreeTypeFontGenerator.FreeTypeFontParameter fontParameter;
     private BitmapFont bitmapFont;
-    private String level = "关卡Level:0123456789";
+    private String level = "关卡:0123456789";
 
-    public UiStage(OrthographicCamera camera) {
+    private ImageButton ib_back;
+    private TextureAtlas atlas;
+    private static final float BACKPADDING = 10f;
+
+    public UiStage(OrthographicCamera camera, final MainScreen mainScreen) {
         this.camera = camera;
         generator = new FreeTypeFontGenerator(Gdx.files.internal("data/font.ttf"));
         fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         fontParameter.characters = level;
         fontParameter.size = 20;
         bitmapFont = generator.generateFont(fontParameter);
+
+        atlas = new TextureAtlas(Gdx.files.internal("images/buttons.pack"));
+        TextureRegionDrawable imageUp = new TextureRegionDrawable(atlas.findRegion("button_back_normal"));
+        TextureRegionDrawable imageDown = new TextureRegionDrawable(atlas.findRegion("button_back_pressed"));
+        ib_back = new ImageButton(imageUp, imageDown);
+        ib_back.setSize(Gdx.graphics.getWidth()/10,Gdx.graphics.getHeight()/10);
+        ib_back.setBounds(BACKPADDING, Gdx.graphics.getHeight()-BACKPADDING-ib_back.getWidth()
+                ,Gdx.graphics.getWidth()/10,Gdx.graphics.getHeight()/10);
+        ib_back.addListener(new ClickListener() {
+
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                mainScreen.getMainGame().setScreen(new TransferScreen(mainScreen.getMainGame(), new StartScreen(mainScreen.getMainGame())));
+                super.clicked(event, x, y);
+            }
+
+        });
+        addActor(ib_back);
     }
 
     @Override
@@ -38,7 +69,7 @@ public class UiStage extends Stage {
     public void draw() {
         super.draw();
         getBatch().begin();
-        bitmapFont.draw(getBatch(),"关卡Level:"+GameDataHelper.getInstance().getCurrentLevel(),10,20+bitmapFont.getCapHeight());
+        bitmapFont.draw(getBatch(),"关卡:"+GameDataHelper.getInstance().getCurrentLevel(),10,20+bitmapFont.getCapHeight());
         getBatch().end();
 
     }

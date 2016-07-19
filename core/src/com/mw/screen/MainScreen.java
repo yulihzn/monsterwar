@@ -5,14 +5,9 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mw.base.BaseScreen;
 import com.mw.game.MainGame;
@@ -24,9 +19,6 @@ import com.mw.utils.CameraController;
 public class MainScreen extends BaseScreen implements Screen{
 	private MapStage mapStage;
 	private Stage uiStage;
-	private ImageButton ib_back;
-	private TextureAtlas atlas;
-	private static final float BACKPADDING = 10f;
 
 	private OrthographicCamera cam;
 	CameraController controller;
@@ -37,9 +29,15 @@ public class MainScreen extends BaseScreen implements Screen{
 	private float worldtHeight = DungeonMap.TILE_SIZE*32;
 	private float camSize = 32*16;
 
+	private MainGame mainGame;
+
+	public MainGame getMainGame() {
+		return mainGame;
+	}
+
 	public MainScreen(MainGame mainGame) {
 		super(mainGame);
-
+		this.mainGame = mainGame;
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
 		cam = new OrthographicCamera(camSize, camSize*(w/h));
@@ -58,32 +56,14 @@ public class MainScreen extends BaseScreen implements Screen{
 
 	@Override
 	public void show() {
-		atlas = new TextureAtlas(Gdx.files.internal("images/buttons.pack"));
-		TextureRegionDrawable imageUp = new TextureRegionDrawable(atlas.findRegion("button_back_normal"));
-		TextureRegionDrawable imageDown = new TextureRegionDrawable(atlas.findRegion("button_back_pressed"));
-		ib_back = new ImageButton(imageUp, imageDown);
-		ib_back.setSize(Gdx.graphics.getWidth()/10,Gdx.graphics.getHeight()/10);
-		ib_back.setBounds(BACKPADDING, Gdx.graphics.getHeight()-BACKPADDING-ib_back.getWidth()
-		,Gdx.graphics.getWidth()/10,Gdx.graphics.getHeight()/10);
-		uiStage = new UiStage(cam);
-		mapStage = new MapStage(cam);
+		uiStage = new UiStage(cam,this);
+		mapStage = new MapStage(cam,this);
 //		mapStage.setDebugAll(true);
-		ib_back.addListener(new ClickListener() {
-
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				mainGame.setScreen(new TransferScreen(mainGame, new StartScreen(mainGame)));
-				super.clicked(event, x, y);
-			}
-
-		});
 		InputMultiplexer inputMultiplexer = new InputMultiplexer();
 		inputMultiplexer.addProcessor(gestureDetector);
 		inputMultiplexer.addProcessor(uiStage);
 		inputMultiplexer.addProcessor(mapStage);
 		Gdx.input.setInputProcessor(inputMultiplexer);
-
-		uiStage.addActor(ib_back);
 
 	}
 	private void elementTouch(String name,float x, float y) {
