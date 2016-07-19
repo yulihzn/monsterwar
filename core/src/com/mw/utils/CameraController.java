@@ -36,6 +36,11 @@ public class CameraController implements GestureDetector.GestureListener{
     }
 
     @Override
+    public void pinchStop() {
+
+    }
+
+    @Override
     public boolean longPress(float x, float y) {
         Gdx.app.log("GestureDetectorTest", "long press at " + x + ", " + y);
         return false;

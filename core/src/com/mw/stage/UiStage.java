@@ -17,20 +17,16 @@ public class UiStage extends Stage {
     private OrthographicCamera camera;
     private FreeTypeFontGenerator generator;
     private FreeTypeFontGenerator.FreeTypeFontParameter fontParameter;
-    private Label label_level;
+    private BitmapFont bitmapFont;
+    private String level = "关卡Level:0123456789";
 
     public UiStage(OrthographicCamera camera) {
         this.camera = camera;
-        generator = new FreeTypeFontGenerator(Gdx.files.internal("data/pixelFont.ttf"));
+        generator = new FreeTypeFontGenerator(Gdx.files.internal("data/msyhl.ttc"));
         fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        fontParameter.size = 40;
-        BitmapFont bitmapFont = generator.generateFont(fontParameter);
-        Label.LabelStyle labelStyle = new Label.LabelStyle(bitmapFont, Color.WHITE);
-        label_level = new Label("Level:",labelStyle);
-        label_level.setName("levelLabel");
-        label_level.setPosition(10,20);
-        addActor(label_level);
-
+        fontParameter.characters = level;
+        fontParameter.size = 20;
+        bitmapFont = generator.generateFont(fontParameter);
     }
 
     @Override
@@ -41,10 +37,10 @@ public class UiStage extends Stage {
     @Override
     public void draw() {
         super.draw();
-        Label label = (Label) getRoot().findActor("levelLabel");
-        label.setText("Level:" + GameDataHelper.getInstance().getCurrentLevel());
-        // 更新X值以保证显示位置正确性
-        label.setX(label.getWidth());
+        getBatch().begin();
+        bitmapFont.draw(getBatch(),"关卡Level:"+GameDataHelper.getInstance().getCurrentLevel(),10,20+bitmapFont.getCapHeight());
+        getBatch().end();
+
     }
 
     @Override
