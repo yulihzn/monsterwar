@@ -22,7 +22,7 @@ public class UiStage extends Stage {
 
     public UiStage(OrthographicCamera camera) {
         this.camera = camera;
-        generator = new FreeTypeFontGenerator(Gdx.files.internal("data/msyhl.ttc"));
+        generator = new FreeTypeFontGenerator(Gdx.files.internal("data/font.ttf"));
         fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         fontParameter.characters = level;
         fontParameter.size = 20;
