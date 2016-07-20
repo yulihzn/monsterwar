@@ -40,8 +40,9 @@ public class MainScreen extends BaseScreen implements Screen{
 		this.mainGame = mainGame;
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
-		cam = new OrthographicCamera(camSize, camSize*(w/h));
+		cam = new OrthographicCamera(camSize, camSize*(h/w));
 		cam.position.set(worldWidth / 2f, worldtHeight / 2f, 0);
+		cam.zoom = 1.5f;
 		cam.update();
 		controller = new CameraController(cam);
 		gestureDetector = new GestureDetector(controller);
@@ -80,11 +81,13 @@ public class MainScreen extends BaseScreen implements Screen{
 			startTime = TimeUtils.nanoTime();
 		}
 
-		cam.zoom = MathUtils.clamp(cam.zoom, 0.1f, worldWidth/cam.viewportWidth);
-		float effectiveViewportWidth = cam.viewportWidth * cam.zoom;
-		float effectiveViewportHeight = cam.viewportHeight * cam.zoom;
-		cam.position.x = MathUtils.clamp(cam.position.x, effectiveViewportWidth / 2f, worldWidth - effectiveViewportWidth / 2f);
-		cam.position.y = MathUtils.clamp(cam.position.y, effectiveViewportHeight / 2f, worldWidth - effectiveViewportHeight / 2f);
+		cam.zoom = MathUtils.clamp(cam.zoom, 0.1f, worldWidth/cam.viewportWidth*2);
+//		float effectiveViewportWidth = cam.viewportWidth * cam.zoom;
+//		float effectiveViewportHeight = cam.viewportHeight * cam.zoom;
+//		cam.position.x = MathUtils.clamp(cam.position.x, effectiveViewportWidth / 2f, worldWidth - effectiveViewportWidth / 2f);
+//		cam.position.y = MathUtils.clamp(cam.position.y, effectiveViewportHeight / 2f, worldtHeight - effectiveViewportHeight / 2f);
+		cam.position.x = MathUtils.clamp(cam.position.x, 0, worldWidth);
+		cam.position.y = MathUtils.clamp(cam.position.y, 0, worldtHeight);
 		cam.update();
 
 		mapStage.act(Gdx.graphics.getDeltaTime());
@@ -97,8 +100,12 @@ public class MainScreen extends BaseScreen implements Screen{
 
 	@Override
 	public void resize(int width, int height) {
-		cam.viewportWidth = camSize;
-		cam.viewportHeight = camSize * height/width;
+		int ratio = height;
+		if(width > height){
+			ratio = width;
+		}
+//		cam.viewportWidth = camSize;
+//		cam.viewportHeight = camSize * height/width;
 		cam.update();
 		mapStage.getViewport().update(width,height,true);
 		uiStage.getViewport().update(width,height,true);

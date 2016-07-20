@@ -288,6 +288,7 @@ public class  MapStage extends Stage{
 		renderer.setView(camera);
 
 		if (TimeUtils.nanoTime() - roundTime >= roundSecond) {
+			roundTime = TimeUtils.nanoTime();
 			if(man.isMoving()){
 				mapShadow.updateLines();
 			}

@@ -4,6 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -13,6 +16,7 @@ import com.mw.map.DungeonMap;
 import com.mw.stage.MapStage;
 import com.mw.utils.Dungeon;
 
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,7 +102,7 @@ public class Character extends GameMapTile {
 
     }
     //移动的逻辑
-    protected void moveLogic(int x, int y) {
+    protected void moveLogic(final int x, final int y) {
         //碰到门停下来，再次穿过打开
         if(dungeonMap.getDungeonArray()[x][y] == Dungeon.tileDoor){
             stopMoving();
@@ -108,7 +112,14 @@ public class Character extends GameMapTile {
             }
 
         }else{
-            setTilePosIndex(new GridPoint2(x,y));
+            MoveToAction action = Actions.moveTo(x<<5,y<<5,0.05f);
+            Actions.sequence(action,Actions.run(new Runnable() {
+                @Override
+                public void run() {
+                    setTilePosIndex(new GridPoint2(x,y));
+                }
+            }));
+            addAction(action);
         }
     }
 
