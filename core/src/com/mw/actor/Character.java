@@ -9,7 +9,9 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.Timer;
 import com.mw.map.AStarMap;
 import com.mw.map.AStarNode;
 import com.mw.map.DungeonMap;
@@ -26,16 +28,17 @@ import java.util.List;
 public class Character extends GameMapTile {
     protected AStarMap aStarMap;
     protected List<AStarNode> path = new ArrayList<AStarNode>();//路径
-    protected int indexAstarNode = -1;
     protected boolean isMoving = false;//是否移动
     protected long roundTime = TimeUtils.nanoTime();//回合时间用来和时间间隔对比
     protected boolean isFocus = false;//是否镜头跟随
     protected OrthographicCamera camera;
     protected DungeonMap dungeonMap;
+    protected SequenceAction walkSequenceAction;
     public Character(TextureAtlas textureAtlas, String regionName, OrthographicCamera cam,DungeonMap dungeonMap) {
         super(textureAtlas, regionName, cam);
         this.dungeonMap = dungeonMap;
         this.camera = cam;
+        walkSequenceAction = Actions.sequence();//行走序列动画
         initAStarArray(dungeonMap.getDungeonArray());
     }
 
@@ -69,62 +72,32 @@ public class Character extends GameMapTile {
         }
         aStarMap.loadData(aStarData,1,0);
     }
-    private void moveInMap(){
-        //每一个间隔移动一次
-        if (TimeUtils.nanoTime() - roundTime >= MapStage.roundSecond) {
-            roundTime = TimeUtils.nanoTime();
-            if(isMoving){//是否正在移动
-                indexAstarNode++;//下标+1
-                //下标重置返回，停止移动
-                if(indexAstarNode > path.size()-1){
-                    indexAstarNode = -1;
-                    isMoving = false;
-                }
-                //当下标走完归零，如果路径长度大于1返回，如果小于等于1说明是点击自身
-                if(indexAstarNode == -1){
-                    return;
-                }
-                //按list设置每一步的位置
-                try{
-                    synchronized (path){
-                        AStarNode n = path.get(indexAstarNode);
-                        moveLogic(n.getX(),n.getY());
-                    }
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-        }
-        if(isFocus){
-            isFocus = false;
-            camera.position.set(getX(),getY(), 0);
-        }
-
-    }
     //移动的逻辑
-    protected void moveLogic(final int x, final int y) {
-        //碰到门停下来，再次穿过打开
-        if(dungeonMap.getDungeonArray()[x][y] == Dungeon.tileDoor){
-            stopMoving();
-            if(indexAstarNode == 0||indexAstarNode == 1){
-                dungeonMap.getDungeonArray()[x][y]=Dungeon.tileCorridor;
-                dungeonMap.changeTileType(Dungeon.tileCorridor,x,y);
-            }
-
-        }else{
-            MoveToAction action = Actions.moveTo(x<<5,y<<5,0.05f);
-            Actions.sequence(action,Actions.run(new Runnable() {
-                @Override
-                public void run() {
-                    setTilePosIndex(new GridPoint2(x,y));
+    protected void moveLogic(final int curPos) {
+        if(curPos >= path.size() && curPos < 0){
+            return;
+        }
+        final int x = path.get(curPos).getX();
+        final int y = path.get(curPos).getY();
+        //当列表的下一条是门的话
+        if(curPos+1 < path.size()){
+            final int nextX = path.get(curPos+1).getX();
+            final int nextY = path.get(curPos+1).getY();
+            //碰到门停下来，再次穿过打开
+            if(dungeonMap.getDungeonArray()[nextX][nextY] == Dungeon.tileDoor){
+                stopMoving();
+                if(curPos==0||curPos==1){
+                    dungeonMap.getDungeonArray()[nextX][nextY]=Dungeon.tileCorridor;
+                    dungeonMap.changeTileType(Dungeon.tileCorridor,nextX,nextY);
                 }
-            }));
-            addAction(action);
+
+            }
         }
     }
 
     public void stopMoving(){
         isMoving = false;
+        walkSequenceAction.reset();
     }
 
     public boolean isMoving() {
@@ -145,8 +118,20 @@ public class Character extends GameMapTile {
 
     @Override
     public void act(float delta) {
-        moveInMap();
         super.act(delta);
+        //镜头延迟跟随（待修改）
+        if(isFocus){
+            isFocus = false;
+            camera.position.set(getX(),getY(), 0);
+            final float disX = getX() - camera.position.x;
+            final float disY = getY() - camera.position.y;
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    camera.translate(disX/100,disY/100);
+                }
+            },0.1f,0.01f,100).run();
+        }
     }
 
     public void findWays(int endX, int endY){
@@ -154,8 +139,33 @@ public class Character extends GameMapTile {
         aStarMap.setTarget(new AStarNode(endX,endY));
          synchronized (path){
             path = aStarMap.find();
-            indexAstarNode = -1;
             isMoving = true;
         }
+        walkSequenceAction.reset();
+        //遍历节点添加移动动画
+        for (int i = 0; i < path.size(); i++) {
+            final int x = path.get(i).getX();
+            final int y = path.get(i).getY();
+            final int pos = i;
+            MoveToAction action = Actions.moveTo(x<<5,y<<5,0.1f);
+            //添加移动动画
+            walkSequenceAction.addAction(action);
+            //添加动画完成事件
+            walkSequenceAction.addAction(Actions.run(new Runnable() {
+                @Override
+                public void run() {
+                    setTilePosIndex(new GridPoint2(x,y));
+                    moveLogic(pos);
+                }
+            }));
+        }
+        //移动结束
+        walkSequenceAction.addAction(Actions.run(new Runnable() {
+            @Override
+            public void run() {
+                isMoving = false;
+            }
+        }));
+        addAction(walkSequenceAction);
     }
 }

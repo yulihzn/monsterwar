@@ -22,9 +22,11 @@ public class Player extends Character{
     }
 
     @Override
-    protected void moveLogic(int x, int y) {
-        super.moveLogic(x, y);
+    protected void moveLogic(int curPos) {
+        super.moveLogic(curPos);
         //上下
+        final int x = path.get(curPos).getX();
+        final int y = path.get(curPos).getY();
         if(path.size() == 1){
             if(getTilePosIndex().x == x&&getTilePosIndex().y==y){
                 if(playerActionListener == null){

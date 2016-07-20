@@ -10,6 +10,7 @@ public class KeyBoardController {
     public static final int DOWN = 2;
     public static final int LEFT = 3;
     public static final int RIGHT = 4;
+    public static final int SPACE = 5;
     private static KeyBoardController instance = new KeyBoardController();
     private KeyBoardController (){}
     public static KeyBoardController getInstance() {
@@ -33,6 +34,9 @@ public class KeyBoardController {
             case Input.Keys.D:
             case Input.Keys.RIGHT:
                 type = RIGHT;
+                break;
+            case Input.Keys.SPACE:
+                type = SPACE;
                 break;
         }
         return type;

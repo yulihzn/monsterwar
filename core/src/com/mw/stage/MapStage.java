@@ -253,6 +253,9 @@ public class  MapStage extends Stage{
 				man.setFocus(true);
 				man.findWays(endX,endY);
 				break;
+			case KeyBoardController.SPACE:
+				man.findWays(endX,endY);
+				break;
 
 		}
 		return super.keyDown(keyCode);
