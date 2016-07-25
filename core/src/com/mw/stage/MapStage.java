@@ -13,15 +13,18 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.mw.actor.Character;
+import com.mw.actor.CharacterActor;
 import com.mw.actor.MapShadow;
-import com.mw.actor.Player;
+import com.mw.actor.PlayerActor;
 import com.mw.actor.TiledMapActor;
+import com.mw.logic.Ghost;
+import com.mw.logic.Player;
 import com.mw.map.DungeonMap;
 import com.mw.screen.MainScreen;
 import com.mw.utils.Dungeon;
 import com.mw.utils.GameDataHelper;
 import com.mw.utils.KeyBoardController;
+import com.mw.factory.CharacterFactory;
 
 
 public class  MapStage extends Stage{
@@ -36,7 +39,7 @@ public class  MapStage extends Stage{
 	private TiledMapRenderer renderer;
 
 	private Player man;
-	private Character ghost;
+	private Ghost ghost;
 	private MapShadow mapShadow;
 
 	private int level = 0;
@@ -77,36 +80,40 @@ public class  MapStage extends Stage{
 			createActorsForLayer(tiledLayer);
 		}
 		//添加角色
-		ghost = new Character(textureAtlas,"ghost",camera,dungeonMap);
-		ghost.setTilePosIndex(new GridPoint2(DungeonMap.TILE_SIZE/2,DungeonMap.TILE_SIZE/2));
-		ghost.setZIndex(1);
-		addActor(ghost);
+		ghost = new Ghost();
+		CharacterActor ghostActor = new CharacterActor(textureAtlas,"ghost",camera,dungeonMap);
+		ghostActor.setTilePosIndex(new GridPoint2(DungeonMap.TILE_SIZE/2,DungeonMap.TILE_SIZE/2));
+		ghostActor.setZIndex(1);
+		ghost.setActor(ghostActor);
+		addActor(ghostActor);
 
-		man = new Player(textureAtlas,"man",camera,dungeonMap);
-		man.setPosition(-100,-100);
-		man.setZIndex(2);
-		man.setPlayerActionListener(playerActionListener);
-		addActor(man);
-		man.setFocus(true);
+		man = CharacterFactory.getInstance().getPlayer();
+		PlayerActor manActor = new PlayerActor(textureAtlas,"man",camera,dungeonMap);
+		manActor.setPosition(-100,-100);
+		manActor.setZIndex(2);
+		manActor.setPlayerActionListener(playerActionListener);
+		man.setActor(manActor);
+		addActor(manActor);
+		man.getActor().setFocus(true);
 		adjustPlayerPos(-1);
 		mapShadow = new MapShadow(camera,DungeonMap.TILE_SIZE<<5,DungeonMap.TILE_SIZE<<5,dungeonMap.getDungeonArray());
 		mapShadow.setPosition(0,0);
 		mapShadow.setZIndex(3);
 		addActor(mapShadow);
-		mapShadow.getSightPosIndex().x = man.getTilePosIndex().x;
-		mapShadow.getSightPosIndex().y = man.getTilePosIndex().y;
+		mapShadow.getSightPosIndex().x = man.getActor().getTilePosIndex().x;
+		mapShadow.getSightPosIndex().y = man.getActor().getTilePosIndex().y;
 		mapShadow.updateLines();
 
 	}
 
-	private Player.PlayerActionListener playerActionListener = new Player.PlayerActionListener() {
+	private PlayerActor.PlayerActionListener playerActionListener = new PlayerActor.PlayerActionListener() {
 		@Override
 		public void move(int action, int x, int y) {
 			switch (action){
-				case Player.ACTION_DOWN:
+				case PlayerActor.ACTION_DOWN:
 					generateNextStairs(level+1);
 					break;
-				case Player.ACTION_UP:
+				case PlayerActor.ACTION_UP:
 					generateNextStairs(level-1);
 					break;
 			}
@@ -118,9 +125,9 @@ public class  MapStage extends Stage{
 	 * @param nextLevel
      */
 	private void generateNextStairs(final int nextLevel){
-		int act = Player.ACTION_DOWN;
+		int act = PlayerActor.ACTION_DOWN;
 		if(nextLevel<level){
-			act = Player.ACTION_UP;
+			act = PlayerActor.ACTION_UP;
 		}
 		final int action = act;
 		//层数限制
@@ -134,12 +141,12 @@ public class  MapStage extends Stage{
 			public void onEventFinish(int type) {
 				switch (type){
 					case DungeonMap.MESSAGE_GENERATE_SUCCESS:
-						man.upDateAStarArray(dungeonMap);
-						ghost.upDateAStarArray(dungeonMap);
+						man.getActor().upDateAStarArray(dungeonMap);
+						ghost.getActor().upDateAStarArray(dungeonMap);
 						level = nextLevel;
 						//调整玩家位置
 						adjustPlayerPos(action);
-						man.setFocus(true);
+						man.getActor().setFocus(true);
 						//阴影重置
 						mapShadow.reSet(dungeonMap);
 						mapShadow.updateLines();
@@ -153,14 +160,14 @@ public class  MapStage extends Stage{
 	//调整玩家位置让他不卡墙
 	private void adjustPlayerPos(int action){
 		int type = -1;
-		if(GameDataHelper.getInstance().getCharacterPos(man.getRegionName()).x == -1){
+		if(GameDataHelper.getInstance().getCharacterPos(man.getActor().getRegionName()).x == -1){
 			type = -2;
 		}
 		switch (action){
-			case Player.ACTION_DOWN:
+			case PlayerActor.ACTION_DOWN:
 				type = Dungeon.tileUpStairs;
 				break;
-			case Player.ACTION_UP:
+			case PlayerActor.ACTION_UP:
 				type = Dungeon.tileDownStairs;
 				break;
 			default:
@@ -173,21 +180,21 @@ public class  MapStage extends Stage{
 			for (int i = 0; i < dungeonMap.getDungeonArray().length; i++) {
 				for (int j = 0; j < dungeonMap.getDungeonArray()[0].length; j++) {
 					if(dungeonMap.getDungeonArray()[i][j]==type){
-						man.setTilePosIndex(new GridPoint2(i,j));
+						man.getActor().setTilePosIndex(new GridPoint2(i,j));
 						i = dungeonMap.getDungeonArray().length;
 						break;
 					}
 				}
 			}
 		}else{
-			man.setTilePosIndex(GameDataHelper.getInstance().getCharacterPos(man.getRegionName()));
+			man.getActor().setTilePosIndex(GameDataHelper.getInstance().getCharacterPos(man.getActor().getRegionName()));
 		}
 		for(int i = -1;i < 2;i++){
 			for(int j = -1;j < 2;j++){
-				if(!isBlock(ghost.getTilePosIndex().x+i,ghost.getTilePosIndex().y+j)){
-					if(!(ghost.getTilePosIndex().x+i == man.getTilePosIndex().x
-							&&ghost.getTilePosIndex().y+j == man.getTilePosIndex().y))
-						ghost.findWays(ghost.getTilePosIndex().x+i,ghost.getTilePosIndex().y+j);
+				if(!isBlock(ghost.getActor().getTilePosIndex().x+i,ghost.getActor().getTilePosIndex().y+j)){
+					if(!(ghost.getActor().getTilePosIndex().x+i == man.getActor().getTilePosIndex().x
+							&&ghost.getActor().getTilePosIndex().y+j == man.getActor().getTilePosIndex().y))
+						ghost.getActor().findWays(ghost.getActor().getTilePosIndex().x+i,ghost.getActor().getTilePosIndex().y+j);
 					i = 2;
 					break;
 				}
@@ -221,40 +228,40 @@ public class  MapStage extends Stage{
 	@Override
 	public boolean keyDown(int keyCode) {
 		Gdx.app.log("keyDown","keyCode="+keyCode);
-		int startX=man.getTilePosIndex().x;
-		int startY=man.getTilePosIndex().y;
+		int startX=man.getActor().getTilePosIndex().x;
+		int startY=man.getActor().getTilePosIndex().y;
 		int endX=startX;int endY=startY;
 		switch (KeyBoardController.getInstance().getKeyType(keyCode)){
 			case KeyBoardController.UP:
 				if(endY+1<DungeonMap.TILE_SIZE){
 					endY+=1;
 				}
-				man.setFocus(true);
-				man.findWays(endX,endY);
+				man.getActor().setFocus(true);
+				man.getActor().findWays(endX,endY);
 				break;
 			case KeyBoardController.DOWN:
 				if(endY-1>=0){
 					endY-=1;
 				}
-				man.setFocus(true);
-				man.findWays(endX,endY);
+				man.getActor().setFocus(true);
+				man.getActor().findWays(endX,endY);
 				break;
 			case KeyBoardController.LEFT:
 				if(endX-1>=0){
 					endX-=1;
 				}
-				man.setFocus(true);
-				man.findWays(endX,endY);
+				man.getActor().setFocus(true);
+				man.getActor().findWays(endX,endY);
 				break;
 			case KeyBoardController.RIGHT:
 				if(endX+1<DungeonMap.TILE_SIZE){
 					endX+=1;
 				}
-				man.setFocus(true);
-				man.findWays(endX,endY);
+				man.getActor().setFocus(true);
+				man.getActor().findWays(endX,endY);
 				break;
 			case KeyBoardController.SPACE:
-				man.findWays(endX,endY);
+				man.getActor().findWays(endX,endY);
 				break;
 
 		}
@@ -279,12 +286,12 @@ public class  MapStage extends Stage{
 
 	@Override
 	public void act (float delta) {
-		if(man.getTilePosIndex().x != mapShadow.getSightPosIndex().x
-				||man.getTilePosIndex().y != mapShadow.getSightPosIndex().y){
+		if(man.getActor().getTilePosIndex().x != mapShadow.getSightPosIndex().x
+				||man.getActor().getTilePosIndex().y != mapShadow.getSightPosIndex().y){
 			mapShadow.isChangedPos = true;
 		}
-		mapShadow.getSightPosIndex().x = man.getTilePosIndex().x;
-		mapShadow.getSightPosIndex().y = man.getTilePosIndex().y;
+		mapShadow.getSightPosIndex().x = man.getActor().getTilePosIndex().x;
+		mapShadow.getSightPosIndex().y = man.getActor().getTilePosIndex().y;
 		//同步摄像头
 		this.getViewport().setCamera(camera);
 		//地图绘制设置摄像头
@@ -292,10 +299,10 @@ public class  MapStage extends Stage{
 
 		if (TimeUtils.nanoTime() - roundTime >= roundSecond) {
 			roundTime = TimeUtils.nanoTime();
-			if(man.isMoving()){
+			if(man.getActor().isMoving()){
 				mapShadow.updateLines();
 			}
-
+			man.update(delta);
 		}
 
 		super.act(delta);
@@ -330,7 +337,7 @@ public class  MapStage extends Stage{
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
 			System.out.println(actor.getX()+","+actor.getY() +"value = "+actor.getCell().getTile().getId()+ " has been clicked.");
-			man.findWays(actor.getTilePosIndex().x,actor.getTilePosIndex().y);
+			man.getActor().findWays(actor.getTilePosIndex().x,actor.getTilePosIndex().y);
 //			ghost.findWays(man.getTilePosIndex().x,man.getTilePosIndex().y);
 		}
 	}

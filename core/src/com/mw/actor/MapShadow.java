@@ -193,7 +193,7 @@ public class MapShadow extends Actor{
             floatArray.clear();
             while (next >= 0){
                 if(isChangedPos){
-                    Gdx.app.log("next",next+"");
+//                    Gdx.app.log("next",next+"");
                 }
                 EdgeLine en = lines.get(next);
                 floatArray.add(ed.getEnd().x);

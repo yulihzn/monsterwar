@@ -1,12 +1,8 @@
 package com.mw.actor;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
@@ -15,26 +11,25 @@ import com.badlogic.gdx.utils.Timer;
 import com.mw.map.AStarMap;
 import com.mw.map.AStarNode;
 import com.mw.map.DungeonMap;
-import com.mw.stage.MapStage;
 import com.mw.utils.Dungeon;
 
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by BanditCat on 2016/6/7.
  */
-public class Character extends GameMapTile {
+public class CharacterActor extends GameMapTile {
     protected AStarMap aStarMap;
     protected List<AStarNode> path = new ArrayList<AStarNode>();//路径
     protected boolean isMoving = false;//是否移动
+    protected boolean isAttack = false;//是否攻击
     protected long roundTime = TimeUtils.nanoTime();//回合时间用来和时间间隔对比
     protected boolean isFocus = false;//是否镜头跟随
     protected OrthographicCamera camera;
     protected DungeonMap dungeonMap;
     protected SequenceAction walkSequenceAction;
-    public Character(TextureAtlas textureAtlas, String regionName, OrthographicCamera cam,DungeonMap dungeonMap) {
+    public CharacterActor(TextureAtlas textureAtlas, String regionName, OrthographicCamera cam, DungeonMap dungeonMap) {
         super(textureAtlas, regionName, cam);
         this.dungeonMap = dungeonMap;
         this.camera = cam;
@@ -100,6 +95,14 @@ public class Character extends GameMapTile {
         walkSequenceAction.reset();
     }
 
+    public boolean isAttack() {
+        return isAttack;
+    }
+
+    public void setAttack(boolean attack) {
+        isAttack = attack;
+    }
+
     public boolean isMoving() {
         return isMoving;
     }
@@ -163,7 +166,7 @@ public class Character extends GameMapTile {
         walkSequenceAction.addAction(Actions.run(new Runnable() {
             @Override
             public void run() {
-                isMoving = false;
+                stopMoving();
             }
         }));
         addAction(walkSequenceAction);

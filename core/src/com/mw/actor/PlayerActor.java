@@ -8,7 +8,7 @@ import com.mw.utils.Dungeon;
 /**
  * Created by BanditCat on 2015/12/24.
  */
-public class Player extends Character{
+public class PlayerActor extends CharacterActor {
     public static final int ACTION_DOWN = 1;
     public static final int ACTION_UP = 0;
     private PlayerActionListener playerActionListener;
@@ -17,7 +17,7 @@ public class Player extends Character{
         this.playerActionListener = playerActionListener;
     }
 
-    public Player(TextureAtlas textureAtlas, String regionName, OrthographicCamera cam, DungeonMap dungeonMap) {
+    public PlayerActor(TextureAtlas textureAtlas, String regionName, OrthographicCamera cam, DungeonMap dungeonMap) {
         super(textureAtlas, regionName, cam,dungeonMap);
     }
 
