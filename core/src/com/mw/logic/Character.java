@@ -10,7 +10,7 @@ import com.mw.logic.info.CharacterInfo;
 /**
  * Created by BanditCat on 2016/7/25.
  */
-public class Character implements Telegraph {
+public abstract class Character implements Telegraph {
     protected StateMachine<Character,CharacterState> stateMachine;
     protected CharacterActor characterActor;
     protected CharacterInfo characterInfo;

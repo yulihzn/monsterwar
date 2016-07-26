@@ -46,6 +46,8 @@ public class  MapStage extends Stage{
 
 	private GameEventListener gameEventListener;
 
+	private CharacterFactory characterFactory;
+
 	public void setGameEventListener(GameEventListener gameEventListener) {
 		this.gameEventListener = gameEventListener;
 	}
@@ -79,23 +81,13 @@ public class  MapStage extends Stage{
 			TiledMapTileLayer tiledLayer = (TiledMapTileLayer)layer;
 			createActorsForLayer(tiledLayer);
 		}
+		characterFactory = new CharacterFactory(this);
 		//添加角色
-		ghost = new Ghost();
-		CharacterActor ghostActor = new CharacterActor(textureAtlas,"ghost",camera,dungeonMap);
-		ghostActor.setTilePosIndex(new GridPoint2(DungeonMap.TILE_SIZE/2,DungeonMap.TILE_SIZE/2));
-		ghostActor.setZIndex(1);
-		ghost.setActor(ghostActor);
-		addActor(ghostActor);
-
-		man = CharacterFactory.getInstance().getPlayer();
-		PlayerActor manActor = new PlayerActor(textureAtlas,"man",camera,dungeonMap);
-		manActor.setPosition(-100,-100);
-		manActor.setZIndex(2);
-		manActor.setPlayerActionListener(playerActionListener);
-		man.setActor(manActor);
-		addActor(manActor);
-		man.getActor().setFocus(true);
+		ghost = characterFactory.getGhost();
+		man = characterFactory.getPlayer();
+		((PlayerActor)man.getActor()).setPlayerActionListener(playerActionListener);
 		adjustPlayerPos(-1);
+
 		mapShadow = new MapShadow(camera,DungeonMap.TILE_SIZE<<5,DungeonMap.TILE_SIZE<<5,dungeonMap.getDungeonArray());
 		mapShadow.setPosition(0,0);
 		mapShadow.setZIndex(3);
@@ -104,6 +96,19 @@ public class  MapStage extends Stage{
 		mapShadow.getSightPosIndex().y = man.getActor().getTilePosIndex().y;
 		mapShadow.updateLines();
 
+	}
+
+	@Override
+	public OrthographicCamera getCamera() {
+		return camera;
+	}
+
+	public DungeonMap getDungeonMap() {
+		return dungeonMap;
+	}
+
+	public TextureAtlas getTextureAtlas() {
+		return textureAtlas;
 	}
 
 	private PlayerActor.PlayerActionListener playerActionListener = new PlayerActor.PlayerActionListener() {
@@ -158,7 +163,7 @@ public class  MapStage extends Stage{
 
 	}
 	//调整玩家位置让他不卡墙
-	private void adjustPlayerPos(int action){
+	public void adjustPlayerPos(int action){
 		int type = -1;
 		if(GameDataHelper.getInstance().getCharacterPos(man.getActor().getRegionName()).x == -1){
 			type = -2;
@@ -337,9 +342,18 @@ public class  MapStage extends Stage{
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
 			System.out.println(actor.getX()+","+actor.getY() +"value = "+actor.getCell().getTile().getId()+ " has been clicked.");
-			man.getActor().findWays(actor.getTilePosIndex().x,actor.getTilePosIndex().y);
+			detectedUnit(actor.getTilePosIndex().x,actor.getTilePosIndex().y);
 //			ghost.findWays(man.getTilePosIndex().x,man.getTilePosIndex().y);
 		}
+	}
+
+	/**
+	 * 检查该位置是否有指定方块物品或者角色
+	 * @param x
+	 * @param y
+     */
+	private void detectedUnit(int x, int y) {
+		man.getActor().findWays(x,y);
 	}
 
 	public interface GameEventListener{
