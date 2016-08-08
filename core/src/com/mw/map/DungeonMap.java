@@ -20,7 +20,7 @@ public class DungeonMap extends TiledMap {
     private TiledMapTileLayer shadowLayer;
     private int width,height;
     private int[][] dungeonArray;
-    public static final int TILE_SIZE = 16;
+    public static final int TILE_SIZE = 32;
     private TextureAtlas textureAtlas;
     private Dungeon dungeon;
     public static String LAYER_FLOOR = "LAYER_FLOOR";

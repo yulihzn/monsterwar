@@ -2,8 +2,10 @@ package com.mw.actor;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.mw.logic.info.PlayerInfo;
 import com.mw.map.DungeonMap;
 import com.mw.utils.Dungeon;
+import com.mw.utils.GameDataHelper;
 
 /**
  * Created by BanditCat on 2015/12/24.
@@ -24,6 +26,7 @@ public class PlayerActor extends CharacterActor {
     @Override
     protected void moveLogic(int curPos) {
         super.moveLogic(curPos);
+        GameDataHelper.getInstance().setCurrentStep(PlayerInfo.NAME,GameDataHelper.getInstance().getCurrentStep(PlayerInfo.NAME)+1);
         //上下
         final int x = path.get(curPos).getX();
         final int y = path.get(curPos).getY();

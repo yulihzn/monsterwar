@@ -89,4 +89,12 @@ public class GameDataHelper {
     public int getCurrentLevel(){
         return preferences.getInteger("level",0);
     }
+
+    public void setCurrentStep(String name,int step){
+        preferences.putInteger(name+"step",step);
+        preferences.flush();
+    }
+    public int getCurrentStep(String name){
+        return preferences.getInteger(name+"step",0);
+    }
 }

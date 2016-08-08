@@ -94,16 +94,30 @@ sand01-original
   orig: 32, 32
   offset: 0, 0
   index: -1
-stone-original
+shadow_corner
   rotate: false
   xy: 416, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-upstair
+shadow_left
   rotate: false
   xy: 448, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+stone-original
+  rotate: false
+  xy: 480, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+upstair
+  rotate: false
+  xy: 512, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

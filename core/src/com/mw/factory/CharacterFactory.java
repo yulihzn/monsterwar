@@ -54,7 +54,6 @@ public class CharacterFactory {
     /**玩家角色信息**/
     private PlayerInfo getPlayerInfo(){
         PlayerInfo playerInfo = new PlayerInfo();
-        playerInfo.setName("man");
         playerInfo.setAttackPoint(1);
         playerInfo.setDefensePoint(0);
         playerInfo.setHealthPoint(10);
@@ -65,7 +64,6 @@ public class CharacterFactory {
     /**ghost**/
     private GhostInfo getGhostInfo(){
         GhostInfo ghostInfo = new GhostInfo();
-        ghostInfo.setName("ghost");
         ghostInfo.setAttackPoint(0);
         ghostInfo.setDefensePoint(0);
         ghostInfo.setHealthPoint(1);

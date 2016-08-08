@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.mw.logic.info.PlayerInfo;
 import com.mw.screen.MainScreen;
 import com.mw.screen.StartScreen;
 import com.mw.screen.TransferScreen;
@@ -26,27 +27,29 @@ public class UiStage extends Stage {
     private OrthographicCamera camera;
     private FreeTypeFontGenerator generator;
     private FreeTypeFontGenerator.FreeTypeFontParameter fontParameter;
-    private BitmapFont bitmapFont;
-    private String level = "关卡:0123456789";
+    private BitmapFont bfLevel;
+    private BitmapFont bfStep;
+    private String str = "关卡:0123456789步数";
 
     private ImageButton ib_back;
     private TextureAtlas atlas;
-    private static final float BACKPADDING = 10f;
+    private static final float BACK_PADDING = 10f;
 
     public UiStage(OrthographicCamera camera, final MainScreen mainScreen) {
         this.camera = camera;
         generator = new FreeTypeFontGenerator(Gdx.files.internal("data/font.ttf"));
         fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        fontParameter.characters = level;
+        fontParameter.characters = str;
         fontParameter.size = 20;
-        bitmapFont = generator.generateFont(fontParameter);
+        bfLevel = generator.generateFont(fontParameter);
+        bfStep = generator.generateFont(fontParameter);
 
         atlas = new TextureAtlas(Gdx.files.internal("images/buttons.pack"));
         TextureRegionDrawable imageUp = new TextureRegionDrawable(atlas.findRegion("button_back_normal"));
         TextureRegionDrawable imageDown = new TextureRegionDrawable(atlas.findRegion("button_back_pressed"));
         ib_back = new ImageButton(imageUp, imageDown);
         ib_back.setSize(Gdx.graphics.getWidth()/10,Gdx.graphics.getHeight()/10);
-        ib_back.setBounds(BACKPADDING, Gdx.graphics.getHeight()-BACKPADDING-ib_back.getWidth()
+        ib_back.setBounds(BACK_PADDING, Gdx.graphics.getHeight()-BACK_PADDING-ib_back.getWidth()
                 ,Gdx.graphics.getWidth()/10,Gdx.graphics.getHeight()/10);
         ib_back.addListener(new ClickListener() {
 
@@ -69,7 +72,8 @@ public class UiStage extends Stage {
     public void draw() {
         super.draw();
         getBatch().begin();
-        bitmapFont.draw(getBatch(),"关卡:"+GameDataHelper.getInstance().getCurrentLevel(),10,20+bitmapFont.getCapHeight());
+        bfLevel.draw(getBatch(),"关卡:"+GameDataHelper.getInstance().getCurrentLevel(),10,20+bfLevel.getCapHeight());
+        bfStep.draw(getBatch(),"步数:"+GameDataHelper.getInstance().getCurrentStep(PlayerInfo.NAME),Gdx.graphics.getWidth()-bfStep.getRegion().getRegionWidth()-10,20+bfStep.getCapHeight());
         getBatch().end();
 
     }

@@ -27,7 +27,7 @@ public class MainScreen extends BaseScreen implements Screen{
 
 	private float worldWidth = DungeonMap.TILE_SIZE*32;
 	private float worldtHeight = DungeonMap.TILE_SIZE*32;
-	private float camSize = 32*16;
+	private float camSize = DungeonMap.TILE_SIZE*32;
 
 	private MainGame mainGame;
 
@@ -113,26 +113,22 @@ public class MainScreen extends BaseScreen implements Screen{
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 }

@@ -131,9 +131,9 @@ public class CharacterActor extends GameMapTile {
             Timer.schedule(new Timer.Task() {
                 @Override
                 public void run() {
-                    camera.translate(disX/100,disY/100);
+//                    camera.translate(disX/10,disY/10);
                 }
-            },0.1f,0.01f,100).run();
+            },1.5f,0.01f,10).run();
         }
     }
 
@@ -150,7 +150,7 @@ public class CharacterActor extends GameMapTile {
             final int x = path.get(i).getX();
             final int y = path.get(i).getY();
             final int pos = i;
-            MoveToAction action = Actions.moveTo(x<<5,y<<5,0.1f);
+            MoveToAction action = Actions.moveTo(x<<5,y<<5,0.05f);
             //添加移动动画
             walkSequenceAction.addAction(action);
             //添加动画完成事件
