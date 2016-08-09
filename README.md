@@ -7,4 +7,5 @@ Roguelike by BanditCat
 一群各式各样的杂鱼和boss   
 一套充满乐趣的收集品   
 一排都是恶意的成就系统   
+以上这些都没有~
 
