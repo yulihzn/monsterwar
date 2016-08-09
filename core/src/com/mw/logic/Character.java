@@ -47,4 +47,7 @@ public abstract class Character implements Telegraph {
         stateMachine.update();
     }
 
+    public void Attack(Character character){
+    }
+
 }

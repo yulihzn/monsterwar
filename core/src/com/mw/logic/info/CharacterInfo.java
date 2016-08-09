@@ -4,13 +4,13 @@ package com.mw.logic.info;
  * Created by BanditCat on 2016/7/25.
  */
 public class CharacterInfo {
-    private String name = "";//名字
-    private int healthPoint = 0;//血量
-    private int attackPoint = 0;//攻击力
-    private int attackRange = 0;//攻击范围
-    private int defensePoint = 0;//防御力
-    private int speed = 0;//速度
-    private String describe = "";//描述
+    protected String name = "";//名字
+    protected int healthPoint = 0;//血量
+    protected int attackPoint = 0;//攻击力
+    protected int attackRange = 0;//攻击范围
+    protected int defensePoint = 0;//防御力
+    protected int speed = 0;//速度
+    protected String describe = "";//描述
 
     public int getAttackPoint() {
         return attackPoint;

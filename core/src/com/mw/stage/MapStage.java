@@ -13,12 +13,11 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.mw.actor.CharacterActor;
 import com.mw.actor.MapShadow;
 import com.mw.actor.PlayerActor;
 import com.mw.actor.TiledMapActor;
-import com.mw.logic.Ghost;
-import com.mw.logic.Player;
+import com.mw.logic.characters.Ghost;
+import com.mw.logic.characters.Player;
 import com.mw.map.DungeonMap;
 import com.mw.screen.MainScreen;
 import com.mw.utils.Dungeon;
@@ -30,7 +29,7 @@ import com.mw.factory.CharacterFactory;
 public class  MapStage extends Stage{
 	private OrthographicCamera camera;
 	private long roundTime = TimeUtils.nanoTime();
-	public static final long roundSecond = 20000000;
+	public static final long roundSecond = 10000000;
 
 //	private AssetManager assetManager;
 //	private TiledMap tiledMap;
@@ -199,7 +198,7 @@ public class  MapStage extends Stage{
 				if(!isBlock(ghost.getActor().getTilePosIndex().x+i,ghost.getActor().getTilePosIndex().y+j)){
 					if(!(ghost.getActor().getTilePosIndex().x+i == man.getActor().getTilePosIndex().x
 							&&ghost.getActor().getTilePosIndex().y+j == man.getActor().getTilePosIndex().y))
-						ghost.getActor().findWays(ghost.getActor().getTilePosIndex().x+i,ghost.getActor().getTilePosIndex().y+j);
+//						ghost.getActor().findWays(ghost.getActor().getTilePosIndex().x+i,ghost.getActor().getTilePosIndex().y+j);
 					i = 2;
 					break;
 				}

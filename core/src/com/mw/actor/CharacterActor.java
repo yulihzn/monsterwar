@@ -82,8 +82,7 @@ public class CharacterActor extends GameMapTile {
             if(dungeonMap.getDungeonArray()[nextX][nextY] == Dungeon.tileDoor){
                 stopMoving();
                 if(curPos==0||curPos==1){
-                    dungeonMap.getDungeonArray()[nextX][nextY]=Dungeon.tileCorridor;
-                    dungeonMap.changeTileType(Dungeon.tileCorridor,nextX,nextY);
+                    dungeonMap.changeTileType(Dungeon.tileDoorOpen,nextX,nextY);
                 }
 
             }
@@ -131,9 +130,9 @@ public class CharacterActor extends GameMapTile {
             Timer.schedule(new Timer.Task() {
                 @Override
                 public void run() {
-//                    camera.translate(disX/10,disY/10);
+                    camera.translate(disX/10,disY/10);
                 }
-            },1.5f,0.01f,10).run();
+            },2f,0.01f,10).run();
         }
     }
 
@@ -171,4 +170,5 @@ public class CharacterActor extends GameMapTile {
         }));
         addAction(walkSequenceAction);
     }
+
 }

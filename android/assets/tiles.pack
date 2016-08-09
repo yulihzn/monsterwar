@@ -115,9 +115,16 @@ stone-original
   orig: 32, 32
   offset: 0, 0
   index: -1
-upstair
+transparent
   rotate: false
   xy: 512, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+upstair
+  rotate: false
+  xy: 544, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

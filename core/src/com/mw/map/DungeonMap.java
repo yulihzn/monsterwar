@@ -15,8 +15,9 @@ import com.mw.utils.GameDataHelper;
  * Created by BanditCat on 2016/3/25.
  */
 public class DungeonMap extends TiledMap {
-    private TiledMapTileLayer tileLayer;
-    private TiledMapTileLayer creatureLayer;
+    private TiledMapTileLayer floorLayer;
+    private TiledMapTileLayer blockLayer;
+    private TiledMapTileLayer decorateLayer;
     private TiledMapTileLayer shadowLayer;
     private int width,height;
     private int[][] dungeonArray;
@@ -26,7 +27,6 @@ public class DungeonMap extends TiledMap {
     public static String LAYER_FLOOR = "LAYER_FLOOR";
     public static String LAYER_BLOCK = "LAYER_BLOCK";
     public static String LAYER_DECORATE = "LAYER_DECORATE";
-    public static String LAYER_CREATURE = "LAYER_CREATURE";
     public static String LAYER_SHADOW = "LAYER_SHADOW";
 
     private int level = 0;
@@ -48,15 +48,6 @@ public class DungeonMap extends TiledMap {
         initDungeon();
     }
 
-    public DungeonMap() {
-        this.height = TILE_SIZE;
-        this.width = TILE_SIZE;
-        dungeon = new Dungeon();
-        dungeon.createDungeon(width,height,5000);
-        this.dungeonArray = dungeon.getDungeonArray();
-        initDungeon();
-    }
-
     public int[][] getDungeonArray() {
         return dungeonArray;
     }
@@ -69,8 +60,9 @@ public class DungeonMap extends TiledMap {
         //保存地图
         GameDataHelper.getInstance().saveGameMap(dungeonArray,level);
 
-        this.tileLayer = new TiledMapTileLayer(width,height,32,32);
-        this.creatureLayer = new TiledMapTileLayer(width,height,32,32);
+        this.floorLayer = new TiledMapTileLayer(width,height,32,32);
+        this.blockLayer = new TiledMapTileLayer(width,height,32,32);
+        this.decorateLayer = new TiledMapTileLayer(width,height,32,32);
         this.shadowLayer = new TiledMapTileLayer(width,height,32,32);
 
         //去黑线
@@ -80,11 +72,13 @@ public class DungeonMap extends TiledMap {
             }
         }
         MapLayers layers = this.getLayers();
-        tileLayer.setName(LAYER_FLOOR);
-        creatureLayer.setName(LAYER_CREATURE);
+        floorLayer.setName(LAYER_FLOOR);
+        blockLayer.setName(LAYER_BLOCK);
+        decorateLayer.setName(LAYER_DECORATE);
         shadowLayer.setName(LAYER_SHADOW);
-        layers.add(tileLayer);
-        layers.add(creatureLayer);
+        layers.add(floorLayer);
+        layers.add(blockLayer);
+        layers.add(decorateLayer);
         layers.add(shadowLayer);
         textureAtlas = new TextureAtlas(Gdx.files.internal("tiles.pack"));
         upDateTilesType();
@@ -99,27 +93,31 @@ public class DungeonMap extends TiledMap {
             for (int y = 0; y < this.height;y++){
                 int tileType = this.dungeonArray[x][y];
                 TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-                String name = "";
-                switch(dungeonArray[x][y]) {
-//                    case Dungeon.tileUnused:name="empty-original";break;
-                    case Dungeon.tileUnused:name="block01-original";break;
-                    case Dungeon.tileDirtWall:name="block01-original"; break;
-                    case Dungeon.tileDirtFloor:name="block02"; break;
-                    case Dungeon.tileStoneWall:name="stone-original"; break;
-                    case Dungeon.tileCorridor:name="block02"; break;
-                    case Dungeon.tileDoor:name="door"; break;
-                    case Dungeon.tileUpStairs:name="upstair"; break;
-                    case Dungeon.tileDownStairs:name="downstair"; break;
-                    case Dungeon.tileChest:name="cup02-original"; break;
-                }
+                String name = getResName(dungeonArray[x][y]);
                 DungeonTiledMapTile tiledMapTile = new DungeonTiledMapTile(textureAtlas.findRegion(name));
                 tiledMapTile.setId(tileType);
                 cell.setTile(tiledMapTile);
-                this.tileLayer.setCell(x,y,cell);
+                this.blockLayer.setCell(x,y,cell);
+
+                TiledMapTileLayer.Cell cellGround = new TiledMapTileLayer.Cell();
+                String nameGround = getResName(Dungeon.tileDirtFloor);
+                DungeonTiledMapTile tiledMapTile1 = new DungeonTiledMapTile(textureAtlas.findRegion(nameGround));
+                tiledMapTile1.setId(Dungeon.tileDirtFloor);
+                cellGround.setTile(tiledMapTile1);
+                this.floorLayer.setCell(x,y,cellGround);
             }
         }
     }
     public void changeTileType(int value,int x,int y){
+        String name = getResName(value);
+        if(name.equals("")){
+            return;
+        }
+        this.blockLayer.getCell(x,y).getTile().setTextureRegion(textureAtlas.findRegion(name));
+        dungeonArray[x][y] = value;
+        GameDataHelper.getInstance().saveGameMap(dungeonArray,GameDataHelper.getInstance().getCurrentLevel());
+    }
+    private String getResName(int value){
         String name = "";
         switch(value) {
             case Dungeon.tileUnused:name="block01-original";break;
@@ -131,13 +129,9 @@ public class DungeonMap extends TiledMap {
             case Dungeon.tileUpStairs:name="upstair"; break;
             case Dungeon.tileDownStairs:name="downstair"; break;
             case Dungeon.tileChest:name="cup02-original"; break;
+            case Dungeon.tileDoorOpen:name="down"; break;
         }
-        if(name.equals("")){
-            return;
-        }
-        this.tileLayer.getCell(x,y).getTile().setTextureRegion(textureAtlas.findRegion(name));
-        dungeonArray[x][y] = value;
-        GameDataHelper.getInstance().saveGameMap(dungeonArray,GameDataHelper.getInstance().getCurrentLevel());
+        return name;
     }
 
     /**
@@ -164,27 +158,6 @@ public class DungeonMap extends TiledMap {
         GameDataHelper.getInstance().saveGameMap(this.dungeonArray,level);
     }
 
-    public void addCreature(String name,int x,int y){
-        if(x < 0){
-            x = 0;
-        }
-        if(x >= TILE_SIZE){
-            x = TILE_SIZE -1;
-        }
-        if(y < 0){
-            y = 0;
-        }
-        if(y >= TILE_SIZE){
-            y = TILE_SIZE -1;
-        }
-        TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-        DungeonTiledMapTile tiledMapTile = new DungeonTiledMapTile(textureAtlas.findRegion(name));
-        tiledMapTile.setId(1001);
-        cell.setTile(tiledMapTile);
-        this.creatureLayer.setCell(x,y,cell);
-
-
-    }
     public interface OnEventChangedListener{
         void onEventFinish(int type);
     }
