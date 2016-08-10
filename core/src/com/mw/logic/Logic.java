@@ -10,7 +10,12 @@ import com.mw.logic.characters.base.Monster;
 public class Logic {
     private static Logic inStance = null;
     private Logic(){
+        init();
     }
+
+    private void init() {
+    }
+
     public static Logic getInstance(){
         if(inStance == null){
             inStance = new Logic();
