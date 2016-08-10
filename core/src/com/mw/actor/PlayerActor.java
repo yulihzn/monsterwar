@@ -2,7 +2,7 @@ package com.mw.actor;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.mw.logic.info.PlayerInfo;
+import com.mw.logic.characters.info.PlayerInfo;
 import com.mw.map.DungeonMap;
 import com.mw.utils.Dungeon;
 import com.mw.utils.GameDataHelper;

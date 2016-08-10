@@ -1,4 +1,4 @@
-package com.mw.logic;
+package com.mw.logic.characters.base;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.fsm.State;

@@ -1,11 +1,11 @@
-package com.mw.logic;
+package com.mw.logic.characters.base;
 
 import com.badlogic.gdx.ai.fsm.DefaultStateMachine;
 import com.badlogic.gdx.ai.fsm.StateMachine;
 import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.ai.msg.Telegraph;
 import com.mw.actor.CharacterActor;
-import com.mw.logic.info.CharacterInfo;
+import com.mw.logic.characters.info.CharacterInfo;
 
 /**
  * Created by BanditCat on 2016/7/25.
