@@ -88,8 +88,8 @@ public class  MapStage extends Stage{
 
 		mapShadow = new MapShadow(camera,DungeonMap.TILE_SIZE<<5,DungeonMap.TILE_SIZE<<5,dungeonMap.getDungeonArray());
 		mapShadow.setPosition(0,0);
-		mapShadow.setZIndex(3);
 		addActor(mapShadow);
+		mapShadow.setZIndex(3);
 		mapShadow.getSightPosIndex().x = man.getActor().getTilePosIndex().x;
 		mapShadow.getSightPosIndex().y = man.getActor().getTilePosIndex().y;
 		mapShadow.updateLines();
@@ -224,12 +224,16 @@ public class  MapStage extends Stage{
 				TiledMapActor actor;
 				if(cell != null){
 					actor = new TiledMapActor(dungeonMap, tiledLayer, cell,new GridPoint2(x,y));
+					addActor(actor);
 					actor.setZIndex(0);
 					actor.setBounds(x * tiledLayer.getTileWidth(), y * tiledLayer.getTileHeight(), tiledLayer.getTileWidth(),
 							tiledLayer.getTileHeight());
-					addActor(actor);
+					if(tiledLayer.getName().equals(DungeonMap.LAYER_SHADOW)){
+						actor.setZIndex(3);
+					}
 					EventListener eventListener = new TiledMapClickListener(actor);
 					actor.addListener(eventListener);
+
 				}
 			}
 		}
@@ -359,6 +363,11 @@ public class  MapStage extends Stage{
      */
 	private void detectedUnit(int x, int y) {
 		man.getActor().findWays(x,y);
+		int[] arr = {4,8,1,2};
+		dungeonMap.changeShadowTileType(4,x,y);
+		dungeonMap.changeShadowTileType(8,x+1,y);
+		dungeonMap.changeShadowTileType(1,x,y-1);
+		dungeonMap.changeShadowTileType(2,x+1,y-1);
 	}
 
 	public interface GameEventListener{

@@ -59,7 +59,7 @@ public class MainScreen extends BaseScreen implements Screen{
 	public void show() {
 		uiStage = new UiStage(cam,this);
 		mapStage = new MapStage(cam,this);
-//		mapStage.setDebugAll(true);
+		mapStage.setDebugUnderMouse(true);
 		InputMultiplexer inputMultiplexer = new InputMultiplexer();
 		inputMultiplexer.addProcessor(gestureDetector);
 		inputMultiplexer.addProcessor(uiStage);

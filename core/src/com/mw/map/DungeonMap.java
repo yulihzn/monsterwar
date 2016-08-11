@@ -11,6 +11,8 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.mw.utils.Dungeon;
 import com.mw.utils.GameDataHelper;
 
+import java.util.HashMap;
+
 /**
  * Created by BanditCat on 2016/3/25.
  */
@@ -21,17 +23,20 @@ public class DungeonMap extends TiledMap {
     private TiledMapTileLayer shadowLayer;
     private int width,height;
     private int[][] dungeonArray;
-    public static final int TILE_SIZE = 32;
+    public static final int TILE_SIZE = 16;
     private TextureAtlas textureAtlas;
     private Dungeon dungeon;
     public static String LAYER_FLOOR = "LAYER_FLOOR";
     public static String LAYER_BLOCK = "LAYER_BLOCK";
     public static String LAYER_DECORATE = "LAYER_DECORATE";
     public static String LAYER_SHADOW = "LAYER_SHADOW";
-
     private int level = 0;
 
     public static final int MESSAGE_GENERATE_SUCCESS = 1;
+
+    private int[][] shadowArray;
+    private TextureAtlas shadowTextureAtlas;
+    private int[][]shadowIndex = {{0,4,8,12},{1,5,9,13},{2,6,10,14},{3,7,11,15}};
 
     public DungeonMap(int[][] dungeonArray,int level) {
         this.level = level;
@@ -46,6 +51,14 @@ public class DungeonMap extends TiledMap {
         }
 
         initDungeon();
+    }
+    public void initShadowArray(){
+        shadowArray = new int[width][height];
+        for (int i = 0; i < shadowArray.length; i++) {
+            for (int j = 0; j < shadowArray[0].length; j++) {
+                shadowArray[i][j] = 0;
+            }
+        }
     }
 
     public int[][] getDungeonArray() {
@@ -81,6 +94,8 @@ public class DungeonMap extends TiledMap {
         layers.add(decorateLayer);
         layers.add(shadowLayer);
         textureAtlas = new TextureAtlas(Gdx.files.internal("tiles.pack"));
+        shadowTextureAtlas = new TextureAtlas(Gdx.files.internal("images/shadows.pack"));
+        initShadowArray();
         upDateTilesType();
 
     }
@@ -91,6 +106,7 @@ public class DungeonMap extends TiledMap {
     public void upDateTilesType(){
         for(int x = 0; x < this.width;x++){
             for (int y = 0; y < this.height;y++){
+                //障碍层
                 int tileType = this.dungeonArray[x][y];
                 TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
                 String name = getResName(dungeonArray[x][y]);
@@ -99,12 +115,22 @@ public class DungeonMap extends TiledMap {
                 cell.setTile(tiledMapTile);
                 this.blockLayer.setCell(x,y,cell);
 
+                //地表层
                 TiledMapTileLayer.Cell cellGround = new TiledMapTileLayer.Cell();
                 String nameGround = getResName(Dungeon.tileDirtFloor);
                 DungeonTiledMapTile tiledMapTile1 = new DungeonTiledMapTile(textureAtlas.findRegion(nameGround));
                 tiledMapTile1.setId(Dungeon.tileDirtFloor);
                 cellGround.setTile(tiledMapTile1);
                 this.floorLayer.setCell(x,y,cellGround);
+
+                //阴影层
+                TiledMapTileLayer.Cell cellShadow = new TiledMapTileLayer.Cell();
+                DungeonTiledMapTile tiledMapTile2 = new DungeonTiledMapTile(shadowTextureAtlas.findRegion(""+shadowArray[x][y]));
+                tiledMapTile2.setId(shadowArray[x][y]);
+                tiledMapTile2.setOffsetX(-16);
+                tiledMapTile2.setOffsetY(16);
+                cellShadow.setTile(tiledMapTile2);
+                this.shadowLayer.setCell(x,y,cellShadow);
             }
         }
     }
@@ -116,6 +142,19 @@ public class DungeonMap extends TiledMap {
         this.blockLayer.getCell(x,y).getTile().setTextureRegion(textureAtlas.findRegion(name));
         dungeonArray[x][y] = value;
         GameDataHelper.getInstance().saveGameMap(dungeonArray,GameDataHelper.getInstance().getCurrentLevel());
+    }
+    //改变阴影方块
+    public void changeShadowTileType(int value,int x,int y){
+        if(x >= TILE_SIZE||x < 0||y < 0||y >= TILE_SIZE){
+            return;
+        }
+        TiledMapTile tiledMapTile = this.shadowLayer.getCell(x,y).getTile();
+        tiledMapTile.setId(tiledMapTile.getId()+value);
+        if(tiledMapTile.getId()>15){
+            tiledMapTile.setId(15);
+        }
+        tiledMapTile.setTextureRegion(shadowTextureAtlas.findRegion(tiledMapTile.getId()+""));
+        shadowArray[x][y] = value;
     }
     private String getResName(int value){
         String name = "";
@@ -167,4 +206,11 @@ public class DungeonMap extends TiledMap {
     }
 
     private OnEventChangedListener onEventChangedListener;
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        shadowTextureAtlas.dispose();
+        textureAtlas.dispose();
+    }
 }

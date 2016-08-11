@@ -35,9 +35,9 @@ public class CharacterFactory {
         player.setInfo(new PlayerInfo(10,1,1,0,1));
         PlayerActor manActor = new PlayerActor(textureAtlas,"man",camera,dungeonMap);
         manActor.setPosition(-100,-100);
-        manActor.setZIndex(2);
         player.setActor(manActor);
         mapStage.addActor(manActor);
+        manActor.setZIndex(2);
         player.getActor().setFocus(true);
         return player;
     }
@@ -46,9 +46,9 @@ public class CharacterFactory {
         ghost.setInfo(new GhostInfo(10,1,1,0,1));
         CharacterActor ghostActor = new CharacterActor(textureAtlas,"ghost",camera,dungeonMap);
         ghostActor.setTilePosIndex(new GridPoint2(DungeonMap.TILE_SIZE/2,DungeonMap.TILE_SIZE/2));
-        ghostActor.setZIndex(1);
         ghost.setActor(ghostActor);
         mapStage.addActor(ghostActor);
+        ghostActor.setZIndex(2);
         return ghost;
     }
 

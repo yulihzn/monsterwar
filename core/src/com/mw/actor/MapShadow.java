@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.GridPoint2;
@@ -62,8 +64,6 @@ public class MapShadow extends Actor{
         pixmap.setColor(new Color(0,0,0,1f));
         pixmap.fillRectangle(0,0,width,height);
         texture.draw(pixmap, 0, 0);
-
-        initShadowArray();
     }
 
     /**
@@ -72,9 +72,6 @@ public class MapShadow extends Actor{
      */
     public void reSet(DungeonMap dungeonMap){
         this.dungeonArray = dungeonMap.getDungeonArray();
-    }
-
-    public void initShadowArray(){
     }
 
     @Override
@@ -152,6 +149,9 @@ public class MapShadow extends Actor{
         pixmap.fillRectangle(0,0,width,height);
         //画半黑阴影
         pixmap.setColor(new Color(0,0,0,0.6f));
+        //测试新的阴影覆盖去除旧阴影
+        pixmap.setColor(new Color(0,0,0,0.3f));
+        pixmap.fillRectangle(0,0,width,height);
 //        pixmap.fillRectangle((int)sx-sightWidth/2,(int)(height-sy)-sightHeight/2,sightWidth,sightHeight);
 
 //        for (int i = 0; i < shadowArray.length; i++) {
@@ -175,6 +175,7 @@ public class MapShadow extends Actor{
             pixmap.fillCircle(tempX,height-tempY,(int)entry.getValue().radius);
 
         }
+
 //        pixmap.fillCircle((int)sx,(int)(height-sy),r);
         //画透明阴影
         //坐标系y是反过来的
@@ -182,6 +183,7 @@ public class MapShadow extends Actor{
         for(int i = 0;i+3< arr.length;i+=2){
             pixmap.fillTriangle((int)sx,(int)(height-sy),(int)arr[i],(int)(height-arr[i+1]),(int)arr[i+2],(int)(height-arr[i+3]));
         }
+
         texture.draw(pixmap,0,0);
 
     }
