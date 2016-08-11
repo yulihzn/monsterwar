@@ -127,6 +127,7 @@ public class DungeonMap extends TiledMap {
                 TiledMapTileLayer.Cell cellShadow = new TiledMapTileLayer.Cell();
                 DungeonTiledMapTile tiledMapTile2 = new DungeonTiledMapTile(shadowTextureAtlas.findRegion(""+shadowArray[x][y]));
                 tiledMapTile2.setId(shadowArray[x][y]);
+                //点击位置为4个方块的左上，所以整体要向左上移动16个像素表示点击的是中间
                 tiledMapTile2.setOffsetX(-16);
                 tiledMapTile2.setOffsetY(16);
                 cellShadow.setTile(tiledMapTile2);
