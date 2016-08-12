@@ -7,12 +7,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -20,7 +19,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import com.mw.map.DungeonMap;
 import com.mw.utils.Dungeon;
-import com.mw.utils.GameDataHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,9 +31,10 @@ public class MapShadow extends Actor{
     private ShapeRenderer shapeRenderer;
     private GridPoint2 sightPosIndex = new GridPoint2(0,0);
     private int width = 0,height = 0;
-    private int sightRadius = 6;
+    private int sightRadius = 3;
     private Array<EdgeLine> lines = new Array<EdgeLine>();
     private int[][] dungeonArray;
+    private DungeonMap dungeonMap;
     //阴影数组：0 纯黑 1 半黑 2 透明，
     private HashMap<String,Circle> shadowCircles = new HashMap<String, Circle>();
     //视野多边形
@@ -47,9 +46,11 @@ public class MapShadow extends Actor{
 
     private Pixmap pixmap;
     private Texture texture;
+    private Array<GridPoint2> showTiles = new Array<GridPoint2>();
 
-    public MapShadow(OrthographicCamera camera,int width,int height,int[][] dungeonArray) {
-        this.dungeonArray = dungeonArray;
+    public MapShadow(OrthographicCamera camera,int width,int height,DungeonMap dungeonMap) {
+        this.dungeonMap = dungeonMap;
+        this.dungeonArray = dungeonMap.getDungeonArray();
         this.camera = camera;
         this.height = height;
         this.width = width;
@@ -71,6 +72,7 @@ public class MapShadow extends Actor{
      * @param dungeonMap
      */
     public void reSet(DungeonMap dungeonMap){
+        this.dungeonMap = dungeonMap;
         this.dungeonArray = dungeonMap.getDungeonArray();
     }
 
@@ -150,7 +152,6 @@ public class MapShadow extends Actor{
         //画半黑阴影
         pixmap.setColor(new Color(0,0,0,0.6f));
         //测试新的阴影覆盖去除旧阴影
-        pixmap.setColor(new Color(0,0,0,0.3f));
         pixmap.fillRectangle(0,0,width,height);
 //        pixmap.fillRectangle((int)sx-sightWidth/2,(int)(height-sy)-sightHeight/2,sightWidth,sightHeight);
 
@@ -183,7 +184,15 @@ public class MapShadow extends Actor{
         for(int i = 0;i+3< arr.length;i+=2){
             pixmap.fillTriangle((int)sx,(int)(height-sy),(int)arr[i],(int)(height-arr[i+1]),(int)arr[i+2],(int)(height-arr[i+3]));
         }
-
+        pixmap.setColor(new Color(255,0,0,0.3f));
+        for(GridPoint2 p:showTiles){
+            dungeonMap.changeShadow(p.x,p.y);
+            pixmap.drawRectangle(p.x*32,height-p.y*32-32,32,32);
+        }
+        pixmap.setColor(new Color(0,255,0,0.6f));
+        for(int i = 0;i+3<arr.length;i+=2){
+            pixmap.drawLine((int)arr[i],(int)(height-arr[i+1]),(int)arr[i+2],(int)(height-arr[i+3]));
+        }
         texture.draw(pixmap,0,0);
 
     }
@@ -308,6 +317,7 @@ public class MapShadow extends Actor{
     }
 
     public void updateLines(){
+        showTiles.clear();
         lines.clear();
         int sx = (sightPosIndex.x*32)+16;//视野的横坐标
         int sy = (sightPosIndex.y*32)+16;//视野的纵坐标
@@ -340,6 +350,7 @@ public class MapShadow extends Actor{
         }
         for (int i = iMin; i < iMax; i++) {
             for (int j = jMin; j < jMax; j++) {
+                showTiles.add(new GridPoint2(i,j));
                 x = i*32;
                 y = j*32;
                 x1 = x;
@@ -368,6 +379,8 @@ public class MapShadow extends Actor{
                     continue;//如果不是视野障碍物就跳过
                 }
 
+                //检查障碍物的四个边，如果边旁边还有方块那么这一条边就跳过
+
                 if(sy >= y1&&!isBlock(i,j+1)){
                     //top
                     lines.add(getEdgeLine(x1,y1,x2,y2));
@@ -387,13 +400,39 @@ public class MapShadow extends Actor{
 
             }
         }
+        //头尾相关联
         connectEdges();
+        //切割相应的头尾重新关联
         calculateProjections();
+        //连接所有有用的边
         upDateShadowLines();
+        removeSurPlusShowTiles();
         drawShadow();
 
     }
+    private void removeSurPlusShowTiles(){
+        float[] arr = floatArray.toArray();
+        Polygon polygonTile = new Polygon();
+        float sx = (sightPosIndex.x*32)+16;//视野的横坐标
+        float sy = (sightPosIndex.y*32)+16;//视野的纵坐标
+        Array<Polygon> polygons = new Array<Polygon>();
+        for(int i = 0;i+3< arr.length;i+=2){
+            polygons.add(new Polygon(new float[]{sx,sy,arr[i],arr[i+1],arr[i+2],arr[i+3]}));
+        }
+        for (GridPoint2 p : showTiles){
+            polygonTile.setVertices(new float[]{p.x*32,p.y*32,p.x*32+32,p.y*32,p.x*32+32,p.y*32+32,p.x*32,p.y*32+32});
+            boolean isIn = false;
+            for(int i = 0;i+3< arr.length;i+=2){
+                if(Intersector.isPointInTriangle(p.x*32+16,p.y*32+16,sx,sy,arr[i],arr[i+1],arr[i+2],arr[i+3])){
+                    isIn = true;
+                }
+            }
+            if(!isIn){
+                showTiles.removeValue(p,true);
+            }
+        }
 
+    }
 
     private void connectEdges(){
         //按距离从近到远排序

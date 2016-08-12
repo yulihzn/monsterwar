@@ -86,7 +86,7 @@ public class  MapStage extends Stage{
 		((PlayerActor)man.getActor()).setPlayerActionListener(playerActionListener);
 		adjustPlayerPos(-1);
 
-		mapShadow = new MapShadow(camera,DungeonMap.TILE_SIZE<<5,DungeonMap.TILE_SIZE<<5,dungeonMap.getDungeonArray());
+		mapShadow = new MapShadow(camera,DungeonMap.TILE_SIZE<<5,DungeonMap.TILE_SIZE<<5,dungeonMap);
 		mapShadow.setPosition(0,0);
 		addActor(mapShadow);
 		mapShadow.setZIndex(3);
@@ -363,12 +363,12 @@ public class  MapStage extends Stage{
      */
 	private void detectedUnit(int x, int y) {
 		man.getActor().findWays(x,y);
-		int[] arr = {4,8,1,2};
-		//左上开始
-		dungeonMap.changeShadowTileType(4,x,y);
-		dungeonMap.changeShadowTileType(8,x+1,y);
-		dungeonMap.changeShadowTileType(1,x,y-1);
-		dungeonMap.changeShadowTileType(2,x+1,y-1);
+//		int[] arr = {4,8,1,2};
+//		//左下开始
+//		dungeonMap.changeShadowTileType(1,x,y);
+//		dungeonMap.changeShadowTileType(2,x+1,y);
+//		dungeonMap.changeShadowTileType(4,x,y+1);
+//		dungeonMap.changeShadowTileType(8,x+1,y+1);
 	}
 
 	public interface GameEventListener{

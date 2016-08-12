@@ -35,6 +35,7 @@ public class DungeonMap extends TiledMap {
     public static final int MESSAGE_GENERATE_SUCCESS = 1;
 
     private int[][] shadowArray;
+    private int[][] shadowClickArray;
     private TextureAtlas shadowTextureAtlas;
     private int[][]shadowIndex = {{0,4,8,12},{1,5,9,13},{2,6,10,14},{3,7,11,15}};
 
@@ -53,10 +54,12 @@ public class DungeonMap extends TiledMap {
         initDungeon();
     }
     public void initShadowArray(){
-        shadowArray = new int[width][height];
+        shadowArray = new int[width+1][height+1];
+        shadowClickArray = new int[width+1][height+1];
         for (int i = 0; i < shadowArray.length; i++) {
             for (int j = 0; j < shadowArray[0].length; j++) {
                 shadowArray[i][j] = 0;
+                shadowClickArray[i][j] = 0;
             }
         }
     }
@@ -76,7 +79,8 @@ public class DungeonMap extends TiledMap {
         this.floorLayer = new TiledMapTileLayer(width,height,32,32);
         this.blockLayer = new TiledMapTileLayer(width,height,32,32);
         this.decorateLayer = new TiledMapTileLayer(width,height,32,32);
-        this.shadowLayer = new TiledMapTileLayer(width,height,32,32);
+        //这里阴影层有16的偏移，所以要+1
+        this.shadowLayer = new TiledMapTileLayer(width+1,height+1,32,32);
 
         //去黑线
         for(TiledMapTileSet tmts : getTileSets()){
@@ -123,15 +127,21 @@ public class DungeonMap extends TiledMap {
                 cellGround.setTile(tiledMapTile1);
                 this.floorLayer.setCell(x,y,cellGround);
 
-                //阴影层
-                TiledMapTileLayer.Cell cellShadow = new TiledMapTileLayer.Cell();
-                DungeonTiledMapTile tiledMapTile2 = new DungeonTiledMapTile(shadowTextureAtlas.findRegion(""+shadowArray[x][y]));
-                tiledMapTile2.setId(shadowArray[x][y]);
-                //点击位置为4个方块的左上，所以整体要向左上移动16个像素表示点击的是中间
-                tiledMapTile2.setOffsetX(-16);
-                tiledMapTile2.setOffsetY(16);
-                cellShadow.setTile(tiledMapTile2);
-                this.shadowLayer.setCell(x,y,cellShadow);
+
+            }
+            //阴影层比普通层多一层
+            for (int i = 0; i < shadowArray.length; i++) {
+                for (int j = 0; j < shadowArray[0].length; j++) {
+                    //阴影层
+                    TiledMapTileLayer.Cell cellShadow = new TiledMapTileLayer.Cell();
+                    DungeonTiledMapTile tiledMapTile2 = new DungeonTiledMapTile(shadowTextureAtlas.findRegion(""+shadowArray[i][j]));
+                    tiledMapTile2.setId(shadowArray[i][j]);
+                    //点击位置为4个方块的左下，所以整体要向左下移动16个像素表示点击的是中间
+                    tiledMapTile2.setOffsetX(-16);
+                    tiledMapTile2.setOffsetY(-16);
+                    cellShadow.setTile(tiledMapTile2);
+                    this.shadowLayer.setCell(i,j,cellShadow);
+                }
             }
         }
     }
@@ -145,8 +155,8 @@ public class DungeonMap extends TiledMap {
         GameDataHelper.getInstance().saveGameMap(dungeonArray,GameDataHelper.getInstance().getCurrentLevel());
     }
     //改变阴影方块
-    public void changeShadowTileType(int value,int x,int y){
-        if(x >= TILE_SIZE||x < 0||y < 0||y >= TILE_SIZE){
+    private void changeShadowTileType(int value,int x,int y){
+        if(x >= shadowArray.length||x < 0||y < 0||y >= shadowArray[0].length){
             return;
         }
         TiledMapTile tiledMapTile = this.shadowLayer.getCell(x,y).getTile();
@@ -156,6 +166,19 @@ public class DungeonMap extends TiledMap {
         }
         tiledMapTile.setTextureRegion(shadowTextureAtlas.findRegion(tiledMapTile.getId()+""));
         shadowArray[x][y] = value;
+    }
+    public void changeShadow(int x,int y){
+        if(shadowClickArray[x][y] == 1){
+            return;
+        }
+        shadowClickArray[x][y]=1;
+        int[] arr = {4,8,1,2};
+		//左下开始
+		this.changeShadowTileType(1,x,y);
+        this.changeShadowTileType(2,x+1,y);
+        this.changeShadowTileType(4,x,y+1);
+        this.changeShadowTileType(8,x+1,y+1);
+
     }
     private String getResName(int value){
         String name = "";
