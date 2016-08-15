@@ -20,7 +20,10 @@ import com.badlogic.gdx.utils.FloatArray;
 import com.mw.map.DungeonMap;
 import com.mw.utils.Dungeon;
 
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,8 +34,9 @@ public class MapShadow extends Actor{
     private ShapeRenderer shapeRenderer;
     private GridPoint2 sightPosIndex = new GridPoint2(0,0);
     private int width = 0,height = 0;
-    private int sightRadius = 3;
+    private int sightRadius = 5;
     private Array<EdgeLine> lines = new Array<EdgeLine>();
+    private Array<EdgeLine> connectLines = new Array<EdgeLine>();
     private int[][] dungeonArray;
     private DungeonMap dungeonMap;
     //阴影数组：0 纯黑 1 半黑 2 透明，
@@ -184,10 +188,16 @@ public class MapShadow extends Actor{
         for(int i = 0;i+3< arr.length;i+=2){
             pixmap.fillTriangle((int)sx,(int)(height-sy),(int)arr[i],(int)(height-arr[i+1]),(int)arr[i+2],(int)(height-arr[i+3]));
         }
-        pixmap.setColor(new Color(255,0,0,0.3f));
+        pixmap.setColor(new Color(255,0,0,0.6f));
         for(GridPoint2 p:showTiles){
-            dungeonMap.changeShadow(p.x,p.y);
             pixmap.drawRectangle(p.x*32,height-p.y*32-32,32,32);
+            dungeonMap.changeShadow(p.x,p.y);
+        }
+        pixmap.setColor(new Color(0,0,255,1f));
+        for (int i = 0; i < connectLines.size ; i++) {
+            GridPoint2 p = connectLines.get(i).getPoint();
+            pixmap.drawRectangle(p.x*32,height-p.y*32-32,32,32);
+//            dungeonMap.changeShadow(p.x,p.y);
         }
         pixmap.setColor(new Color(0,255,0,0.6f));
         for(int i = 0;i+3<arr.length;i+=2){
@@ -199,13 +209,11 @@ public class MapShadow extends Actor{
 
     private void upDateShadowLines(){
         if(lines.size>0){
+            connectLines.clear();
             EdgeLine ed = lines.get(0);
             int next = ed.getNext();
             floatArray.clear();
             while (next >= 0){
-                if(isChangedPos){
-//                    Gdx.app.log("next",next+"");
-                }
                 EdgeLine en = lines.get(next);
                 floatArray.add(ed.getEnd().x);
                 floatArray.add(ed.getEnd().y);
@@ -213,67 +221,68 @@ public class MapShadow extends Actor{
                 floatArray.add(en.getStart().y);
                 floatArray.add(en.getEnd().x);
                 floatArray.add(en.getEnd().y);
+                connectLines.add(ed);
+                connectLines.add(en);
                 if(next == 0){
                     break;
                 }
                 next = en.getNext();
                 ed = en;
             }
-            isChangedPos = false;
-            Vector2
-            lbY=new Vector2(width,0),rbY=new Vector2(0,0)
-            ,ltY=new Vector2(width,0),rtY=new Vector2(0,0)
-            ,ltX=new Vector2(0,0),lbX=new Vector2(0,height)
-            ,rtX=new Vector2(0,0),rbX=new Vector2(0,height);
+//            Vector2
+//            lbY=new Vector2(width,0),rbY=new Vector2(0,0)
+//            ,ltY=new Vector2(width,0),rtY=new Vector2(0,0)
+//            ,ltX=new Vector2(0,0),lbX=new Vector2(0,height)
+//            ,rtX=new Vector2(0,0),rbX=new Vector2(0,height);
             float maxx=0,maxy=0,minx=width,miny=height;
-            for (int i = 0; i+1 < floatArray.size; i+=2) {
-                float x = floatArray.get(i);
-                float y = floatArray.get(i+1);
-                if(x >= maxx){//最大x值的y轴，轴上有rtX,rbX
-                    maxx = x;
-                    rbX.x = x;
-                    if(y<=rbX.y){
-                        rbX.y = y;
-                    }
-                    rtX.x = x;
-                    if(y>=rtX.y){
-                        rtX.y = y;
-                    }
-                }
-                if(y >= maxy){//最大y值的x轴，轴上有ltY,rtY
-                    maxy = y;
-                    ltY.y = y;
-                    if(x <= ltY.x){
-                        ltY.x = x;
-                    }
-                    rtY.y= y;
-                    if(x >= rtY.x){
-                        rtY.x = x;
-                    }
-                }
-                if(x <= minx){//最小x值的y轴，轴上有ltX,lbX
-                    minx = x;
-                    ltX.x = x;
-                    if(y >= ltX.y){
-                        ltX.y = y;
-                    }
-                    lbX.x = x;
-                    if(y <= lbX.y){
-                        lbX.y = y;
-                    }
-                }
-                if(y <= miny){//最小y值的x轴，轴上有lbY,rbY
-                    miny = y;
-                    lbY.y = y;
-                    if(x <= lbY.x){
-                        lbY.x = x;
-                    }
-                    rbY.y = y;
-                    if(x >= rbY.x){
-                        rbY.x = x;
-                    }
-                }
-            }
+//            for (int i = 0; i+1 < floatArray.size; i+=2) {
+//                float x = floatArray.get(i);
+//                float y = floatArray.get(i+1);
+//                if(x >= maxx){//最大x值的y轴，轴上有rtX,rbX
+//                    maxx = x;
+//                    rbX.x = x;
+//                    if(y<=rbX.y){
+//                        rbX.y = y;
+//                    }
+//                    rtX.x = x;
+//                    if(y>=rtX.y){
+//                        rtX.y = y;
+//                    }
+//                }
+//                if(y >= maxy){//最大y值的x轴，轴上有ltY,rtY
+//                    maxy = y;
+//                    ltY.y = y;
+//                    if(x <= ltY.x){
+//                        ltY.x = x;
+//                    }
+//                    rtY.y= y;
+//                    if(x >= rtY.x){
+//                        rtY.x = x;
+//                    }
+//                }
+//                if(x <= minx){//最小x值的y轴，轴上有ltX,lbX
+//                    minx = x;
+//                    ltX.x = x;
+//                    if(y >= ltX.y){
+//                        ltX.y = y;
+//                    }
+//                    lbX.x = x;
+//                    if(y <= lbX.y){
+//                        lbX.y = y;
+//                    }
+//                }
+//                if(y <= miny){//最小y值的x轴，轴上有lbY,rbY
+//                    miny = y;
+//                    lbY.y = y;
+//                    if(x <= lbY.x){
+//                        lbY.x = x;
+//                    }
+//                    rbY.y = y;
+//                    if(x >= rbY.x){
+//                        rbY.x = x;
+//                    }
+//                }
+//            }
             sightRectangle.x = minx;
             sightRectangle.y = miny;
             sightRectangle.width = maxx-minx;
@@ -291,7 +300,8 @@ public class MapShadow extends Actor{
         pixmap.dispose();
     }
 
-    private EdgeLine getEdgeLine(int x,int y,int x1,int y1){
+    //2个顶点，和坐标以及方位
+    private EdgeLine getEdgeLine(int x,int y,int x1,int y1,int posx,int posy,int type){
         int id = lines.size -1;//按加入位置创建id
         if(id < 0){
             id = 0;
@@ -307,6 +317,7 @@ public class MapShadow extends Actor{
         float dy = y+(y1-y)/2;
         edgeLine.setDistance(Vector2.dst(sx,sy,dx,dy));
         edgeLine.setId(id);
+        edgeLine.setPoint(new GridPoint2(posx,posy));
         return edgeLine;
     }
 
@@ -361,16 +372,16 @@ public class MapShadow extends Actor{
                 y3 = y;
                 //添加边围住视野
                 if(j==jMin&&i!=iMax-1&&i!=iMin&&!isBlock(i,j+1)){//中心点下层
-                    lines.add(getEdgeLine(x1,y1,x2,y2));
+                    lines.add(getEdgeLine(x1,y1,x2,y2,i,j,1));
                 }
                 if(i==iMin&&j!=jMax-1&&j!=jMin&&!isBlock(i+1,j)){//中心点左层
-                    lines.add(getEdgeLine(x2,y2,x3,y3));
+                    lines.add(getEdgeLine(x2,y2,x3,y3,i,j,2));
                 }
                 if(j==jMax-1&&i!=iMax-1&&i!=iMin&&!isBlock(i,j-1)){//中心点上层
-                    lines.add(getEdgeLine(x3,y3,x,y));
+                    lines.add(getEdgeLine(x3,y3,x,y,i,j,0));
                 }
                 if(i==iMax-1&&j!=jMax-1&&j!=jMin&&!isBlock(i-1,j)){//中心点右层
-                    lines.add(getEdgeLine(x,y,x1,y1));
+                    lines.add(getEdgeLine(x,y,x1,y1,i,j,3));
                 }
                 if(i==iMin||j==jMin||i==iMax-1||j==jMax-1){
                     continue;//如果是边就跳过
@@ -383,19 +394,19 @@ public class MapShadow extends Actor{
 
                 if(sy >= y1&&!isBlock(i,j+1)){
                     //top
-                    lines.add(getEdgeLine(x1,y1,x2,y2));
+                    lines.add(getEdgeLine(x1,y1,x2,y2,i,j,0));
                 }
                 if(sy <= y&&!isBlock(i,j-1)){
                     //bottom
-                    lines.add(getEdgeLine(x3,y3,x,y));
+                    lines.add(getEdgeLine(x3,y3,x,y,i,j,1));
                 }
                 if(sx <= x&&!isBlock(i-1,j)){
                     //left
-                    lines.add(getEdgeLine(x,y,x1,y1));
+                    lines.add(getEdgeLine(x,y,x1,y1,i,j,2));
                 }
                 if(sx >= x2&&!isBlock(i+1,j)){
                     //right
-                    lines.add(getEdgeLine(x2,y2,x3,y3));
+                    lines.add(getEdgeLine(x2,y2,x3,y3,i,j,3));
                 }
 
             }
@@ -410,27 +421,53 @@ public class MapShadow extends Actor{
         drawShadow();
 
     }
+
+    private boolean checkWithJdkGeneralPath(Point2D.Double point, List<Point2D.Double> polygon) {
+        java.awt.geom.GeneralPath p = new java.awt.geom.GeneralPath();
+
+        Point2D.Double first = polygon.get(0);
+        p.moveTo(first.x, first.y);
+        polygon.remove(0);
+        for (Point2D.Double d : polygon) {
+            p.lineTo(d.x, d.y);
+        }
+
+        p.lineTo(first.x, first.y);
+
+        p.closePath();
+
+        return p.contains(point);
+
+    }
+
     private void removeSurPlusShowTiles(){
         float[] arr = floatArray.toArray();
         Polygon polygonTile = new Polygon();
-        float sx = (sightPosIndex.x*32)+16;//视野的横坐标
-        float sy = (sightPosIndex.y*32)+16;//视野的纵坐标
-        Array<Polygon> polygons = new Array<Polygon>();
-        for(int i = 0;i+3< arr.length;i+=2){
-            polygons.add(new Polygon(new float[]{sx,sy,arr[i],arr[i+1],arr[i+2],arr[i+3]}));
+        float sx = (sightPosIndex.x*32);//视野的横坐标
+        float sy = (sightPosIndex.y*32);//视野的纵坐标
+//        Array<Polygon> polygons = new Array<Polygon>();
+//        for(int i = 0;i+3< arr.length;i+=2){
+//            polygons.add(new Polygon(new float[]{sx,sy,arr[i],arr[i+1],arr[i+2],arr[i+3]}));
+//        }
+        List<Point2D.Double> list = new ArrayList<Point2D.Double>();
+        for(int i = 0;i+1<arr.length;i++){
+            list.add(new Point2D.Double(arr[i],arr[i+1]));
         }
         for (GridPoint2 p : showTiles){
-            polygonTile.setVertices(new float[]{p.x*32,p.y*32,p.x*32+32,p.y*32,p.x*32+32,p.y*32+32,p.x*32,p.y*32+32});
-            boolean isIn = false;
-            for(int i = 0;i+3< arr.length;i+=2){
-                if(Intersector.isPointInTriangle(p.x*32+16,p.y*32+16,sx,sy,arr[i],arr[i+1],arr[i+2],arr[i+3])){
-                    isIn = true;
-                }
-            }
-            if(!isIn){
+//            polygonTile.setVertices(new float[]{p.x*32,p.y*32,p.x*32+32,p.y*32,p.x*32+32,p.y*32+32,p.x*32,p.y*32+32});
+//            boolean isIn = false;
+//            for(int i = 0;i+3< arr.length;i+=2){
+//                if(Intersector.isPointInTriangle(p.x*32+16,p.y*32+16,sx,sy,arr[i],arr[i+1],arr[i+2],arr[i+3])){
+//                    isIn = true;
+//                }
+//            }
+//            if(!isIn){
+//            }
+            if(!checkWithJdkGeneralPath(new Point2D.Double(p.x*32+16,p.y*32+16),list)){
                 showTiles.removeValue(p,true);
             }
         }
+
 
     }
 

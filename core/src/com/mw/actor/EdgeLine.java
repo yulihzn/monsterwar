@@ -9,6 +9,24 @@ import com.badlogic.gdx.math.Vector2;
 public class EdgeLine implements Comparable<EdgeLine> {
     private int id = -1;
     private boolean isNeedToDraw = true;
+    private GridPoint2 point;//方块的下标
+    private int type = 0;//0,1,2,3 top bottom left right
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public GridPoint2 getPoint() {
+        return point;
+    }
+
+    public void setPoint(GridPoint2 point) {
+        this.point = point;
+    }
 
     public boolean isNeedToDraw() {
         return isNeedToDraw;
