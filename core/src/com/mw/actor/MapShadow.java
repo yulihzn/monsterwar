@@ -145,17 +145,9 @@ public class MapShadow extends Actor{
         float[] arr = floatArray.toArray();
         float sx = (sightPosIndex.x*32)+16;//视野的横坐标
         float sy = (sightPosIndex.y*32)+16;//视野的纵坐标
-        int sightX = (sightPosIndex.x - sightRadius)*32;
-        int sightY = (sightPosIndex.y - sightRadius)*32;
-        int sightWidth = (sightRadius*2)*32;
-        int sightHeight = (sightRadius*2)*32;
         Pixmap.setBlending(Pixmap.Blending.None);
-        //画第一层纯黑阴影
-        pixmap.setColor(new Color(0,0,0,1f));
-        pixmap.fillRectangle(0,0,width,height);
         //画半黑阴影
         pixmap.setColor(new Color(0,0,0,0.6f));
-        //测试新的阴影覆盖去除旧阴影
         pixmap.fillRectangle(0,0,width,height);
 //        pixmap.fillRectangle((int)sx-sightWidth/2,(int)(height-sy)-sightHeight/2,sightWidth,sightHeight);
 
@@ -167,42 +159,42 @@ public class MapShadow extends Actor{
 //            }
 //        }
 //        pixmap.fillRectangle((int)sightRectangle.x,(int)(height-sightRectangle.y),(int)sightRectangle.width,(int)sightRectangle.height);
-        int r = (int)((Math.sqrt(sightRectangle.width*sightRectangle.width/4+sightRectangle.height*sightRectangle.height/4)));
-        if(r < 16+32){
-            r = 16+32;
-        }
-        //存储每一个视野圆
-        Circle circle = new Circle(sightPosIndex.x*32+16,sightPosIndex.y*32+16,r);
-        shadowCircles.put(sightPosIndex.x+"+"+sightPosIndex.y,circle);
-        for(Map.Entry<String,Circle> entry : shadowCircles.entrySet()){
-            int tempX = (int)entry.getValue().x;
-            int tempY = (int)entry.getValue().y;
-            pixmap.fillCircle(tempX,height-tempY,(int)entry.getValue().radius);
-
-        }
+//        int r = (int)((Math.sqrt(sightRectangle.width*sightRectangle.width/4+sightRectangle.height*sightRectangle.height/4)));
+//        if(r < 16+32){
+//            r = 16+32;
+//        }
+//        //存储每一个视野圆
+//        Circle circle = new Circle(sightPosIndex.x*32+16,sightPosIndex.y*32+16,r);
+//        shadowCircles.put(sightPosIndex.x+"+"+sightPosIndex.y,circle);
+//        for(Map.Entry<String,Circle> entry : shadowCircles.entrySet()){
+//            int tempX = (int)entry.getValue().x;
+//            int tempY = (int)entry.getValue().y;
+//            pixmap.fillCircle(tempX,height-tempY,(int)entry.getValue().radius);
+//
+//        }
 
 //        pixmap.fillCircle((int)sx,(int)(height-sy),r);
         //画透明阴影
         //坐标系y是反过来的
-        pixmap.setColor(new Color(0,0,0,0.3f));
+        pixmap.setColor(new Color(0,0,0,0.1f));
         for(int i = 0;i+3< arr.length;i+=2){
             pixmap.fillTriangle((int)sx,(int)(height-sy),(int)arr[i],(int)(height-arr[i+1]),(int)arr[i+2],(int)(height-arr[i+3]));
         }
         pixmap.setColor(new Color(255,0,0,0.6f));
         for(GridPoint2 p:showTiles){
-            pixmap.drawRectangle(p.x*32,height-p.y*32-32,32,32);
+//            pixmap.drawRectangle(p.x*32,height-p.y*32-32,32,32);
             dungeonMap.changeShadow(p.x,p.y);
         }
         pixmap.setColor(new Color(0,0,255,1f));
         for (int i = 0; i < connectLines.size ; i++) {
             GridPoint2 p = connectLines.get(i).getPoint();
-            pixmap.drawRectangle(p.x*32,height-p.y*32-32,32,32);
-//            dungeonMap.changeShadow(p.x,p.y);
+//            pixmap.drawRectangle(p.x*32,height-p.y*32-32,32,32);
+            dungeonMap.changeShadow(p.x,p.y);
         }
-        pixmap.setColor(new Color(0,255,0,0.6f));
-        for(int i = 0;i+3<arr.length;i+=2){
-            pixmap.drawLine((int)arr[i],(int)(height-arr[i+1]),(int)arr[i+2],(int)(height-arr[i+3]));
-        }
+//        pixmap.setColor(new Color(0,255,0,0.6f));
+//        for(int i = 0;i+3<arr.length;i+=2){
+//            pixmap.drawLine((int)arr[i],(int)(height-arr[i+1]),(int)arr[i+2],(int)(height-arr[i+3]));
+//        }
         texture.draw(pixmap,0,0);
 
     }
@@ -449,24 +441,31 @@ public class MapShadow extends Actor{
 //        for(int i = 0;i+3< arr.length;i+=2){
 //            polygons.add(new Polygon(new float[]{sx,sy,arr[i],arr[i+1],arr[i+2],arr[i+3]}));
 //        }
-        List<Point2D.Double> list = new ArrayList<Point2D.Double>();
-        for(int i = 0;i+1<arr.length;i++){
-            list.add(new Point2D.Double(arr[i],arr[i+1]));
-        }
-        for (GridPoint2 p : showTiles){
-//            polygonTile.setVertices(new float[]{p.x*32,p.y*32,p.x*32+32,p.y*32,p.x*32+32,p.y*32+32,p.x*32,p.y*32+32});
-//            boolean isIn = false;
-//            for(int i = 0;i+3< arr.length;i+=2){
-//                if(Intersector.isPointInTriangle(p.x*32+16,p.y*32+16,sx,sy,arr[i],arr[i+1],arr[i+2],arr[i+3])){
-//                    isIn = true;
-//                }
-//            }
-//            if(!isIn){
-//            }
-            if(!checkWithJdkGeneralPath(new Point2D.Double(p.x*32+16,p.y*32+16),list)){
-                showTiles.removeValue(p,true);
+//        List<Point2D.Double> list = new ArrayList<Point2D.Double>();
+//        for(int i = 0;i+1<arr.length;i++){
+//            list.add(new Point2D.Double(arr[i],arr[i+1]));
+//        }
+        for (int i = showTiles.size-1; i >=0 ; i--) {
+            GridPoint2 p = showTiles.get(i);
+            if(!Intersector.isPointInPolygon(arr,0,arr.length,p.x*32+16 ,p.y*32+16)){
+                showTiles.removeIndex(i);
             }
+
         }
+//        for (GridPoint2 p : showTiles){
+////            polygonTile.setVertices(new float[]{p.x*32,p.y*32,p.x*32+32,p.y*32,p.x*32+32,p.y*32+32,p.x*32,p.y*32+32});
+////            boolean isIn = false;
+////            for(int i = 0;i+3< arr.length;i+=2){
+////                if(Intersector.isPointInTriangle(p.x*32+16,p.y*32+16,sx,sy,arr[i],arr[i+1],arr[i+2],arr[i+3])){
+////                    isIn = true;
+////                }
+////            }
+////            if(!isIn){
+////            }
+//            if(!checkWithJdkGeneralPath(new Point2D.Double(p.x*32+16,p.y*32+16),list)){
+//                showTiles.removeValue(p,true);
+//            }
+//        }
 
 
     }

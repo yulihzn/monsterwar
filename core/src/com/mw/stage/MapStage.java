@@ -71,7 +71,7 @@ public class  MapStage extends Stage{
 */
 		//初始化地图
 		level = GameDataHelper.getInstance().getCurrentLevel();
-		dungeonMap = new DungeonMap(GameDataHelper.getInstance().getGameMap(level),level);
+		dungeonMap = new DungeonMap();
 		//获取渲染
 		renderer = new OrthogonalTiledMapRenderer(dungeonMap,1f);
 		//为每个tile加上actor和相应的监听
