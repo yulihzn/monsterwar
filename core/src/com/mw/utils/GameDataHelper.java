@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.utils.Json;
 import com.mw.model.MapInfo;
 
 /**
@@ -29,6 +30,8 @@ public class GameDataHelper {
     }
     public void saveGameMap(MapInfo mapInfo, int level){
         int[][] dungeonArray = mapInfo.getDungeonArray();
+        Json json = new Json();
+        String ss = json.toJson(mapInfo);
         String str = "";
         for (int i = 0; i < dungeonArray.length; i++) {
             for (int j = 0; j < dungeonArray[0].length; j++) {
@@ -123,7 +126,7 @@ public class GameDataHelper {
             }
 
         }
-        return null;
+        return new MapInfo(level,null,null,null);
     }
 
     /**

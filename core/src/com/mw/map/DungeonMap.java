@@ -9,6 +9,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.mw.model.MapInfo;
+import com.mw.model.MapInfoModel;
 import com.mw.utils.Dungeon;
 import com.mw.utils.GameDataHelper;
 
@@ -64,6 +65,7 @@ public class DungeonMap extends TiledMap {
             }
         }
         mapInfo.setShadowArray(shadowArray);
+        mapInfo.setShadowClickArray(shadowClickArray);
     }
 
     public int[][] getDungeonArray() {
@@ -76,6 +78,21 @@ public class DungeonMap extends TiledMap {
 
     private void initDungeon(){
         //保存地图
+        for (int i = 0; i < mapInfo.getMapArray().length; i++) {
+            for (int j = 0; j < mapInfo.getMapArray()[0].length; j++) {
+                MapInfoModel mim = new MapInfoModel();
+                //阴影要多两条边
+                if(i<mapInfo.getDungeonArray().length&&j<mapInfo.getDungeonArray()[0].length){
+                    mim.setBlock(mapInfo.getDungeonArray()[i][j]);
+                }else{
+                    mim.setBlock(Dungeon.tileUnused);
+                }
+                mim.setFloor(Dungeon.tileDirtFloor);
+                mim.setShadow(0);
+                mim.setShadowClick(0);
+                mapInfo.getMapArray()[i][j]=mim;
+            }
+        }
         GameDataHelper.getInstance().saveGameMap(mapInfo,level);
 
         this.floorLayer = new TiledMapTileLayer(width,height,32,32);

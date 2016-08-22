@@ -1,5 +1,8 @@
 package com.mw.model;
 
+import com.badlogic.gdx.utils.Array;
+import com.mw.map.DungeonMap;
+
 /**
  * Created by BanditCat on 2016/8/18.
  * 地图数组，阴影数组，
@@ -8,6 +11,7 @@ public class MapInfo {
     private int[][] dungeonArray;
     private int[][] shadowArray;
     private int[][] shadowClickArray;
+    private MapInfoModel[][] mapArray;
     private int level;
 
     public MapInfo(int level, int[][] dungeonArray, int[][] shadowArray,int[][] shadowClickArray) {
@@ -15,6 +19,15 @@ public class MapInfo {
         this.dungeonArray = dungeonArray;
         this.shadowArray = shadowArray;
         this.shadowClickArray = shadowClickArray;
+        mapArray = new MapInfoModel[DungeonMap.TILE_SIZE+1][DungeonMap.TILE_SIZE+1];
+    }
+
+    public MapInfoModel[][] getMapArray() {
+        return mapArray;
+    }
+
+    public void setMapArray(MapInfoModel[][] mapArray) {
+        this.mapArray = mapArray;
     }
 
     public int getLevel() {
