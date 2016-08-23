@@ -29,56 +29,8 @@ public class GameDataHelper {
     private void GameDataHelper(){
     }
     public void saveGameMap(MapInfo mapInfo, int level){
-        int[][] dungeonArray = mapInfo.getDungeonArray();
         Json json = new Json();
-        String ss = json.toJson(mapInfo);
-        String str = "";
-        for (int i = 0; i < dungeonArray.length; i++) {
-            for (int j = 0; j < dungeonArray[0].length; j++) {
-                str += dungeonArray[i][j];
-                //每一条数组结尾是#，到了最后一条把数组长度添加上去
-                if(j == dungeonArray[0].length - 1){
-                    str+="#";
-                    if(i == dungeonArray.length - 1){
-                        str+=dungeonArray.length+","+dungeonArray[0].length;
-                    }
-                }else{
-                    str+=",";
-                }
-            }
-        }
-        str+="$";
-        int[][] shadowArray = mapInfo.getShadowArray();
-        for (int i = 0; i < shadowArray.length; i++) {
-            for (int j = 0; j < shadowArray[0].length; j++) {
-                str += shadowArray[i][j];
-                //每一条数组结尾是#，到了最后一条把数组长度添加上去
-                if(j == shadowArray[0].length - 1){
-                    str+="#";
-                    if(i == shadowArray.length - 1){
-                        str+=shadowArray.length+","+shadowArray[0].length;
-                    }
-                }else{
-                    str+=",";
-                }
-            }
-        }
-        str+="$";
-        int[][] shadowClickArray = mapInfo.getShadowClickArray();
-        for (int i = 0; i < shadowClickArray.length; i++) {
-            for (int j = 0; j < shadowClickArray[0].length; j++) {
-                str += shadowClickArray[i][j];
-                //每一条数组结尾是#，到了最后一条把数组长度添加上去
-                if(j == shadowClickArray[0].length - 1){
-                    str+="#";
-                    if(i == shadowClickArray.length - 1){
-                        str+=shadowClickArray.length+","+shadowClickArray[0].length;
-                    }
-                }else{
-                    str+=",";
-                }
-            }
-        }
+        String str = json.toJson(mapInfo);
         FileHandle file = Gdx.files.local(DIR_MAP+level+SUFFIXES_MAP);
         file.writeString(str,false);
 
@@ -88,45 +40,15 @@ public class GameDataHelper {
         if(file.exists()){
             try {
                 String str = file.readString();
-                String[]arr = str.split("$");
-                String[] arr1 = arr[0].split("#");
-                int size_i=Integer.valueOf(arr1[arr1.length-1].split(",")[0]);
-                int size_j=Integer.valueOf(arr1[arr1.length-1].split(",")[1]);
-                int[][] dungeonArray = new int[size_i][size_j];
-                for (int i = 0; i < arr1.length-1; i++) {
-                    String[]arr2 = arr1[i].split(",");
-                    for (int j = 0; j < arr2.length; j++) {
-                        dungeonArray[i][j]= Integer.valueOf(arr2[j]);
-                    }
-                }
-                String[] arr_shadow = arr[0].split("#");
-                int size_i_s=Integer.valueOf(arr_shadow[arr_shadow.length-1].split(",")[0]);
-                int size_j_s=Integer.valueOf(arr_shadow[arr_shadow.length-1].split(",")[1]);
-                int[][] shadowArray = new int[size_i_s][size_j_s];
-                for (int i = 0; i < arr_shadow.length-1; i++) {
-                    String[]arr_s = arr_shadow[i].split(",");
-                    for (int j = 0; j < arr_s.length; j++) {
-                        shadowArray[i][j]= Integer.valueOf(arr_s[j]);
-                    }
-                }
-                String[] arr_shadow_click = arr[0].split("#");
-                int size_i_sc=Integer.valueOf(arr_shadow_click[arr_shadow_click.length-1].split(",")[0]);
-                int size_j_sc=Integer.valueOf(arr_shadow_click[arr_shadow_click.length-1].split(",")[1]);
-                int[][] shadowClickArray = new int[size_i_sc][size_j_sc];
-                for (int i = 0; i < arr_shadow_click.length-1; i++) {
-                    String[]arr_sc = arr_shadow_click[i].split(",");
-                    for (int j = 0; j < arr_sc.length; j++) {
-                        shadowClickArray[i][j]= Integer.valueOf(arr_sc[j]);
-                    }
-                }
-                return new MapInfo(level,dungeonArray,shadowArray,shadowClickArray);
+                Json json = new Json();
+                return json.fromJson(MapInfo.class,str);
             }catch (Exception e){
                 e.printStackTrace();
                 Gdx.app.log("Error","地图读取出错...");
             }
 
         }
-        return new MapInfo(level,null,null,null);
+        return null;
     }
 
     /**

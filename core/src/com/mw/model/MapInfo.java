@@ -1,5 +1,6 @@
 package com.mw.model;
 
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
 import com.mw.map.DungeonMap;
 
@@ -8,19 +9,10 @@ import com.mw.map.DungeonMap;
  * 地图数组，阴影数组，
  */
 public class MapInfo {
-    private int[][] dungeonArray;
-    private int[][] shadowArray;
-    private int[][] shadowClickArray;
     private MapInfoModel[][] mapArray;
     private int level;
-
-    public MapInfo(int level, int[][] dungeonArray, int[][] shadowArray,int[][] shadowClickArray) {
-        this.level = level;
-        this.dungeonArray = dungeonArray;
-        this.shadowArray = shadowArray;
-        this.shadowClickArray = shadowClickArray;
-        mapArray = new MapInfoModel[DungeonMap.TILE_SIZE+1][DungeonMap.TILE_SIZE+1];
-    }
+    private GridPoint2 upstairsIndex;
+    private GridPoint2 downstairsIndex;
 
     public MapInfoModel[][] getMapArray() {
         return mapArray;
@@ -38,27 +30,19 @@ public class MapInfo {
         this.level = level;
     }
 
-    public int[][] getDungeonArray() {
-        return dungeonArray;
+    public GridPoint2 getDownstairsIndex() {
+        return downstairsIndex;
     }
 
-    public void setDungeonArray(int[][] dungeonArray) {
-        this.dungeonArray = dungeonArray;
+    public void setDownstairsIndex(GridPoint2 downstairsIndex) {
+        this.downstairsIndex = downstairsIndex;
     }
 
-    public int[][] getShadowClickArray() {
-        return shadowClickArray;
+    public GridPoint2 getUpstairsIndex() {
+        return upstairsIndex;
     }
 
-    public void setShadowClickArray(int[][] shadowClickArray) {
-        this.shadowClickArray = shadowClickArray;
-    }
-
-    public int[][] getShadowArray() {
-        return shadowArray;
-    }
-
-    public void setShadowArray(int[][] shadowArray) {
-        this.shadowArray = shadowArray;
+    public void setUpstairsIndex(GridPoint2 upstairsIndex) {
+        this.upstairsIndex = upstairsIndex;
     }
 }

@@ -35,9 +35,9 @@ public class PlayerActor extends CharacterActor {
                 if(playerActionListener == null){
                     return;
                 }
-                if(dungeonMap.getDungeonArray()[x][y] == Dungeon.tileUpStairs){
+                if(dungeonMap.getMapInfo().getMapArray()[x][y].getBlock() == Dungeon.tileUpStairs){
                     playerActionListener.move(ACTION_UP,x,y);
-                }else if(dungeonMap.getDungeonArray()[x][y] == Dungeon.tileDownStairs){
+                }else if(dungeonMap.getMapInfo().getMapArray()[x][y].getBlock() == Dungeon.tileDownStairs){
                     playerActionListener.move(ACTION_DOWN,x,y);
                 }
             }

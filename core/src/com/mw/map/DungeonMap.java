@@ -8,6 +8,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
+import com.badlogic.gdx.math.GridPoint2;
 import com.mw.model.MapInfo;
 import com.mw.model.MapInfoModel;
 import com.mw.utils.Dungeon;
@@ -34,73 +35,26 @@ public class DungeonMap extends TiledMap {
     public static String LAYER_SHADOW = "LAYER_SHADOW";
     private int level = 0;
 
-    public static final int MESSAGE_GENERATE_SUCCESS = 1;
-
-    private int[][] shadowArray;
-    private int[][] shadowClickArray;
     private TextureAtlas shadowTextureAtlas;
-    private int[][]shadowIndex = {{0,4,8,12},{1,5,9,13},{2,6,10,14},{3,7,11,15}};
+    //shadowIndex = {{0,4,8,12},{1,5,9,13},{2,6,10,14},{3,7,11,15}};
 
     public DungeonMap() {
+        initMap();
         this.level = GameDataHelper.getInstance().getCurrentLevel();
-        mapInfo = GameDataHelper.getInstance().getGameMap(level);
-        this.height = TILE_SIZE;
-        this.width = TILE_SIZE;
-        if(mapInfo.getDungeonArray() == null){
-            dungeon = new Dungeon();
-            dungeon.createDungeon(width,height,1000);
-            mapInfo.setDungeonArray(dungeon.getDungeonArray());
-            GameDataHelper.getInstance().setCurrentLevel(level);
-        }
-        initShadowArray();
-        initDungeon();
-    }
-    public void initShadowArray(){
-        shadowArray = new int[width+1][height+1];
-        shadowClickArray = new int[width+1][height+1];
-        for (int i = 0; i < shadowArray.length; i++) {
-            for (int j = 0; j < shadowArray[0].length; j++) {
-                shadowArray[i][j] = 0;
-                shadowClickArray[i][j] = 0;
-            }
-        }
-        mapInfo.setShadowArray(shadowArray);
-        mapInfo.setShadowClickArray(shadowClickArray);
+        initDungeon(level);
     }
 
-    public int[][] getDungeonArray() {
-        return mapInfo.getDungeonArray();
-    }
-
-    public void setDungeonArray(int[][] dungeonArray) {
-        mapInfo.setDungeonArray(dungeonArray);
-    }
-
-    private void initDungeon(){
-        //保存地图
-        for (int i = 0; i < mapInfo.getMapArray().length; i++) {
-            for (int j = 0; j < mapInfo.getMapArray()[0].length; j++) {
-                MapInfoModel mim = new MapInfoModel();
-                //阴影要多两条边
-                if(i<mapInfo.getDungeonArray().length&&j<mapInfo.getDungeonArray()[0].length){
-                    mim.setBlock(mapInfo.getDungeonArray()[i][j]);
-                }else{
-                    mim.setBlock(Dungeon.tileUnused);
-                }
-                mim.setFloor(Dungeon.tileDirtFloor);
-                mim.setShadow(0);
-                mim.setShadowClick(0);
-                mapInfo.getMapArray()[i][j]=mim;
-            }
-        }
-        GameDataHelper.getInstance().saveGameMap(mapInfo,level);
-
+    /**
+     * 初始化地图资源
+     */
+    private void initMap() {
+        //因为阴影层多右上两条边有16的偏移，宽高要加1
+        this.height = TILE_SIZE+1;
+        this.width = TILE_SIZE+1;
         this.floorLayer = new TiledMapTileLayer(width,height,32,32);
         this.blockLayer = new TiledMapTileLayer(width,height,32,32);
         this.decorateLayer = new TiledMapTileLayer(width,height,32,32);
-        //这里阴影层有16的偏移，所以要+1
-        this.shadowLayer = new TiledMapTileLayer(width+1,height+1,32,32);
-
+        this.shadowLayer = new TiledMapTileLayer(width,height,32,32);
         //去黑线
         for(TiledMapTileSet tmts : getTileSets()){
             for(TiledMapTile tmt :tmts){
@@ -118,6 +72,47 @@ public class DungeonMap extends TiledMap {
         layers.add(shadowLayer);
         textureAtlas = new TextureAtlas(Gdx.files.internal("tiles.pack"));
         shadowTextureAtlas = new TextureAtlas(Gdx.files.internal("images/shadows.pack"));
+    }
+
+    /**
+     * 生成一层地牢，如果传入对象，如果为null生成新的地牢
+     * @param level
+     */
+    public void initDungeon(int level){
+        mapInfo = GameDataHelper.getInstance().getGameMap(level);
+        if(mapInfo == null){
+            mapInfo = new MapInfo();
+            dungeon = new Dungeon();
+            dungeon.createDungeon(TILE_SIZE,TILE_SIZE,5000);
+            int[][] dungeonArray = dungeon.getDungeonArray();
+            mapInfo.setMapArray(new MapInfoModel[width][height]);
+            mapInfo.setLevel(level);
+            for (int i = 0; i < mapInfo.getMapArray().length; i++) {
+                for (int j = 0; j < mapInfo.getMapArray()[0].length; j++) {
+                    MapInfoModel mim = new MapInfoModel();
+                    //阴影要多两条边
+                    if(i<dungeonArray.length&&j<dungeonArray[0].length){
+                        mim.setBlock(dungeonArray[i][j]);
+                        mim.setFloor(Dungeon.tileDirtFloor);
+                        if(dungeonArray[i][j]==Dungeon.tileUpStairs){
+                            mapInfo.setUpstairsIndex(new GridPoint2(i,j));
+                        }
+                        if(dungeonArray[i][j]==Dungeon.tileDownStairs){
+                            mapInfo.setDownstairsIndex(new GridPoint2(i,j));
+                        }
+                    }else{
+                        mim.setFloor(Dungeon.tileNothing);
+                        mim.setBlock(Dungeon.tileNothing);
+                    }
+                    mim.setShadow(0);
+                    mim.setShadowClick(0);
+                    mapInfo.getMapArray()[i][j]=mim;
+                }
+            }
+        }
+        //保存地图
+        GameDataHelper.getInstance().setCurrentLevel(level);
+        GameDataHelper.getInstance().saveGameMap(mapInfo,level);
         upDateTilesType();
 
     }
@@ -126,41 +121,32 @@ public class DungeonMap extends TiledMap {
      * 更新数组贴图
      */
     public void upDateTilesType(){
-        int[][] dungeonArray = mapInfo.getDungeonArray();
-        for(int x = 0; x < this.width;x++){
-            for (int y = 0; y < this.height;y++){
+        for (int i = 0; i < mapInfo.getMapArray().length; i++) {
+            for (int j = 0; j < mapInfo.getMapArray()[0].length; j++) {
                 //障碍层
-                int tileType = dungeonArray[x][y];
+                int tileType = mapInfo.getMapArray()[i][j].getBlock();
                 TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-                String name = getResName(dungeonArray[x][y]);
-                DungeonTiledMapTile tiledMapTile = new DungeonTiledMapTile(textureAtlas.findRegion(name));
+                DungeonTiledMapTile tiledMapTile = new DungeonTiledMapTile(textureAtlas.findRegion(getResName(tileType)));
                 tiledMapTile.setId(tileType);
                 cell.setTile(tiledMapTile);
-                this.blockLayer.setCell(x,y,cell);
+                this.blockLayer.setCell(i,j,cell);
 
                 //地表层
                 TiledMapTileLayer.Cell cellGround = new TiledMapTileLayer.Cell();
-                String nameGround = getResName(Dungeon.tileDirtFloor);
-                DungeonTiledMapTile tiledMapTile1 = new DungeonTiledMapTile(textureAtlas.findRegion(nameGround));
+                DungeonTiledMapTile tiledMapTile1 = new DungeonTiledMapTile(textureAtlas.findRegion(getResName(Dungeon.tileDirtFloor)));
                 tiledMapTile1.setId(Dungeon.tileDirtFloor);
                 cellGround.setTile(tiledMapTile1);
-                this.floorLayer.setCell(x,y,cellGround);
+                this.floorLayer.setCell(i,j,cellGround);
 
-
-            }
-            //阴影层比普通层多一层
-            for (int i = 0; i < shadowArray.length; i++) {
-                for (int j = 0; j < shadowArray[0].length; j++) {
-                    //阴影层
-                    TiledMapTileLayer.Cell cellShadow = new TiledMapTileLayer.Cell();
-                    DungeonTiledMapTile tiledMapTile2 = new DungeonTiledMapTile(shadowTextureAtlas.findRegion(""+shadowArray[i][j]));
-                    tiledMapTile2.setId(shadowArray[i][j]);
-                    //点击位置为4个方块的左下，所以整体要向左下移动16个像素表示点击的是中间
-                    tiledMapTile2.setOffsetX(-16);
-                    tiledMapTile2.setOffsetY(-16);
-                    cellShadow.setTile(tiledMapTile2);
-                    this.shadowLayer.setCell(i,j,cellShadow);
-                }
+                //阴影层
+                TiledMapTileLayer.Cell cellShadow = new TiledMapTileLayer.Cell();
+                DungeonTiledMapTile tiledMapTile2 = new DungeonTiledMapTile(shadowTextureAtlas.findRegion(""+mapInfo.getMapArray()[i][j].getShadow()));
+                tiledMapTile2.setId(mapInfo.getMapArray()[i][j].getShadow());
+                //点击位置为4个方块的左下，所以整体要向左下移动16个像素表示点击的是中间
+                tiledMapTile2.setOffsetX(-16);
+                tiledMapTile2.setOffsetY(-16);
+                cellShadow.setTile(tiledMapTile2);
+                this.shadowLayer.setCell(i,j,cellShadow);
             }
         }
     }
@@ -170,12 +156,12 @@ public class DungeonMap extends TiledMap {
             return;
         }
         this.blockLayer.getCell(x,y).getTile().setTextureRegion(textureAtlas.findRegion(name));
-        mapInfo.getDungeonArray()[x][y] = value;
+        mapInfo.getMapArray()[x][y].setBlock(value);
         GameDataHelper.getInstance().saveGameMap(mapInfo,GameDataHelper.getInstance().getCurrentLevel());
     }
     //改变阴影方块
     private void changeShadowTileType(int value,int x,int y){
-        if(x >= shadowArray.length||x < 0||y < 0||y >= shadowArray[0].length){
+        if(x >= mapInfo.getMapArray().length||x < 0||y < 0||y >= mapInfo.getMapArray()[0].length){
             return;
         }
         TiledMapTile tiledMapTile = this.shadowLayer.getCell(x,y).getTile();
@@ -184,19 +170,20 @@ public class DungeonMap extends TiledMap {
             tiledMapTile.setId(15);
         }
         tiledMapTile.setTextureRegion(shadowTextureAtlas.findRegion(tiledMapTile.getId()+""));
-        shadowArray[x][y] = value;
+        mapInfo.getMapArray()[x][y].setShadow(value);
     }
     public void changeShadow(int x,int y){
-        if(shadowClickArray[x][y] == 1){
+        if(mapInfo.getMapArray()[x][y].getShadowClick()== 1){
             return;
         }
-        shadowClickArray[x][y]=1;
+        mapInfo.getMapArray()[x][y].setShadowClick(1);
         int[] arr = {4,8,1,2};
 		//左下开始
 		this.changeShadowTileType(1,x,y);
         this.changeShadowTileType(2,x+1,y);
         this.changeShadowTileType(4,x,y+1);
         this.changeShadowTileType(8,x+1,y+1);
+        GameDataHelper.getInstance().saveGameMap(mapInfo,GameDataHelper.getInstance().getCurrentLevel());
 
     }
     private String getResName(int value){
@@ -212,33 +199,13 @@ public class DungeonMap extends TiledMap {
             case Dungeon.tileDownStairs:name="downstair"; break;
             case Dungeon.tileChest:name="cup02-original"; break;
             case Dungeon.tileDoorOpen:name="down"; break;
+            case Dungeon.tileNothing:name="empty-original"; break;
         }
         return name;
     }
 
-    /**
-     * 生成一层地牢，如果传入了数组直接读取，如果为null生成新的地牢
-     * @param mapInfo
-     * @param level
-     */
-    public void generateNextDungeon(MapInfo mapInfo,int level){
-        if(mapInfo.getDungeonArray() != null){
-            this.mapInfo = mapInfo;
-            if(onEventChangedListener != null){
-                onEventChangedListener.onEventFinish(MESSAGE_GENERATE_SUCCESS);
-            }
-        }else{
-            dungeon = new Dungeon();
-            dungeon.createDungeon(width,height,5000);
-            this.mapInfo.setDungeonArray(dungeon.getDungeonArray());
-            if(onEventChangedListener != null){
-                onEventChangedListener.onEventFinish(MESSAGE_GENERATE_SUCCESS);
-            }
-        }
-        initShadowArray();
-        upDateTilesType();
-        GameDataHelper.getInstance().setCurrentLevel(level);
-        GameDataHelper.getInstance().saveGameMap(this.mapInfo,level);
+    public MapInfo getMapInfo() {
+        return mapInfo;
     }
 
     public interface OnEventChangedListener{

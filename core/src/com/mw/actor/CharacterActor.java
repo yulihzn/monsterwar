@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.mw.map.AStarMap;
 import com.mw.map.AStarNode;
 import com.mw.map.DungeonMap;
+import com.mw.model.MapInfoModel;
 import com.mw.utils.Dungeon;
 
 import java.util.ArrayList;
@@ -34,19 +35,19 @@ public class CharacterActor extends GameMapTile {
         this.dungeonMap = dungeonMap;
         this.camera = cam;
         walkSequenceAction = Actions.sequence();//行走序列动画
-        initAStarArray(dungeonMap.getDungeonArray());
+        initAStarArray(dungeonMap.getMapInfo().getMapArray());
     }
 
     public void upDateAStarArray(DungeonMap dungeonMap){
         this.dungeonMap = dungeonMap;
-        initAStarArray(dungeonMap.getDungeonArray());
+        initAStarArray(dungeonMap.getMapInfo().getMapArray());
     }
 
     /**
      * 初始化AStar数组，元素只有0,1,0代表可以通过1代表障碍
      * @param array
      */
-    private void initAStarArray(int[][] array){
+    private void initAStarArray(MapInfoModel[][] array){
         int x = 0,y = 0;
         if(array != null && array.length>0){
             x = array[0].length;
@@ -56,9 +57,9 @@ public class CharacterActor extends GameMapTile {
         int[][] aStarData = new int[x][y];
         for (int i = 0; i < x; i++) {
             for (int j = 0; j < y; j++) {
-                if(array[i][j] == Dungeon.tileStoneWall
-                        ||array[i][j]== Dungeon.tileDirtWall
-                        ||array[i][j]== Dungeon.tileUnused){
+                if(array[i][j].getBlock() == Dungeon.tileStoneWall
+                        ||array[i][j].getBlock()== Dungeon.tileDirtWall
+                        ||array[i][j].getBlock()== Dungeon.tileUnused){
                     aStarData[j][i] = 1;
                 }else{
                     aStarData[j][i] = 0;
@@ -79,7 +80,7 @@ public class CharacterActor extends GameMapTile {
             final int nextX = path.get(curPos+1).getX();
             final int nextY = path.get(curPos+1).getY();
             //碰到门停下来，再次穿过打开
-            if(dungeonMap.getDungeonArray()[nextX][nextY] == Dungeon.tileDoor){
+            if(dungeonMap.getMapInfo().getMapArray()[nextX][nextY].getBlock() == Dungeon.tileDoor){
                 stopMoving();
                 if(curPos==0||curPos==1){
                     dungeonMap.changeTileType(Dungeon.tileDoorOpen,nextX,nextY);

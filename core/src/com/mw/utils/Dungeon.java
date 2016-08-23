@@ -43,6 +43,8 @@ public class Dungeon {
     final public static int tileDownStairs = 7;
     final public static int tileChest = 8;
     final public static int tileDoorOpen = 9;
+    final public static int tileNothing = 10;
+
 
     //misc. messages to print
     private String msgXSize = "X size of dungeon: \t";

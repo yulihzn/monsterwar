@@ -37,7 +37,6 @@ public class MapShadow extends Actor{
     private int sightRadius = 5;
     private Array<EdgeLine> lines = new Array<EdgeLine>();
     private Array<EdgeLine> connectLines = new Array<EdgeLine>();
-    private int[][] dungeonArray;
     private DungeonMap dungeonMap;
     //阴影数组：0 纯黑 1 半黑 2 透明，
     private HashMap<String,Circle> shadowCircles = new HashMap<String, Circle>();
@@ -54,7 +53,6 @@ public class MapShadow extends Actor{
 
     public MapShadow(OrthographicCamera camera,int width,int height,DungeonMap dungeonMap) {
         this.dungeonMap = dungeonMap;
-        this.dungeonArray = dungeonMap.getDungeonArray();
         this.camera = camera;
         this.height = height;
         this.width = width;
@@ -77,7 +75,6 @@ public class MapShadow extends Actor{
      */
     public void reSet(DungeonMap dungeonMap){
         this.dungeonMap = dungeonMap;
-        this.dungeonArray = dungeonMap.getDungeonArray();
     }
 
     @Override
@@ -314,9 +311,9 @@ public class MapShadow extends Actor{
     }
 
     private boolean isBlock(int i,int j){
-        return !(dungeonArray[i][j] != Dungeon.tileStoneWall
-                &&dungeonArray[i][j]!= Dungeon.tileDirtWall
-                &&dungeonArray[i][j]!= Dungeon.tileUnused);
+        return !(dungeonMap.getMapInfo().getMapArray()[i][j].getBlock() != Dungeon.tileStoneWall
+                &&dungeonMap.getMapInfo().getMapArray()[i][j].getBlock()!= Dungeon.tileDirtWall
+                &&dungeonMap.getMapInfo().getMapArray()[i][j].getBlock()!= Dungeon.tileUnused);
     }
 
     public void updateLines(){

@@ -145,26 +145,16 @@ public class  MapStage extends Stage{
 			return;
 		}
 		//生成下一关或者上一关
-		dungeonMap.setOnEventChangedListener(new DungeonMap.OnEventChangedListener() {
-			@Override
-			public void onEventFinish(int type) {
-				switch (type){
-					case DungeonMap.MESSAGE_GENERATE_SUCCESS:
-						man.getActor().upDateAStarArray(dungeonMap);
-//						ghost.getActor().upDateAStarArray(dungeonMap);
-						level = nextLevel;
-						//调整玩家位置
-						adjustPlayerPos(action);
-						man.getActor().setFocus(true);
-						//阴影重置
-						mapShadow.reSet(dungeonMap);
-						mapShadow.updateLines();
-						break;
-				}
-			}
-		});
-		dungeonMap.generateNextDungeon(GameDataHelper.getInstance().getGameMap(nextLevel),nextLevel);
-
+		dungeonMap.initDungeon(nextLevel);
+		man.getActor().upDateAStarArray(dungeonMap);
+//      ghost.getActor().upDateAStarArray(dungeonMap);
+		level = nextLevel;
+		//调整玩家位置
+		adjustPlayerPos(action);
+		man.getActor().setFocus(true);
+		//阴影重置
+		mapShadow.reSet(dungeonMap);
+		mapShadow.updateLines();
 	}
 	//调整玩家位置让他不卡墙
 	public void adjustPlayerPos(int action){
@@ -175,44 +165,23 @@ public class  MapStage extends Stage{
 		switch (action){
 			case PlayerActor.ACTION_DOWN:
 				type = Dungeon.tileUpStairs;
+				man.getActor().setTilePosIndex(dungeonMap.getMapInfo().getUpstairsIndex());
 				break;
 			case PlayerActor.ACTION_UP:
 				type = Dungeon.tileDownStairs;
+				man.getActor().setTilePosIndex(dungeonMap.getMapInfo().getDownstairsIndex());
 				break;
 			default:
-				if(type == -2){
-					type = Dungeon.tileUpStairs;
+				if(GameDataHelper.getInstance().getCharacterPos(man.getActor().getRegionName()).x == -1){
+					man.getActor().setTilePosIndex(dungeonMap.getMapInfo().getUpstairsIndex());
+				}else{
+					man.getActor().setTilePosIndex(GameDataHelper.getInstance().getCharacterPos(man.getActor().getRegionName()));
 				}
 				break;
 		}
-		//地图上面的特殊位置要存储起来，例如上下楼等
-		if(type != -1){
-			for (int i = 0; i < dungeonMap.getDungeonArray().length; i++) {
-				for (int j = 0; j < dungeonMap.getDungeonArray()[0].length; j++) {
-					if(dungeonMap.getDungeonArray()[i][j]==type){
-						man.getActor().setTilePosIndex(new GridPoint2(i,j));
-						i = dungeonMap.getDungeonArray().length;
-						break;
-					}
-				}
-			}
-		}else{
-			man.getActor().setTilePosIndex(GameDataHelper.getInstance().getCharacterPos(man.getActor().getRegionName()));
-		}
-//		for(int i = -1;i < 2;i++){
-//			for(int j = -1;j < 2;j++){
-//				if(!isBlock(ghost.getActor().getTilePosIndex().x+i,ghost.getActor().getTilePosIndex().y+j)){
-//					if(!(ghost.getActor().getTilePosIndex().x+i == man.getActor().getTilePosIndex().x
-//							&&ghost.getActor().getTilePosIndex().y+j == man.getActor().getTilePosIndex().y))
-////						ghost.getActor().findWays(ghost.getActor().getTilePosIndex().x+i,ghost.getActor().getTilePosIndex().y+j);
-//					i = 2;
-//					break;
-//				}
-//			}
-//		}
 	}
 	private boolean isBlock(int i,int j){
-		int v = dungeonMap.getDungeonArray()[i][j];
+		int v = dungeonMap.getMapInfo().getMapArray()[i][j].getBlock();
 		return !(v != Dungeon.tileStoneWall
 				&&v!= Dungeon.tileDirtWall
 				&&v!= Dungeon.tileUnused);
