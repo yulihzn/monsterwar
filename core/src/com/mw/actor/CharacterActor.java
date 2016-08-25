@@ -13,6 +13,7 @@ import com.mw.map.AStarNode;
 import com.mw.map.DungeonMap;
 import com.mw.model.MapInfoModel;
 import com.mw.utils.Dungeon;
+import com.mw.utils.GameDataHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -167,6 +168,7 @@ public class CharacterActor extends GameMapTile {
             @Override
             public void run() {
                 stopMoving();
+                GameDataHelper.getInstance().saveGameMap(dungeonMap.getMapInfo(),GameDataHelper.getInstance().getCurrentLevel());
             }
         }));
         addAction(walkSequenceAction);

@@ -411,59 +411,16 @@ public class MapShadow extends Actor{
 
     }
 
-    private boolean checkWithJdkGeneralPath(Point2D.Double point, List<Point2D.Double> polygon) {
-        java.awt.geom.GeneralPath p = new java.awt.geom.GeneralPath();
-
-        Point2D.Double first = polygon.get(0);
-        p.moveTo(first.x, first.y);
-        polygon.remove(0);
-        for (Point2D.Double d : polygon) {
-            p.lineTo(d.x, d.y);
-        }
-
-        p.lineTo(first.x, first.y);
-
-        p.closePath();
-
-        return p.contains(point);
-
-    }
-
     private void removeSurPlusShowTiles(){
         float[] arr = floatArray.toArray();
-        Polygon polygonTile = new Polygon();
-        float sx = (sightPosIndex.x*32);//视野的横坐标
-        float sy = (sightPosIndex.y*32);//视野的纵坐标
-//        Array<Polygon> polygons = new Array<Polygon>();
-//        for(int i = 0;i+3< arr.length;i+=2){
-//            polygons.add(new Polygon(new float[]{sx,sy,arr[i],arr[i+1],arr[i+2],arr[i+3]}));
-//        }
-//        List<Point2D.Double> list = new ArrayList<Point2D.Double>();
-//        for(int i = 0;i+1<arr.length;i++){
-//            list.add(new Point2D.Double(arr[i],arr[i+1]));
-//        }
         for (int i = showTiles.size-1; i >=0 ; i--) {
             GridPoint2 p = showTiles.get(i);
-            if(!Intersector.isPointInPolygon(arr,0,arr.length,p.x*32+16 ,p.y*32+16)){
+            float centerX = p.x*32+16;
+            float centerY = p.y*32+16;
+            if(!Intersector.isPointInPolygon(arr,0,arr.length,centerX ,centerY)){
                 showTiles.removeIndex(i);
             }
-
         }
-//        for (GridPoint2 p : showTiles){
-////            polygonTile.setVertices(new float[]{p.x*32,p.y*32,p.x*32+32,p.y*32,p.x*32+32,p.y*32+32,p.x*32,p.y*32+32});
-////            boolean isIn = false;
-////            for(int i = 0;i+3< arr.length;i+=2){
-////                if(Intersector.isPointInTriangle(p.x*32+16,p.y*32+16,sx,sy,arr[i],arr[i+1],arr[i+2],arr[i+3])){
-////                    isIn = true;
-////                }
-////            }
-////            if(!isIn){
-////            }
-//            if(!checkWithJdkGeneralPath(new Point2D.Double(p.x*32+16,p.y*32+16),list)){
-//                showTiles.removeValue(p,true);
-//            }
-//        }
-
 
     }
 

@@ -4,6 +4,7 @@ package com.mw.factory;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.utils.Array;
 import com.mw.actor.CharacterActor;
 import com.mw.actor.PlayerActor;
 import com.mw.logic.characters.npc.Ghost;
@@ -22,12 +23,17 @@ public class CharacterFactory {
     private DungeonMap dungeonMap;
     private TextureAtlas textureAtlas;
     private OrthographicCamera camera;
+    private Array<Character> npcList = new Array<Character>();
     public CharacterFactory(MapStage mapStage) {
         this.mapStage = mapStage;
         dungeonMap = mapStage.getDungeonMap();
         textureAtlas = mapStage.getTextureAtlas();
         camera = mapStage.getCamera();
 
+    }
+
+    public Array<Character> getNpcList() {
+        return npcList;
     }
 
     public Player getPlayer(){

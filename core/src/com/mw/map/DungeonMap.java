@@ -170,7 +170,7 @@ public class DungeonMap extends TiledMap {
             tiledMapTile.setId(15);
         }
         tiledMapTile.setTextureRegion(shadowTextureAtlas.findRegion(tiledMapTile.getId()+""));
-        mapInfo.getMapArray()[x][y].setShadow(value);
+        mapInfo.getMapArray()[x][y].setShadow(tiledMapTile.getId());
     }
     public void changeShadow(int x,int y){
         if(mapInfo.getMapArray()[x][y].getShadowClick()== 1){
@@ -183,8 +183,6 @@ public class DungeonMap extends TiledMap {
         this.changeShadowTileType(2,x+1,y);
         this.changeShadowTileType(4,x,y+1);
         this.changeShadowTileType(8,x+1,y+1);
-        GameDataHelper.getInstance().saveGameMap(mapInfo,GameDataHelper.getInstance().getCurrentLevel());
-
     }
     private String getResName(int value){
         String name = "";
