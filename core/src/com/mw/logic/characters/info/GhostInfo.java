@@ -7,10 +7,6 @@ public class GhostInfo extends CharacterInfo {
     public static final String NAME = "ghost";
 
     public GhostInfo(int h, int ap, int ar, int dp, int sp) {
-        super(h, ap, ar, dp, sp);
-    }
-
-    public GhostInfo() {
-        setName(NAME);
+        super(NAME,h, ap, ar, dp, sp);
     }
 }

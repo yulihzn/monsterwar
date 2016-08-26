@@ -168,7 +168,6 @@ public class CharacterActor extends GameMapTile {
             @Override
             public void run() {
                 stopMoving();
-                GameDataHelper.getInstance().saveGameMap(dungeonMap.getMapInfo(),GameDataHelper.getInstance().getCurrentLevel());
             }
         }));
         addAction(walkSequenceAction);

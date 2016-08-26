@@ -6,6 +6,7 @@ import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.ai.msg.Telegraph;
 import com.mw.actor.CharacterActor;
 import com.mw.logic.characters.info.CharacterInfo;
+import com.mw.stage.MapStage;
 
 /**
  * Created by BanditCat on 2016/7/25.
@@ -48,6 +49,9 @@ public abstract class Character implements Telegraph {
     }
 
     public void Attack(Character character){
+    }
+    public void doClick(MapStage mapStage, int x, int y){
+
     }
 
 }

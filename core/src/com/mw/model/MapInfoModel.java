@@ -1,5 +1,7 @@
 package com.mw.model;
 
+import com.badlogic.gdx.math.GridPoint2;
+
 /**
  * Created by BanditCat on 2016/8/18.
  */
@@ -9,6 +11,15 @@ public class MapInfoModel {
     private int decorate;//装饰层
     private int shadow;//阴影层
     private int shadowClick;//阴影层探索状态
+    private GridPoint2 pos;
+
+    public GridPoint2 getPos() {
+        return pos;
+    }
+
+    public void setPos(GridPoint2 pos) {
+        this.pos = pos;
+    }
 
     public int getFloor() {
         return floor;

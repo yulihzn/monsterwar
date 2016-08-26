@@ -15,7 +15,8 @@ abstract public class CharacterInfo {
     public CharacterInfo(){
 
     }
-    public CharacterInfo(int h,int ap,int ar,int dp,int sp){
+    public CharacterInfo(String name,int h,int ap,int ar,int dp,int sp){
+        this.name = name;
         this.healthPoint = h;
         this.attackPoint = ap;
         this.attackRange = ar;

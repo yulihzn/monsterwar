@@ -118,17 +118,17 @@ public class MapShadow extends Actor{
         float sy = (sightPosIndex.y*32)+16;//视野的纵坐标
         float[] arr = floatArray.toArray();
 
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(new Color(0,0,0,0.9f));
-        shapeRenderer.rect(0,0,width,height);
-        shapeRenderer.end();
-
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(new Color(0,1,0,0f));
-        for(int i = 0;i+3< arr.length;i+=2){
-            shapeRenderer.triangle(sx,sy,arr[i],arr[i+1],arr[i+2],arr[i+3]);
-        }
-        shapeRenderer.end();
+//        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+//        shapeRenderer.setColor(new Color(0,0,0,0.9f));
+//        shapeRenderer.rect(0,0,width,height);
+//        shapeRenderer.end();
+//
+//        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+//        shapeRenderer.setColor(new Color(0,1,0,0f));
+//        for(int i = 0;i+3< arr.length;i+=2){
+//            shapeRenderer.triangle(sx,sy,arr[i],arr[i+1],arr[i+2],arr[i+3]);
+//        }
+//        shapeRenderer.end();
 
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
@@ -177,15 +177,13 @@ public class MapShadow extends Actor{
         for(int i = 0;i+3< arr.length;i+=2){
             pixmap.fillTriangle((int)sx,(int)(height-sy),(int)arr[i],(int)(height-arr[i+1]),(int)arr[i+2],(int)(height-arr[i+3]));
         }
-        pixmap.setColor(new Color(255,0,0,0.6f));
         for(GridPoint2 p:showTiles){
-//            pixmap.drawRectangle(p.x*32,height-p.y*32-32,32,32);
+//            pixmap.fillRectangle(p.x*32,height-p.y*32-32,32,32);
             dungeonMap.changeShadow(p.x,p.y);
         }
-        pixmap.setColor(new Color(0,0,255,1f));
         for (int i = 0; i < connectLines.size ; i++) {
             GridPoint2 p = connectLines.get(i).getPoint();
-//            pixmap.drawRectangle(p.x*32,height-p.y*32-32,32,32);
+//            pixmap.fillRectangle(p.x*32,height-p.y*32-32,32,32);
             dungeonMap.changeShadow(p.x,p.y);
         }
 //        pixmap.setColor(new Color(0,255,0,0.6f));
@@ -313,7 +311,8 @@ public class MapShadow extends Actor{
     private boolean isBlock(int i,int j){
         return !(dungeonMap.getMapInfo().getMapArray()[i][j].getBlock() != Dungeon.tileStoneWall
                 &&dungeonMap.getMapInfo().getMapArray()[i][j].getBlock()!= Dungeon.tileDirtWall
-                &&dungeonMap.getMapInfo().getMapArray()[i][j].getBlock()!= Dungeon.tileUnused);
+                &&dungeonMap.getMapInfo().getMapArray()[i][j].getBlock()!= Dungeon.tileUnused
+                &&dungeonMap.getMapInfo().getMapArray()[i][j].getBlock()!= Dungeon.tileDoor);
     }
 
     public void updateLines(){

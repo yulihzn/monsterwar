@@ -106,6 +106,7 @@ public class DungeonMap extends TiledMap {
                     }
                     mim.setShadow(0);
                     mim.setShadowClick(0);
+                    mim.setPos(new GridPoint2(i,j));
                     mapInfo.getMapArray()[i][j]=mim;
                 }
             }

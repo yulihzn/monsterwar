@@ -44,6 +44,12 @@ public class PlayerActor extends CharacterActor {
         }
     }
 
+    @Override
+    public void stopMoving() {
+        super.stopMoving();
+        GameDataHelper.getInstance().saveGameMap(dungeonMap.getMapInfo(),GameDataHelper.getInstance().getCurrentLevel());
+    }
+
     public interface PlayerActionListener{
         void move(int action,int x,int y);
     }

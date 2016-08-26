@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
 import com.mw.actor.CharacterActor;
+import com.mw.actor.GhostActor;
 import com.mw.actor.PlayerActor;
 import com.mw.logic.characters.npc.Ghost;
 import com.mw.logic.characters.base.Player;
@@ -23,17 +24,12 @@ public class CharacterFactory {
     private DungeonMap dungeonMap;
     private TextureAtlas textureAtlas;
     private OrthographicCamera camera;
-    private Array<Character> npcList = new Array<Character>();
     public CharacterFactory(MapStage mapStage) {
         this.mapStage = mapStage;
         dungeonMap = mapStage.getDungeonMap();
         textureAtlas = mapStage.getTextureAtlas();
         camera = mapStage.getCamera();
 
-    }
-
-    public Array<Character> getNpcList() {
-        return npcList;
     }
 
     public Player getPlayer(){
@@ -43,14 +39,14 @@ public class CharacterFactory {
         manActor.setPosition(-100,-100);
         player.setActor(manActor);
         mapStage.addActor(manActor);
-        manActor.setZIndex(2);
+        manActor.setZIndex(3);
         player.getActor().setFocus(true);
         return player;
     }
     public Ghost getGhost(){
         Ghost ghost = new Ghost();
         ghost.setInfo(new GhostInfo(10,1,1,0,1));
-        CharacterActor ghostActor = new CharacterActor(textureAtlas,"ghost",camera,dungeonMap);
+        GhostActor ghostActor = new GhostActor(textureAtlas,"ghost",camera,dungeonMap);
         ghostActor.setTilePosIndex(new GridPoint2(DungeonMap.TILE_SIZE/2,DungeonMap.TILE_SIZE/2));
         ghost.setActor(ghostActor);
         mapStage.addActor(ghostActor);
