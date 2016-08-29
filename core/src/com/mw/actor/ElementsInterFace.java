@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.mw.map.DungeonMap;
 import com.mw.utils.GameDataHelper;
@@ -24,6 +25,7 @@ public class ElementsInterFace extends Actor {
     private Pixmap pixmap;
     private Texture texture;
     private GridPoint2 sightPosIndex = new GridPoint2(0,0);
+    private Color[] colors = {new Color(255,0,0,0.5f),new Color(0,255,0,0.5f),new Color(220,140,60,0.5f),new Color(0,0,255,0.5f)};
 
     public ElementsInterFace(OrthographicCamera camera, int width, int height, DungeonMap dungeonMap) {
         this.camera = camera;
@@ -38,9 +40,6 @@ public class ElementsInterFace extends Actor {
         texture = new Texture(width, height, Pixmap.Format.RGBA8888); // Pixmap.Format.RGBA8888);
         texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Linear);
         texture.setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);
-        pixmap.setColor(new Color(0,255,0,0.1f));
-        pixmap.fillRectangle(sightPosIndex.x*32,height-sightPosIndex.y*32,32,32);
-        texture.draw(pixmap, 0, 0);
     }
 
     @Override
@@ -49,13 +48,26 @@ public class ElementsInterFace extends Actor {
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA,GL20.GL_ONE_MINUS_SRC_ALPHA);
         batch.setProjectionMatrix(camera.combined);
-        drawTile(batch);
+        batch.draw(texture,0,0);
         super.draw(batch, parentAlpha);
         Gdx.gl.glDisable(GL20.GL_BLEND);
     }
 
-    private void drawTile(Batch batch) {
-        batch.draw(texture,0,0);
+    public void drawTile() {
+        pixmap.setColor(new Color(0,0,0,0.0f));
+        pixmap.fillRectangle(0,0,width,height);
+        for (int i = -1; i < 2; i++) {
+            for (int j = -1; j < 2; j++) {
+                pixmap.setColor(colors[dungeonMap.getMapInfo().getMapArray()[sightPosIndex.x+i][sightPosIndex.y+j].getElement()]);
+                pixmap.fillRectangle((sightPosIndex.x+i)*32,height-(sightPosIndex.y+j)*32-32,32,32);
+            }
+        }
+        texture.draw(pixmap, 0, 0);
+    }
+
+    @Override
+    public void act(float delta) {
+        super.act(delta);
     }
 
     public GridPoint2 getSightPosIndex() {

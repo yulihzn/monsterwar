@@ -2,14 +2,15 @@ package com.mw.actor;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.mw.logic.characters.base.Character;
 import com.mw.map.DungeonMap;
 
 /**
  * Created by BanditCat on 2016/8/26.
  */
 public class GhostActor extends CharacterActor {
-    public GhostActor(TextureAtlas textureAtlas, String regionName, OrthographicCamera cam, DungeonMap dungeonMap) {
-        super(textureAtlas, regionName, cam, dungeonMap);
+    public GhostActor(Character character,TextureAtlas textureAtlas, String regionName, OrthographicCamera cam, DungeonMap dungeonMap) {
+        super(character,textureAtlas, regionName, cam, dungeonMap);
     }
 
     @Override

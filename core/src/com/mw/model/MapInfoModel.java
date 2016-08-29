@@ -11,7 +11,16 @@ public class MapInfoModel {
     private int decorate;//装饰层
     private int shadow;//阴影层
     private int shadowClick;//阴影层探索状态
+    private int element;//元素0,1,2,3,4
     private GridPoint2 pos;
+
+    public int getElement() {
+        return element;
+    }
+
+    public void setElement(int element) {
+        this.element = element;
+    }
 
     public GridPoint2 getPos() {
         return pos;

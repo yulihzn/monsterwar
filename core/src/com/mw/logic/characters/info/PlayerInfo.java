@@ -9,7 +9,7 @@ public class PlayerInfo extends CharacterInfo {
         this.setName(NAME);
     }
 
-    public PlayerInfo(int h, int ap, int ar, int dp, int sp) {
-        super(NAME,h, ap, ar, dp, sp);
+    public PlayerInfo(int h, int ap, int ar, int dp, int sp,int sr) {
+        super(NAME,h, ap, ar, dp, sp,sr);
     }
 }

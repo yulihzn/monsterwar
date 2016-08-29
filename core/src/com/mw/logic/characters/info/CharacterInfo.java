@@ -11,17 +11,27 @@ abstract public class CharacterInfo {
     protected int defensePoint = 0;//防御力
     protected int speed = 0;//速度
     protected String describe = "";//描述
+    protected int sightRange = 0;//视野范围
 
     public CharacterInfo(){
 
     }
-    public CharacterInfo(String name,int h,int ap,int ar,int dp,int sp){
+    public CharacterInfo(String name,int h,int ap,int ar,int dp,int sp,int sr){
         this.name = name;
         this.healthPoint = h;
         this.attackPoint = ap;
         this.attackRange = ar;
         this.defensePoint = dp;
         this.speed = sp;
+        this.sightRange = sr;
+    }
+
+    public int getSightRange() {
+        return sightRange;
+    }
+
+    public void setSightRange(int sightRange) {
+        this.sightRange = sightRange;
     }
 
     public int getAttackPoint() {

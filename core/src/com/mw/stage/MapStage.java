@@ -106,6 +106,9 @@ public class  MapStage extends Stage{
 		elementsInterFace.setPosition(0,0);
 		addActor(elementsInterFace);
 		elementsInterFace.setZIndex(100);
+		elementsInterFace.getSightPosIndex().x = man.getActor().getTilePosIndex().x;
+		elementsInterFace.getSightPosIndex().y = man.getActor().getTilePosIndex().y;
+		elementsInterFace.drawTile();
 
 	}
 
@@ -246,35 +249,37 @@ public class  MapStage extends Stage{
 		int endX=startX;int endY=startY;
 		switch (KeyBoardController.getInstance().getKeyType(keyCode)){
 			case KeyBoardController.UP:
-				if(endY+1<DungeonMap.TILE_SIZE){
+				if(endY+1<DungeonMap.TILE_SIZE&&!man.getActor().isMoving()){
 					endY+=1;
+					man.getActor().setFocus(true);
+					man.doClick(this,endX,endY);
 				}
-				man.getActor().setFocus(true);
-				man.getActor().findWays(endX,endY);
 				break;
 			case KeyBoardController.DOWN:
-				if(endY-1>=0){
+				if(endY-1>=0&&!man.getActor().isMoving()){
 					endY-=1;
+					man.getActor().setFocus(true);
+					man.doClick(this,endX,endY);
 				}
-				man.getActor().setFocus(true);
-				man.getActor().findWays(endX,endY);
 				break;
 			case KeyBoardController.LEFT:
-				if(endX-1>=0){
+				if(endX-1>=0&&!man.getActor().isMoving()){
 					endX-=1;
+					man.getActor().setFocus(true);
+					man.doClick(this,endX,endY);
 				}
-				man.getActor().setFocus(true);
-				man.getActor().findWays(endX,endY);
 				break;
 			case KeyBoardController.RIGHT:
-				if(endX+1<DungeonMap.TILE_SIZE){
+				if(endX+1<DungeonMap.TILE_SIZE&&!man.getActor().isMoving()){
 					endX+=1;
+					man.getActor().setFocus(true);
+					man.doClick(this,endX,endY);
 				}
-				man.getActor().setFocus(true);
-				man.getActor().findWays(endX,endY);
 				break;
 			case KeyBoardController.SPACE:
-				man.getActor().findWays(endX,endY);
+				if(!man.getActor().isMoving()){
+					man.doClick(this,endX,endY);
+				}
 				break;
 
 		}
@@ -317,7 +322,7 @@ public class  MapStage extends Stage{
 			roundTime = TimeUtils.nanoTime();
 			if(man.getActor().isMoving()){
 				mapShadow.updateLines();
-
+				elementsInterFace.drawTile();
 			}
 			man.update(delta);
 			for (Monster monster : Logic.getInstance().getMonsterArray()){
@@ -373,7 +378,7 @@ public class  MapStage extends Stage{
 			Monster monster = Logic.getInstance().getMonsterArray().get(i);
 			if(monster.getInfo().getName().equals(GhostInfo.NAME)){
 				Ghost ghost = (Ghost) monster;
-				ghost.doClick(this,x,y);
+//				ghost.doClick(this,x,y);
 			}
 		}
 	}

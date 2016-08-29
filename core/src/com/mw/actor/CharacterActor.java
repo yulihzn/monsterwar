@@ -3,11 +3,16 @@ package com.mw.actor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
+import com.mw.logic.Logic;
+import com.mw.logic.characters.base.Character;
+import com.mw.logic.characters.base.Monster;
 import com.mw.map.AStarMap;
 import com.mw.map.AStarNode;
 import com.mw.map.DungeonMap;
@@ -31,8 +36,10 @@ public class CharacterActor extends GameMapTile {
     protected OrthographicCamera camera;
     protected DungeonMap dungeonMap;
     protected SequenceAction walkSequenceAction;
-    public CharacterActor(TextureAtlas textureAtlas, String regionName, OrthographicCamera cam, DungeonMap dungeonMap) {
+    protected Character character;
+    public CharacterActor(Character character,TextureAtlas textureAtlas, String regionName, OrthographicCamera cam, DungeonMap dungeonMap) {
         super(textureAtlas, regionName, cam);
+        this.character = character;
         this.dungeonMap = dungeonMap;
         this.camera = cam;
         walkSequenceAction = Actions.sequence();//行走序列动画
@@ -89,7 +96,30 @@ public class CharacterActor extends GameMapTile {
 
             }
         }
+        //当列表的下一条是敌对npc且在攻击范围，攻击
+        if(curPos+1 < path.size()){
+            final int nextX = path.get(curPos+1).getX();
+            final int nextY = path.get(curPos+1).getY();
+            //碰到npc停下来
+            if(hasEnemy(nextX,nextY)){
+                stopMoving();
+                if(curPos==0||curPos==1){
+                    attackUnit(curPos);
+                }
+            }
+        }
     }
+
+    public boolean hasEnemy(int x,int y) {
+        boolean isEnemy=false;
+        for (Monster monster : Logic.getInstance().getMonsterArray()){
+            if(monster.getActor().getTilePosIndex().x==x&&monster.getActor().getTilePosIndex().y==y){
+                isEnemy = true;
+            }
+        }
+        return isEnemy;
+    }
+
 
     public void stopMoving(){
         isMoving = false;
@@ -138,6 +168,16 @@ public class CharacterActor extends GameMapTile {
         }
     }
 
+    protected void attackUnit(int curPos){
+        final int x = path.get(curPos).getX();
+        final int y = path.get(curPos).getY();
+        final int nx = path.get(curPos+1).getX();
+        final int ny = path.get(curPos+1).getY();
+        MoveByAction action = Actions.moveBy((nx-x)*16,(ny-y)*16,0.05f);
+        MoveToAction action1 = Actions.moveTo(x<<5,y<<5,0.05f);
+        SequenceAction attckSeq = Actions.sequence(action,action1);
+        addAction(attckSeq);
+    }
     public void findWays(int endX, int endY){
         aStarMap.setSource(new AStarNode(getTilePosIndex().x,getTilePosIndex().y));
         aStarMap.setTarget(new AStarNode(endX,endY));

@@ -2,6 +2,7 @@ package com.mw.actor;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.mw.logic.characters.base.Character;
 import com.mw.logic.characters.info.PlayerInfo;
 import com.mw.map.DungeonMap;
 import com.mw.utils.Dungeon;
@@ -19,8 +20,8 @@ public class PlayerActor extends CharacterActor {
         this.playerActionListener = playerActionListener;
     }
 
-    public PlayerActor(TextureAtlas textureAtlas, String regionName, OrthographicCamera cam, DungeonMap dungeonMap) {
-        super(textureAtlas, regionName, cam,dungeonMap);
+    public PlayerActor(Character character, TextureAtlas textureAtlas, String regionName, OrthographicCamera cam, DungeonMap dungeonMap) {
+        super(character,textureAtlas, regionName, cam,dungeonMap);
     }
 
     @Override

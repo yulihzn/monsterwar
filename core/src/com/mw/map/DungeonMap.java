@@ -9,6 +9,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.math.MathUtils;
 import com.mw.model.MapInfo;
 import com.mw.model.MapInfoModel;
 import com.mw.utils.Dungeon;
@@ -107,6 +108,7 @@ public class DungeonMap extends TiledMap {
                     mim.setShadow(0);
                     mim.setShadowClick(0);
                     mim.setPos(new GridPoint2(i,j));
+                    mim.setElement(MathUtils.random(3));
                     mapInfo.getMapArray()[i][j]=mim;
                 }
             }
