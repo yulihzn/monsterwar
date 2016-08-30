@@ -11,7 +11,7 @@ public enum CharacterState implements State<Character> {
     IDLE(){
         @Override
         public void enter(Character entity) {
-            Log("stay...");
+            Log(entity.getInfo().getName()+":stay...");
         }
 
         @Override
@@ -26,7 +26,7 @@ public enum CharacterState implements State<Character> {
     MOVE(){
         @Override
         public void enter(Character entity) {
-            Log("moving");
+            Log(entity.getInfo().getName()+":moving");
         }
         @Override
         public void update(Character entity) {
@@ -38,7 +38,7 @@ public enum CharacterState implements State<Character> {
     ATTACK(){
         @Override
         public void enter(Character entity) {
-            Log("attacking!");
+            Log(entity.getInfo().getName()+":attacking!");
         }
         @Override
         public void update(Character entity) {

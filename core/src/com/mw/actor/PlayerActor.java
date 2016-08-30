@@ -2,7 +2,9 @@ package com.mw.actor;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.mw.logic.Logic;
 import com.mw.logic.characters.base.Character;
+import com.mw.logic.characters.base.Monster;
 import com.mw.logic.characters.info.PlayerInfo;
 import com.mw.map.DungeonMap;
 import com.mw.utils.Dungeon;
@@ -43,6 +45,29 @@ public class PlayerActor extends CharacterActor {
                 }
             }
         }
+        //当列表的下一条是敌对npc且在攻击范围，攻击
+        if(curPos+1 < path.size()){
+            final int nextX = path.get(curPos+1).getX();
+            final int nextY = path.get(curPos+1).getY();
+            //碰到npc停下来
+            if(hasEnemy(nextX,nextY)){
+                stopMoving();
+                if(curPos==0||curPos==1){
+                    attackUnit(curPos);
+                }
+            }
+        }
+    }
+
+    @Override
+    protected boolean hasEnemy(int x, int y) {
+        boolean isEnemy=false;
+        for (Monster monster : Logic.getInstance().getMonsterArray()){
+            if(monster.getActor().getTilePosIndex().x==x&&monster.getActor().getTilePosIndex().y==y){
+                isEnemy = true;
+            }
+        }
+        return isEnemy;
     }
 
     @Override

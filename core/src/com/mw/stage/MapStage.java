@@ -91,6 +91,7 @@ public class  MapStage extends Stage{
 		characterFactory = new CharacterFactory(this);
 		//添加角色
 		man = characterFactory.getPlayer();
+		Logic.getInstance().setPlayer(man);
 		((PlayerActor)man.getActor()).setPlayerActionListener(playerActionListener);
 		adjustPlayerPos(-1);
 		generateMonsters();
@@ -252,33 +253,33 @@ public class  MapStage extends Stage{
 				if(endY+1<DungeonMap.TILE_SIZE&&!man.getActor().isMoving()){
 					endY+=1;
 					man.getActor().setFocus(true);
-					man.doClick(this,endX,endY);
+					detectedUnit(endX,endY);
 				}
 				break;
 			case KeyBoardController.DOWN:
 				if(endY-1>=0&&!man.getActor().isMoving()){
 					endY-=1;
 					man.getActor().setFocus(true);
-					man.doClick(this,endX,endY);
+					detectedUnit(endX,endY);
 				}
 				break;
 			case KeyBoardController.LEFT:
 				if(endX-1>=0&&!man.getActor().isMoving()){
 					endX-=1;
 					man.getActor().setFocus(true);
-					man.doClick(this,endX,endY);
+					detectedUnit(endX,endY);
 				}
 				break;
 			case KeyBoardController.RIGHT:
 				if(endX+1<DungeonMap.TILE_SIZE&&!man.getActor().isMoving()){
 					endX+=1;
 					man.getActor().setFocus(true);
-					man.doClick(this,endX,endY);
+					detectedUnit(endX,endY);
 				}
 				break;
 			case KeyBoardController.SPACE:
 				if(!man.getActor().isMoving()){
-					man.doClick(this,endX,endY);
+					detectedUnit(endX,endY);
 				}
 				break;
 
@@ -300,6 +301,7 @@ public class  MapStage extends Stage{
 		//释放地图
 		dungeonMap.dispose();
 		mapShadow.dispose();
+		elementsInterFace.dispose();
 	}
 
 	@Override
@@ -363,7 +365,6 @@ public class  MapStage extends Stage{
 		public void clicked(InputEvent event, float x, float y) {
 			System.out.println(actor.getX()+","+actor.getY() +"value = "+actor.getCell().getTile().getId()+ " has been clicked.");
 			detectedUnit(actor.getTilePosIndex().x,actor.getTilePosIndex().y);
-//			ghost.findWays(man.getTilePosIndex().x,man.getTilePosIndex().y);
 		}
 	}
 
@@ -378,7 +379,7 @@ public class  MapStage extends Stage{
 			Monster monster = Logic.getInstance().getMonsterArray().get(i);
 			if(monster.getInfo().getName().equals(GhostInfo.NAME)){
 				Ghost ghost = (Ghost) monster;
-//				ghost.doClick(this,x,y);
+				ghost.doClick(this,man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y);
 			}
 		}
 	}

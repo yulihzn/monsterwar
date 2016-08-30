@@ -7,19 +7,15 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.mw.map.DungeonMap;
-import com.mw.utils.GameDataHelper;
 
 /**
  * Created by BanditCat on 2016/8/26.
  */
 public class ElementsInterFace extends Actor {
     private OrthographicCamera camera;
-    private ShapeRenderer shapeRenderer;
     private int width = 0,height = 0;
     private DungeonMap dungeonMap;
     private Pixmap pixmap;
@@ -29,7 +25,6 @@ public class ElementsInterFace extends Actor {
 
     public ElementsInterFace(OrthographicCamera camera, int width, int height, DungeonMap dungeonMap) {
         this.camera = camera;
-        this.shapeRenderer = new ShapeRenderer();
         this.width = width;
         this.height = height;
         this.dungeonMap = dungeonMap;
@@ -48,7 +43,7 @@ public class ElementsInterFace extends Actor {
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA,GL20.GL_ONE_MINUS_SRC_ALPHA);
         batch.setProjectionMatrix(camera.combined);
-        batch.draw(texture,0,0);
+//        batch.draw(texture,0,0);
         super.draw(batch, parentAlpha);
         Gdx.gl.glDisable(GL20.GL_BLEND);
     }
@@ -77,6 +72,9 @@ public class ElementsInterFace extends Actor {
     public void setSightPosIndex(GridPoint2 sightPosIndex) {
         this.sightPosIndex = sightPosIndex;
     }
-
+    public void dispose(){
+        texture.dispose();
+        pixmap.dispose();
+    }
 
 }

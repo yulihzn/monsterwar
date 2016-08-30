@@ -96,28 +96,15 @@ public class CharacterActor extends GameMapTile {
 
             }
         }
-        //当列表的下一条是敌对npc且在攻击范围，攻击
-        if(curPos+1 < path.size()){
-            final int nextX = path.get(curPos+1).getX();
-            final int nextY = path.get(curPos+1).getY();
-            //碰到npc停下来
-            if(hasEnemy(nextX,nextY)){
-                stopMoving();
-                if(curPos==0||curPos==1){
-                    attackUnit(curPos);
-                }
-            }
-        }
+        //当前单位的下一条和其余npc的下一条相同的话对比各个单位的速度，如果速度一致优先玩家然后是npc列表第一个
     }
 
-    public boolean hasEnemy(int x,int y) {
-        boolean isEnemy=false;
-        for (Monster monster : Logic.getInstance().getMonsterArray()){
-            if(monster.getActor().getTilePosIndex().x==x&&monster.getActor().getTilePosIndex().y==y){
-                isEnemy = true;
-            }
-        }
-        return isEnemy;
+
+    protected boolean hasEnemy(int x,int y) {
+        return false;
+    }
+    protected boolean hasUnit(int x,int y){
+        return false;
     }
 
 
@@ -169,14 +156,21 @@ public class CharacterActor extends GameMapTile {
     }
 
     protected void attackUnit(int curPos){
+        isAttack = true;
         final int x = path.get(curPos).getX();
         final int y = path.get(curPos).getY();
         final int nx = path.get(curPos+1).getX();
         final int ny = path.get(curPos+1).getY();
         MoveByAction action = Actions.moveBy((nx-x)*16,(ny-y)*16,0.05f);
         MoveToAction action1 = Actions.moveTo(x<<5,y<<5,0.05f);
-        SequenceAction attckSeq = Actions.sequence(action,action1);
-        addAction(attckSeq);
+        SequenceAction attackSeq = Actions.sequence(action,action1);
+        attackSeq.addAction(Actions.run(new Runnable() {
+            @Override
+            public void run() {
+                isAttack = false;
+            }
+        }));
+        addAction(attackSeq);
     }
     public void findWays(int endX, int endY){
         aStarMap.setSource(new AStarNode(getTilePosIndex().x,getTilePosIndex().y));
