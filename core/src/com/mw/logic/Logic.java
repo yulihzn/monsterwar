@@ -46,4 +46,15 @@ public class Logic {
     public void setPlayer(Player player) {
         this.player = player;
     }
+
+    public void doRound(){
+        //点击地图位置
+        //玩家确定移动位置生成路径path,path是从0开始,当前A*的path是包含当前位置的，只有点击本身才应该保留当前位置
+        //其它npc确定移动位置生成路径path
+        //玩家按移动速度移动到路径的相对应的格数，不足移动速度的取path的最大值，speed=1，pathIndex=0;speed=2,pathIndex=1;
+        //玩家这一轮移动如果路径上有触发事件移动终止，保留之前点击的位置
+        //触发事件有：npc进入视野，踩到陷阱，其余各种状态
+        //
+        //
+    }
 }

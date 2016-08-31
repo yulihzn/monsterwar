@@ -48,9 +48,12 @@ public abstract class Character implements Telegraph {
         stateMachine.update();
     }
 
-    public void Attack(Character character){
+    protected void attack(Character character){
     }
     public void doClick(MapStage mapStage, int x, int y){
+
+    }
+    protected void walk(){
 
     }
 
