@@ -17,7 +17,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mw.actor.ElementsInterFace;
 import com.mw.actor.MapShadow;
-import com.mw.actor.PlayerActor;
 import com.mw.actor.TiledMapActor;
 import com.mw.logic.Logic;
 import com.mw.logic.characters.base.Monster;
@@ -92,7 +91,7 @@ public class  MapStage extends Stage{
 		//添加角色
 		man = characterFactory.getPlayer();
 		Logic.getInstance().setPlayer(man);
-		((PlayerActor)man.getActor()).setPlayerActionListener(playerActionListener);
+		man.setPlayerActionListener(playerActionListener);
 		adjustPlayerPos(-1);
 		generateMonsters();
 
@@ -143,14 +142,14 @@ public class  MapStage extends Stage{
 		return textureAtlas;
 	}
 
-	private PlayerActor.PlayerActionListener playerActionListener = new PlayerActor.PlayerActionListener() {
+	private Player.PlayerActionListener playerActionListener = new Player.PlayerActionListener() {
 		@Override
 		public void move(int action, int x, int y) {
 			switch (action){
-				case PlayerActor.ACTION_DOWN:
+				case Player.ACTION_DOWN:
 					generateNextStairs(level+1);
 					break;
-				case PlayerActor.ACTION_UP:
+				case Player.ACTION_UP:
 					generateNextStairs(level-1);
 					break;
 			}
@@ -166,9 +165,9 @@ public class  MapStage extends Stage{
 	 * @param nextLevel
      */
 	private void generateNextStairs(final int nextLevel){
-		int act = PlayerActor.ACTION_DOWN;
+		int act = Player.ACTION_DOWN;
 		if(nextLevel<level){
-			act = PlayerActor.ACTION_UP;
+			act = Player.ACTION_UP;
 		}
 		final int action = act;
 		//层数限制
@@ -178,7 +177,7 @@ public class  MapStage extends Stage{
 		}
 		//生成下一关或者上一关
 		dungeonMap.initDungeon(nextLevel);
-		man.getActor().upDateAStarArray(dungeonMap);
+		man.upDateAStarArray(dungeonMap);
 //      ghost.getActor().upDateAStarArray(dungeonMap);
 		level = nextLevel;
 		//调整玩家位置
@@ -195,11 +194,11 @@ public class  MapStage extends Stage{
 			type = -2;
 		}
 		switch (action){
-			case PlayerActor.ACTION_DOWN:
+			case Player.ACTION_DOWN:
 				type = Dungeon.tileUpStairs;
 				man.getActor().setTilePosIndex(dungeonMap.getMapInfo().getUpstairsIndex());
 				break;
-			case PlayerActor.ACTION_UP:
+			case Player.ACTION_UP:
 				type = Dungeon.tileDownStairs;
 				man.getActor().setTilePosIndex(dungeonMap.getMapInfo().getDownstairsIndex());
 				break;
@@ -250,36 +249,34 @@ public class  MapStage extends Stage{
 		int endX=startX;int endY=startY;
 		switch (KeyBoardController.getInstance().getKeyType(keyCode)){
 			case KeyBoardController.UP:
-				if(endY+1<DungeonMap.TILE_SIZE&&!man.getActor().isMoving()){
+				if(endY+1<DungeonMap.TILE_SIZE&&!man.isMoving()){
 					endY+=1;
-					man.getActor().setFocus(true);
-					detectedUnit(endX,endY);
+//					man.getActor().setFocus(true);
+//					detectedUnit(endX,endY);
+					Logic.getInstance().beginRound(endX,endY);
 				}
 				break;
 			case KeyBoardController.DOWN:
-				if(endY-1>=0&&!man.getActor().isMoving()){
+				if(endY-1>=0&&!man.isMoving()){
 					endY-=1;
-					man.getActor().setFocus(true);
-					detectedUnit(endX,endY);
+					Logic.getInstance().beginRound(endX,endY);
 				}
 				break;
 			case KeyBoardController.LEFT:
-				if(endX-1>=0&&!man.getActor().isMoving()){
+				if(endX-1>=0&&!man.isMoving()){
 					endX-=1;
-					man.getActor().setFocus(true);
-					detectedUnit(endX,endY);
+					Logic.getInstance().beginRound(endX,endY);
 				}
 				break;
 			case KeyBoardController.RIGHT:
-				if(endX+1<DungeonMap.TILE_SIZE&&!man.getActor().isMoving()){
+				if(endX+1<DungeonMap.TILE_SIZE&&!man.isMoving()){
 					endX+=1;
-					man.getActor().setFocus(true);
-					detectedUnit(endX,endY);
+					Logic.getInstance().beginRound(endX,endY);
 				}
 				break;
 			case KeyBoardController.SPACE:
-				if(!man.getActor().isMoving()){
-					detectedUnit(endX,endY);
+				if(!man.isMoving()){
+					Logic.getInstance().beginRound(endX,endY);
 				}
 				break;
 
@@ -322,7 +319,7 @@ public class  MapStage extends Stage{
 
 		if (TimeUtils.nanoTime() - roundTime >= roundSecond) {
 			roundTime = TimeUtils.nanoTime();
-			if(man.getActor().isMoving()){
+			if(man.isMoving()){
 				mapShadow.updateLines();
 				elementsInterFace.drawTile();
 			}
@@ -364,7 +361,7 @@ public class  MapStage extends Stage{
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
 			System.out.println(actor.getX()+","+actor.getY() +"value = "+actor.getCell().getTile().getId()+ " has been clicked.");
-			detectedUnit(actor.getTilePosIndex().x,actor.getTilePosIndex().y);
+			Logic.getInstance().beginRound(actor.getTilePosIndex().x,actor.getTilePosIndex().y);
 		}
 	}
 

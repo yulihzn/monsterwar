@@ -16,9 +16,9 @@ public enum CharacterState implements State<Character> {
 
         @Override
         public void update(Character entity) {
-            if(entity.getActor().isMoving()){
+            if(entity.isMoving()){
                 entity.getStateMachine().changeState(MOVE);
-            }else if(entity.getActor().isAttack()){
+            }else if(entity.isAttack()){
                 entity.getStateMachine().changeState(ATTACK);
             }
         }
@@ -30,7 +30,7 @@ public enum CharacterState implements State<Character> {
         }
         @Override
         public void update(Character entity) {
-            if(!entity.getActor().isMoving()){
+            if(!entity.isMoving()){
                 entity.getStateMachine().changeState(IDLE);
             }
         }
@@ -42,7 +42,7 @@ public enum CharacterState implements State<Character> {
         }
         @Override
         public void update(Character entity) {
-            if(!entity.getActor().isAttack()){
+            if(!entity.isAttack()){
                 entity.getStateMachine().changeState(IDLE);
             }
         }

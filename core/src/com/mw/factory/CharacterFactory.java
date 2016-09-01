@@ -33,7 +33,7 @@ public class CharacterFactory {
     }
 
     public Player getPlayer(){
-        Player player = new Player();
+        Player player = new Player(dungeonMap);
         player.setInfo(new PlayerInfo(10,1,1,0,1,3));
         PlayerActor manActor = new PlayerActor(player,textureAtlas,"man",camera,dungeonMap);
         manActor.setPosition(-100,-100);
@@ -44,7 +44,7 @@ public class CharacterFactory {
         return player;
     }
     public Ghost getGhost(){
-        Ghost ghost = new Ghost();
+        Ghost ghost = new Ghost(dungeonMap);
         ghost.setInfo(new GhostInfo(10,1,1,0,1,3));
         GhostActor ghostActor = new GhostActor(ghost,textureAtlas,"ghost",camera,dungeonMap);
         ghostActor.setTilePosIndex(new GridPoint2(DungeonMap.TILE_SIZE/2,DungeonMap.TILE_SIZE/2));
