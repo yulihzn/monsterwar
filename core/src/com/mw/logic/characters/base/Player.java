@@ -2,7 +2,6 @@ package com.mw.logic.characters.base;
 
 import com.mw.logic.Logic;
 import com.mw.logic.characters.info.PlayerInfo;
-import com.mw.map.AStarNode;
 import com.mw.map.DungeonMap;
 import com.mw.stage.MapStage;
 import com.mw.utils.Dungeon;
@@ -19,38 +18,21 @@ public class Player extends Character {
     }
 
     @Override
-    public void doClick(MapStage mapStage, int x, int y) {
-        super.doClick(mapStage, x, y);
-        findWays(x,y);
-    }
-
-    @Override
     public void findWay(int x, int y) {
         super.findWay(x, y);
-        aStarMap.setSource(new AStarNode(characterActor.getTilePosIndex().x,characterActor.getTilePosIndex().y));
-        aStarMap.setTarget(new AStarNode(x,y));
-        synchronized (path){
-            path = aStarMap.find();
-        }
     }
 
     @Override
-    public void walk() {
-        super.walk();
+    protected void attack(Character character) {
+        super.attack(character);
     }
 
     @Override
-    protected void moveLogic(int curPos) {
-        super.moveLogic(curPos);
+    protected void moveFinish(int x, int y) {
+        super.moveFinish(x, y);
         GameDataHelper.getInstance().setCurrentStep(PlayerInfo.NAME,GameDataHelper.getInstance().getCurrentStep(PlayerInfo.NAME)+1);
-        //上下
-        final int x = path.get(curPos).getX();
-        final int y = path.get(curPos).getY();
-        if(path.size() == 1){
-            if(getActor().getTilePosIndex().x == x&&getActor().getTilePosIndex().y==y){
-                if(playerActionListener == null){
-                    return;
-                }
+        if(getActor().getTilePosIndex().x == x&&getActor().getTilePosIndex().y==y){
+            if(playerActionListener != null){
                 if(dungeonMap.getMapInfo().getMapArray()[x][y].getBlock() == Dungeon.tileUpStairs){
                     playerActionListener.move(ACTION_UP,x,y);
                 }else if(dungeonMap.getMapInfo().getMapArray()[x][y].getBlock() == Dungeon.tileDownStairs){
@@ -58,22 +40,10 @@ public class Player extends Character {
                 }
             }
         }
-        //当列表的下一条是敌对npc且在攻击范围，攻击
-        if(curPos+1 < path.size()){
-            final int nextX = path.get(curPos+1).getX();
-            final int nextY = path.get(curPos+1).getY();
-            //碰到npc停下来
-            if(hasEnemy(nextX,nextY)){
-                stopMoving();
-                if(curPos==0||curPos==1){
-                    attackUnit(curPos);
-                }
-            }
-        }
     }
 
     @Override
-    protected boolean hasEnemy(int x, int y) {
+    public boolean hasEnemy(int x, int y) {
         boolean isEnemy=false;
         for (Monster monster : Logic.getInstance().getMonsterArray()){
             if(monster.getActor().getTilePosIndex().x==x&&monster.getActor().getTilePosIndex().y==y){
@@ -84,9 +54,18 @@ public class Player extends Character {
     }
 
     @Override
+    public boolean hasUnit(int x, int y) {
+        return false;
+    }
+
+    @Override
     public void stopMoving() {
         super.stopMoving();
-        GameDataHelper.getInstance().saveGameMap(dungeonMap.getMapInfo(),GameDataHelper.getInstance().getCurrentLevel());
+        if(path.size()-1 <= pathIndex){
+            GameDataHelper.getInstance().saveGameMap(dungeonMap.getMapInfo(),GameDataHelper.getInstance().getCurrentLevel());
+        }else{
+            Logic.getInstance().beginRound(path.get(path.size()-1).getX(),path.get(path.size()-1).getY());
+        }
     }
 
     private PlayerActionListener playerActionListener;

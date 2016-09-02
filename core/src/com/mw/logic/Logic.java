@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.mw.logic.characters.base.Monster;
 import com.mw.logic.characters.base.Player;
+import com.mw.logic.characters.info.GhostInfo;
+import com.mw.logic.characters.npc.Ghost;
 
 /**
  * Created by BanditCat on 2016/8/10.
@@ -31,6 +33,7 @@ public class Logic {
         }
         return inStance;
     }
+
     private Array<Monster> monsterArray = new Array<Monster>();
 
     public Array<Monster> getMonsterArray() {
@@ -64,12 +67,20 @@ public class Logic {
          */
         player.findWay(x,y);
         player.walk();
+        for (int i = 0; i < Logic.getInstance().getMonsterArray().size; i++) {
+            Monster monster = Logic.getInstance().getMonsterArray().get(i);
+            if(monster.getInfo().getName().equals(GhostInfo.NAME)){
+                Ghost ghost = (Ghost) monster;
+                ghost.findWay(player.getActor().getTilePosIndex().x,player.getActor().getTilePosIndex().y);
+                ghost.walk();
+            }
+        }
     }
 
-    private void doRound(int endX, int endY){
+    public void doRound(int endX, int endY){
 
     }
-    private void endRound(){
+    public void endRound(){
 
     }
 }

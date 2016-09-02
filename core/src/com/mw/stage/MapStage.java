@@ -113,7 +113,7 @@ public class  MapStage extends Stage{
 	}
 
 	private void generateMonsters() {
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 0; i++) {
 			Logic.getInstance().getMonsterArray().add(characterFactory.getGhost());
 		}
 		Array<MapInfoModel> availableTiles = new Array<MapInfoModel>();
@@ -251,8 +251,6 @@ public class  MapStage extends Stage{
 			case KeyBoardController.UP:
 				if(endY+1<DungeonMap.TILE_SIZE&&!man.isMoving()){
 					endY+=1;
-//					man.getActor().setFocus(true);
-//					detectedUnit(endX,endY);
 					Logic.getInstance().beginRound(endX,endY);
 				}
 				break;
@@ -362,22 +360,6 @@ public class  MapStage extends Stage{
 		public void clicked(InputEvent event, float x, float y) {
 			System.out.println(actor.getX()+","+actor.getY() +"value = "+actor.getCell().getTile().getId()+ " has been clicked.");
 			Logic.getInstance().beginRound(actor.getTilePosIndex().x,actor.getTilePosIndex().y);
-		}
-	}
-
-	/**
-	 * 检查该位置是否有指定方块物品或者角色
-	 * @param x
-	 * @param y
-     */
-	private void detectedUnit(int x, int y) {
-		man.doClick(this,x,y);
-		for (int i = 0; i < Logic.getInstance().getMonsterArray().size; i++) {
-			Monster monster = Logic.getInstance().getMonsterArray().get(i);
-			if(monster.getInfo().getName().equals(GhostInfo.NAME)){
-				Ghost ghost = (Ghost) monster;
-				ghost.doClick(this,man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y);
-			}
 		}
 	}
 

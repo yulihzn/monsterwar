@@ -1,5 +1,6 @@
 package com.mw.logic.characters.base;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.fsm.DefaultStateMachine;
 import com.badlogic.gdx.ai.fsm.StateMachine;
 import com.badlogic.gdx.ai.msg.Telegram;
@@ -35,6 +36,7 @@ public abstract class Character implements Telegraph {
     protected DungeonMap dungeonMap;
     protected SequenceAction walkSequenceAction;
     protected boolean isFocus = false;//是否镜头跟随
+    protected int pathIndex = 0;
 
     public Character(DungeonMap dungeonMap) {
         this.dungeonMap = dungeonMap;
@@ -73,14 +75,41 @@ public abstract class Character implements Telegraph {
 
     protected void attack(Character character){
     }
-    public void doClick(MapStage mapStage, int x, int y){
-
-    }
-    protected void walk(){
+    public void walk(){
+        if(!moveLogic(pathIndex)){return;}
+        isMoving = true;
+        final int x = path.get(pathIndex).getX();
+        final int y = path.get(pathIndex).getY();
+        characterActor.setTilePosIndexOnly(new GridPoint2(x,y));
+        MoveToAction action = Actions.moveTo(x<<5,y<<5,0.05f);
+        //添加移动动画
+        walkSequenceAction.addAction(action);
+        //添加动画完成事件
+        walkSequenceAction.addAction(Actions.run(new Runnable() {
+            @Override
+            public void run() {
+                walkSequenceAction = Actions.sequence();//行走序列动画
+                characterActor.removeAction(walkSequenceAction);
+                characterActor.setTilePosIndex(new GridPoint2(x,y));
+                moveFinish(x,y);
+                stopMoving();
+            }
+        }));
+        characterActor.addAction(walkSequenceAction);
 
     }
     protected void findWay(int x,int y){
-
+        pathIndex = 0;
+        aStarMap.setSource(new AStarNode(characterActor.getTilePosIndex().x,characterActor.getTilePosIndex().y));
+        aStarMap.setTarget(new AStarNode(x,y));
+        synchronized (path){
+            path = aStarMap.find();
+        }
+        if(path.size()!=0){
+            if(x!=getActor().getTilePosIndex().x||y!=getActor().getTilePosIndex().y){
+                path.remove(0);
+            }
+        }
     }
 
     /**
@@ -114,31 +143,51 @@ public abstract class Character implements Telegraph {
         initAStarArray(dungeonMap.getMapInfo().getMapArray());
     }
 
-    //移动的逻辑
-    protected void moveLogic(final int curPos) {
-        if(curPos >= path.size() && curPos < 0){
-            return;
+    //移动的逻辑,返回是否可以移动以及其它逻辑
+    protected boolean moveLogic(final int curPos) {
+        //如果到头了就不移动
+        if(curPos >= path.size()){
+            return false;
         }
         final int x = path.get(curPos).getX();
         final int y = path.get(curPos).getY();
-        //当列表的下一条是门的话
-        if(curPos+1 < path.size()){
-            final int nextX = path.get(curPos+1).getX();
-            final int nextY = path.get(curPos+1).getY();
-            //碰到门停下来，再次穿过打开
-            if(dungeonMap.getMapInfo().getMapArray()[nextX][nextY].getBlock() == Dungeon.tileDoor){
-                stopMoving();
-                if(curPos==0||curPos==1){
-                    dungeonMap.changeTileType(Dungeon.tileDoorOpen,nextX,nextY);
-                }
-
-            }
+        //当下一个点是门的话
+        //碰到门停下来，改变门的状态，再次穿过打开
+        if(hasObstacle(x,y)){
+            return false;
         }
+        //碰到npc停下来
+        if(hasUnit(x,y)){
+            return false;
+        }
+        if(hasEnemy(x,y)){
+            attackUnit(curPos);
+            return false;
+        }
+        moveBegin(x,y);
+        return true;
         //当前单位的下一条和其余npc的下一条相同的话对比各个单位的速度，如果速度一致优先玩家然后是npc列表第一个
     }
 
+    protected void moveBegin(int x, int y){
 
-    protected boolean hasEnemy(int x,int y) {
+    }
+
+    protected void moveFinish(int x, int y){
+
+    }
+
+    protected boolean hasObstacle(int x,int y){
+        //当下一个点是门的话
+        //碰到门停下来，改变门的状态，再次穿过打开
+        if(dungeonMap.getMapInfo().getMapArray()[x][y].getBlock() == Dungeon.tileDoor){
+            dungeonMap.changeTileType(Dungeon.tileDoorOpen,x,y);
+            return true;
+        }
+        return false;
+    }
+
+    protected boolean hasEnemy(int x,int y){
         return false;
     }
     protected boolean hasUnit(int x,int y){
@@ -146,7 +195,7 @@ public abstract class Character implements Telegraph {
     }
 
 
-    public void stopMoving(){
+    protected void stopMoving(){
         isMoving = false;
     }
 
@@ -176,10 +225,10 @@ public abstract class Character implements Telegraph {
 
     protected void attackUnit(int curPos){
         isAttack = true;
-        final int x = path.get(curPos).getX();
-        final int y = path.get(curPos).getY();
-        final int nx = path.get(curPos+1).getX();
-        final int ny = path.get(curPos+1).getY();
+        final int x = characterActor.getTilePosIndex().x;
+        final int y = characterActor.getTilePosIndex().y;
+        final int nx = path.get(curPos).getX();
+        final int ny = path.get(curPos).getY();
         MoveByAction action = Actions.moveBy((nx-x)*16,(ny-y)*16,0.05f);
         MoveToAction action1 = Actions.moveTo(x<<5,y<<5,0.05f);
         SequenceAction attackSeq = Actions.sequence(action,action1);
@@ -190,40 +239,6 @@ public abstract class Character implements Telegraph {
             }
         }));
         characterActor.addAction(attackSeq);
-    }
-    public void findWays(int endX, int endY){
-        aStarMap.setSource(new AStarNode(characterActor.getTilePosIndex().x,characterActor.getTilePosIndex().y));
-        aStarMap.setTarget(new AStarNode(endX,endY));
-        synchronized (path){
-            path = aStarMap.find();
-            isMoving = true;
-        }
-        walkSequenceAction.reset();
-        //遍历节点添加移动动画
-        for (int i = 0; i < path.size(); i++) {
-            final int x = path.get(i).getX();
-            final int y = path.get(i).getY();
-            final int pos = i;
-            MoveToAction action = Actions.moveTo(x<<5,y<<5,0.05f);
-            //添加移动动画
-            walkSequenceAction.addAction(action);
-            //添加动画完成事件
-            walkSequenceAction.addAction(Actions.run(new Runnable() {
-                @Override
-                public void run() {
-                    characterActor.setTilePosIndex(new GridPoint2(x,y));
-                    moveLogic(pos);
-                }
-            }));
-        }
-        //移动结束
-        walkSequenceAction.addAction(Actions.run(new Runnable() {
-            @Override
-            public void run() {
-                stopMoving();
-            }
-        }));
-        characterActor.addAction(walkSequenceAction);
     }
 
 }
