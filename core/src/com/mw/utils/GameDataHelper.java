@@ -5,6 +5,8 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Json;
+import com.mw.logic.characters.info.CharacterInfo;
+import com.mw.logic.characters.info.PlayerInfo;
 import com.mw.model.MapInfo;
 
 /**
@@ -76,5 +78,16 @@ public class GameDataHelper {
     }
     public int getCurrentStep(String name){
         return preferences.getInteger(name+"step",0);
+    }
+
+    public void setPlayerInfo(PlayerInfo characterInfo){
+        Json json = new Json();
+        String str = json.toJson(characterInfo);
+        preferences.putString("info",str);
+        preferences.flush();
+    }
+    public PlayerInfo getPlayerInfo(){
+        Json json = new Json();
+        return json.fromJson(PlayerInfo.class,preferences.getString("info"));
     }
 }

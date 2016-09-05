@@ -26,7 +26,10 @@ public class UiStage extends Stage {
     private FreeTypeFontGenerator.FreeTypeFontParameter fontParameter;
     private BitmapFont bfLevel;
     private BitmapFont bfStep;
-    private String str = "关卡:0123456789步数";
+    private BitmapFont bfHp;
+    private BitmapFont bfAp;
+    private BitmapFont bfDp;
+    private String str = "关卡:-0123456789步数攻击血量防御abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     private ImageButton ib_back;
     private TextureAtlas atlas;
@@ -40,6 +43,10 @@ public class UiStage extends Stage {
         fontParameter.size = 20;
         bfLevel = generator.generateFont(fontParameter);
         bfStep = generator.generateFont(fontParameter);
+
+        bfAp = generator.generateFont(fontParameter);
+        bfDp = generator.generateFont(fontParameter);
+        bfHp = generator.generateFont(fontParameter);
 
         atlas = new TextureAtlas(Gdx.files.internal("images/buttons.pack"));
         TextureRegionDrawable imageUp = new TextureRegionDrawable(atlas.findRegion("button_back_normal"));
@@ -71,6 +78,10 @@ public class UiStage extends Stage {
         getBatch().begin();
         bfLevel.draw(getBatch(),"关卡:"+GameDataHelper.getInstance().getCurrentLevel(),10,20+bfLevel.getCapHeight());
         bfStep.draw(getBatch(),"步数:"+GameDataHelper.getInstance().getCurrentStep(PlayerInfo.NAME),Gdx.graphics.getWidth()-bfStep.getRegion().getRegionWidth()-10,20+bfStep.getCapHeight());
+        PlayerInfo playerInfo = GameDataHelper.getInstance().getPlayerInfo();
+        bfHp.draw(getBatch(),"血量:"+playerInfo.getHealthPoint(),Gdx.graphics.getWidth()-bfStep.getRegion().getRegionWidth()-10,Gdx.graphics.getHeight()-20-bfLevel.getCapHeight());
+        bfAp.draw(getBatch(),"攻击:"+playerInfo.getAttackPoint(),Gdx.graphics.getWidth()-bfStep.getRegion().getRegionWidth()-10,Gdx.graphics.getHeight()-40-bfLevel.getCapHeight());
+        bfDp.draw(getBatch(),"防御:"+playerInfo.getDefensePoint(),Gdx.graphics.getWidth()-bfStep.getRegion().getRegionWidth()-10,Gdx.graphics.getHeight()-60-bfLevel.getCapHeight());
         getBatch().end();
 
     }

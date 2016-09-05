@@ -6,6 +6,9 @@ import com.mw.logic.characters.base.Monster;
 import com.mw.logic.characters.base.Player;
 import com.mw.logic.characters.info.GhostInfo;
 import com.mw.logic.characters.npc.Ghost;
+import com.mw.logic.item.base.Food;
+import com.mw.logic.item.base.Item;
+import com.mw.logic.item.info.FoodInfo;
 
 /**
  * Created by BanditCat on 2016/8/10.
@@ -40,6 +43,12 @@ public class Logic {
         return monsterArray;
     }
 
+    private Array<Item>itemArray = new Array<Item>();
+
+    public Array<Item> getItemArray() {
+        return itemArray;
+    }
+
     private Player player;
 
     public Player getPlayer() {
@@ -67,6 +76,7 @@ public class Logic {
          */
         player.findWay(x,y);
         player.walk();
+        checkOthers();
         for (int i = 0; i < Logic.getInstance().getMonsterArray().size; i++) {
             Monster monster = Logic.getInstance().getMonsterArray().get(i);
             if(monster.getInfo().getName().equals(GhostInfo.NAME)){
@@ -75,12 +85,50 @@ public class Logic {
                 ghost.walk();
             }
         }
+        checkPlayer();
     }
 
-    public void doRound(int endX, int endY){
+    private void checkPlayer() {
+        if(player.getInfo().getHealthPoint()<=0){
+            if(gameEventListener != null){
+                gameEventListener.GameOver();
+            }
+        }
+    }
+
+    private void checkOthers() {
+        for (int i = 0; i < Logic.getInstance().getMonsterArray().size; i++) {
+            Monster monster = Logic.getInstance().getMonsterArray().get(i);
+            if(monster.getInfo().getName().equals(GhostInfo.NAME)){
+                Ghost ghost = (Ghost) monster;
+                if(ghost.getInfo().getHealthPoint()<=0){
+                    ghost.getActor().remove();
+                    monsterArray.removeValue(ghost,false);
+                }
+            }
+        }
+        for (int i = 0; i < Logic.getInstance().getItemArray().size; i++) {
+            Item item = Logic.getInstance().getItemArray().get(i);
+            if(item.getInfo().getName().equals(FoodInfo.NAME)){
+                Food food = (Food) item;
+                if(food.getInfo().getHealthPoint()<=0){
+                    food.getActor().remove();
+                    itemArray.removeValue(food,false);
+                }
+            }
+        }
+    }
+
+    private void endRound(){
 
     }
-    public void endRound(){
+    private GameEventListener gameEventListener = null;
 
+    public void setGameEventListener(GameEventListener gameEventListener) {
+        this.gameEventListener = gameEventListener;
+    }
+
+    public interface GameEventListener{
+        void GameOver();
     }
 }

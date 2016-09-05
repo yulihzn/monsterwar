@@ -12,4 +12,5 @@ public class PlayerInfo extends CharacterInfo {
     public PlayerInfo(int h, int ap, int ar, int dp, int sp,int sr) {
         super(NAME,h, ap, ar, dp, sp,sr);
     }
+
 }

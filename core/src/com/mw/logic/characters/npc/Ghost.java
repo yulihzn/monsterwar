@@ -2,6 +2,7 @@ package com.mw.logic.characters.npc;
 
 import com.mw.logic.Logic;
 import com.mw.logic.characters.base.Monster;
+import com.mw.logic.characters.base.Player;
 import com.mw.map.DungeonMap;
 import com.mw.stage.MapStage;
 
@@ -40,4 +41,9 @@ public class Ghost extends Monster {
         return isUnit;
     }
 
+    @Override
+    protected void attackUnit(int curPos) {
+        super.attackUnit(curPos);
+        attackCalculate(this,Logic.getInstance().getPlayer());
+    }
 }

@@ -6,7 +6,11 @@ package com.mw.logic.characters.info;
 public class GhostInfo extends CharacterInfo {
     public static final String NAME = "ghost";
 
-    public GhostInfo(int h, int ap, int ar, int dp, int sp,int sr) {
+    public GhostInfo() {
+        this.setName(NAME);
+    }
+
+    public GhostInfo(int h, int ap, int ar, int dp, int sp, int sr) {
         super(NAME,h, ap, ar, dp, sp,sr);
     }
 }

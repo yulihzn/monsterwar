@@ -11,13 +11,16 @@ import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.mw.actor.CharacterActor;
+import com.mw.logic.Logic;
 import com.mw.logic.characters.info.CharacterInfo;
+import com.mw.logic.item.base.Item;
 import com.mw.map.AStarMap;
 import com.mw.map.AStarNode;
 import com.mw.map.DungeonMap;
 import com.mw.model.MapInfoModel;
 import com.mw.stage.MapStage;
 import com.mw.utils.Dungeon;
+import com.mw.utils.GameDataHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +83,7 @@ public abstract class Character implements Telegraph {
         isMoving = true;
         final int x = path.get(pathIndex).getX();
         final int y = path.get(pathIndex).getY();
+        final boolean isStayAround = getActor().getTilePosIndex().x == x&&getActor().getTilePosIndex().y==y;
         characterActor.setTilePosIndexOnly(new GridPoint2(x,y));
         MoveToAction action = Actions.moveTo(x<<5,y<<5,0.05f);
         //添加移动动画
@@ -92,6 +96,9 @@ public abstract class Character implements Telegraph {
                 characterActor.removeAction(walkSequenceAction);
                 characterActor.setTilePosIndex(new GridPoint2(x,y));
                 moveFinish(x,y);
+                if(isStayAround){
+                    stayAround(x,y);
+                }
                 stopMoving();
             }
         }));
@@ -176,6 +183,8 @@ public abstract class Character implements Telegraph {
     protected void moveFinish(int x, int y){
 
     }
+    protected void stayAround(int x,int y){}
+
 
     protected boolean hasObstacle(int x,int y){
         //当下一个点是门的话
@@ -187,6 +196,8 @@ public abstract class Character implements Telegraph {
         return false;
     }
 
+    protected void getItem(Item item){
+    }
     protected boolean hasEnemy(int x,int y){
         return false;
     }
@@ -239,6 +250,18 @@ public abstract class Character implements Telegraph {
             }
         }));
         characterActor.addAction(attackSeq);
+    }
+
+
+    protected void attackCalculate(Character attacker,Character defender){
+        int attacker_ap = attacker.getInfo().getAttackPoint();//攻击力
+        int defender_hp = defender.getInfo().getHealthPoint();//血量
+        int defender_dp = defender.getInfo().getDefensePoint();//防御力
+
+        defender_hp -= attacker_ap-defender_dp>0?attacker_ap-defender_dp:0;
+        defender.getInfo().setHealthPoint(defender_hp);
+        defender.setInfo(defender.getInfo());
+
     }
 
 }

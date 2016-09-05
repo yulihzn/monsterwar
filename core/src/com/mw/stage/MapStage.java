@@ -18,11 +18,12 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.mw.actor.ElementsInterFace;
 import com.mw.actor.MapShadow;
 import com.mw.actor.TiledMapActor;
+import com.mw.factory.ItemFactory;
 import com.mw.logic.Logic;
 import com.mw.logic.characters.base.Monster;
 import com.mw.logic.characters.base.Player;
-import com.mw.logic.characters.info.GhostInfo;
-import com.mw.logic.characters.npc.Ghost;
+import com.mw.logic.item.base.Food;
+import com.mw.logic.item.base.Item;
 import com.mw.map.DungeonMap;
 import com.mw.model.MapInfoModel;
 import com.mw.screen.MainScreen;
@@ -48,15 +49,11 @@ public class  MapStage extends Stage{
 
 	private int level = 0;
 
-	private GameEventListener gameEventListener;
-
 	private CharacterFactory characterFactory;
+	private ItemFactory itemFactory;
 
 	private ElementsInterFace elementsInterFace;
 
-	public void setGameEventListener(GameEventListener gameEventListener) {
-		this.gameEventListener = gameEventListener;
-	}
 
 	public MapStage(OrthographicCamera camera, MainScreen mainScreen){
 		this.camera = camera;
@@ -88,32 +85,47 @@ public class  MapStage extends Stage{
 			createActorsForLayer(tiledLayer);
 		}
 		characterFactory = new CharacterFactory(this);
+		itemFactory = new ItemFactory(this);
 		//添加角色
 		man = characterFactory.getPlayer();
 		Logic.getInstance().setPlayer(man);
 		man.setPlayerActionListener(playerActionListener);
 		adjustPlayerPos(-1);
 		generateMonsters();
+		generateItems();
 
 		mapShadow = new MapShadow(camera,DungeonMap.TILE_SIZE<<5,DungeonMap.TILE_SIZE<<5,dungeonMap);
 		mapShadow.setPosition(0,0);
 		addActor(mapShadow);
-		mapShadow.setZIndex(3);
+		mapShadow.setZIndex(300);
 		mapShadow.getSightPosIndex().x = man.getActor().getTilePosIndex().x;
 		mapShadow.getSightPosIndex().y = man.getActor().getTilePosIndex().y;
 		mapShadow.updateLines();
 		elementsInterFace = new ElementsInterFace(camera,DungeonMap.TILE_SIZE<<5,DungeonMap.TILE_SIZE<<5,dungeonMap);
 		elementsInterFace.setPosition(0,0);
 		addActor(elementsInterFace);
-		elementsInterFace.setZIndex(100);
+		elementsInterFace.setZIndex(1000);
 		elementsInterFace.getSightPosIndex().x = man.getActor().getTilePosIndex().x;
 		elementsInterFace.getSightPosIndex().y = man.getActor().getTilePosIndex().y;
 		elementsInterFace.drawTile();
 
+		Logic.getInstance().setGameEventListener(gameEventListener);
+
 	}
+	private Logic.GameEventListener gameEventListener = new Logic.GameEventListener() {
+		@Override
+		public void GameOver() {
+			man.getActor().remove();
+			man = characterFactory.getPlayer();
+			Logic.getInstance().setPlayer(man);
+			man.setPlayerActionListener(playerActionListener);
+			generateNextStairs(0);
+		}
+	};
 
 	private void generateMonsters() {
-		for (int i = 0; i < 0; i++) {
+		Logic.getInstance().getMonsterArray().clear();
+		for (int i = 0; i < 2; i++) {
 			Logic.getInstance().getMonsterArray().add(characterFactory.getGhost());
 		}
 		Array<MapInfoModel> availableTiles = new Array<MapInfoModel>();
@@ -126,6 +138,23 @@ public class  MapStage extends Stage{
 		}
 		for (Monster monster : Logic.getInstance().getMonsterArray()){
 			monster.getActor().setTilePosIndex(availableTiles.get(MathUtils.random(0,availableTiles.size-1)).getPos());
+		}
+	}
+	private void generateItems(){
+		Logic.getInstance().getItemArray().clear();
+		for (int i = 0; i < 1; i++) {
+			Logic.getInstance().getItemArray().add(itemFactory.getFood());
+		}
+		Array<MapInfoModel> availableTiles = new Array<MapInfoModel>();
+		for (int i = 0; i < dungeonMap.getMapInfo().getMapArray().length; i++) {
+			for (int j = 0; j < dungeonMap.getMapInfo().getMapArray()[0].length; j++) {
+				if(!isBlock(i,j)){
+					availableTiles.add(dungeonMap.getMapInfo().getMapArray()[i][j]);
+				}
+			}
+		}
+		for (Item food : Logic.getInstance().getItemArray()){
+			food.getActor().setTilePosIndex(availableTiles.get(MathUtils.random(0,availableTiles.size-1)).getPos());
 		}
 	}
 
@@ -156,9 +185,6 @@ public class  MapStage extends Stage{
 		}
 	};
 
-	public Player getMan() {
-		return man;
-	}
 
 	/**
 	 * 进入下一层
@@ -185,7 +211,11 @@ public class  MapStage extends Stage{
 		man.getActor().setFocus(true);
 		//阴影重置
 		mapShadow.reSet(dungeonMap);
+		mapShadow.getSightPosIndex().y = man.getActor().getTilePosIndex().y;
+		mapShadow.getSightPosIndex().x = man.getActor().getTilePosIndex().x;
 		mapShadow.updateLines();
+		generateMonsters();
+		generateItems();
 	}
 	//调整玩家位置让他不卡墙
 	public void adjustPlayerPos(int action){
@@ -285,9 +315,11 @@ public class  MapStage extends Stage{
 	@Override
 	public void draw() {
 		//地图绘制
-		renderer.render();
+//		renderer.render();
+		renderer.render(new int[]{0,1,2});
 		//余下actor绘制
 		super.draw();
+		renderer.render(new int[]{3});
 	}
 
 	@Override
@@ -330,6 +362,7 @@ public class  MapStage extends Stage{
 		super.act(delta);
 	}
 
+
 	@Override
 	public boolean scrolled(int amount) {
 		Gdx.app.log("scrolled",""+amount);
@@ -361,10 +394,6 @@ public class  MapStage extends Stage{
 			System.out.println(actor.getX()+","+actor.getY() +"value = "+actor.getCell().getTile().getId()+ " has been clicked.");
 			Logic.getInstance().beginRound(actor.getTilePosIndex().x,actor.getTilePosIndex().y);
 		}
-	}
-
-	public interface GameEventListener{
-		void onActionChanged(int action);
 	}
 
 }

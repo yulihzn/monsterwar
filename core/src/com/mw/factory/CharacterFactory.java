@@ -45,7 +45,7 @@ public class CharacterFactory {
     }
     public Ghost getGhost(){
         Ghost ghost = new Ghost(dungeonMap);
-        ghost.setInfo(new GhostInfo(10,1,1,0,1,3));
+        ghost.setInfo(new GhostInfo(1,1,1,0,1,3));
         GhostActor ghostActor = new GhostActor(ghost,textureAtlas,"ghost",camera,dungeonMap);
         ghostActor.setTilePosIndex(new GridPoint2(DungeonMap.TILE_SIZE/2,DungeonMap.TILE_SIZE/2));
         ghost.setActor(ghostActor);

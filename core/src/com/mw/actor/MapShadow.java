@@ -416,7 +416,11 @@ public class MapShadow extends Actor{
             GridPoint2 p = showTiles.get(i);
             float centerX = p.x*32+16;
             float centerY = p.y*32+16;
-            if(!Intersector.isPointInPolygon(arr,0,arr.length,centerX ,centerY)){
+            if(!Intersector.isPointInPolygon(arr,0,arr.length,centerX ,centerY)
+                    &&!Intersector.isPointInPolygon(arr,0,arr.length,centerX+8 ,centerY-8)
+                    &&!Intersector.isPointInPolygon(arr,0,arr.length,centerX-8 ,centerY-8)
+                    &&!Intersector.isPointInPolygon(arr,0,arr.length,centerX+8 ,centerY+8)
+                    &&!Intersector.isPointInPolygon(arr,0,arr.length,centerX-8 ,centerY+8)){
                 showTiles.removeIndex(i);
             }
         }

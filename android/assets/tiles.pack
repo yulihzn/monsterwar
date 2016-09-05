@@ -59,72 +59,79 @@ empty-original
   orig: 32, 32
   offset: 0, 0
   index: -1
-ghost
+food
   rotate: false
   xy: 256, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-grass01-original
+food1
   rotate: false
   xy: 288, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-grass02-original
+fool
   rotate: false
   xy: 320, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-man
+ghost
   rotate: false
   xy: 352, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-sand01-original
+grass01-original
   rotate: false
   xy: 384, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-shadow_corner
+grass02-original
   rotate: false
   xy: 416, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-shadow_left
+man
   rotate: false
   xy: 448, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-stone-original
+sand01-original
   rotate: false
   xy: 480, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-transparent
+stone-original
   rotate: false
   xy: 512, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-upstair
+transparent
   rotate: false
   xy: 544, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+upstair
+  rotate: false
+  xy: 576, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
