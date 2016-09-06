@@ -15,6 +15,7 @@ import com.mw.map.DungeonMap;
 import com.mw.stage.MapStage;
 import com.mw.stage.UiStage;
 import com.mw.utils.CameraController;
+import com.mw.utils.GameInputMultiplexer;
 
 public class MainScreen extends BaseScreen implements Screen{
 	private MapStage mapStage;
@@ -26,8 +27,14 @@ public class MainScreen extends BaseScreen implements Screen{
 	private long startTime = TimeUtils.nanoTime();
 
 	private float worldWidth = DungeonMap.TILE_SIZE*32;
-	private float worldtHeight = DungeonMap.TILE_SIZE*32;
+	private float worldHeight = DungeonMap.TILE_SIZE*32;
 	private float camSize = DungeonMap.TILE_SIZE*32;
+
+	private GameInputMultiplexer inputMultiplexer;
+
+	public GameInputMultiplexer getInputMultiplexer() {
+		return inputMultiplexer;
+	}
 
 	private MainGame mainGame;
 
@@ -41,7 +48,7 @@ public class MainScreen extends BaseScreen implements Screen{
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
 		cam = new OrthographicCamera(camSize, camSize*(h/w));
-		cam.position.set(worldWidth / 2f, worldtHeight / 2f, 0);
+		cam.position.set(worldWidth / 2f, worldHeight / 2f, 0);
 		cam.zoom = 1.5f;
 		cam.update();
 		controller = new CameraController(cam);
@@ -52,17 +59,17 @@ public class MainScreen extends BaseScreen implements Screen{
 				elementTouch("man",x,y);
 			}
 		});
-
+		inputMultiplexer = new GameInputMultiplexer();
 	}
 
 	@Override
 	public void show() {
+
 		uiStage = new UiStage(cam,this);
 		mapStage = new MapStage(cam,this);
 		mapStage.setDebugUnderMouse(true);
-		InputMultiplexer inputMultiplexer = new InputMultiplexer();
-		inputMultiplexer.addProcessor(gestureDetector);
 		inputMultiplexer.addProcessor(uiStage);
+		inputMultiplexer.addProcessor(gestureDetector);
 		inputMultiplexer.addProcessor(mapStage);
 		Gdx.input.setInputProcessor(inputMultiplexer);
 
@@ -87,7 +94,11 @@ public class MainScreen extends BaseScreen implements Screen{
 //		cam.position.x = MathUtils.clamp(cam.position.x, effectiveViewportWidth / 2f, worldWidth - effectiveViewportWidth / 2f);
 //		cam.position.y = MathUtils.clamp(cam.position.y, effectiveViewportHeight / 2f, worldtHeight - effectiveViewportHeight / 2f);
 		cam.position.x = MathUtils.clamp(cam.position.x, 0, worldWidth);
-		cam.position.y = MathUtils.clamp(cam.position.y, 0, worldtHeight);
+		cam.position.y = MathUtils.clamp(cam.position.y, 0, worldHeight);
+		float w = Gdx.graphics.getWidth();
+		float h = Gdx.graphics.getHeight();
+		cam.viewportWidth = camSize;
+		cam.viewportHeight = camSize*(h/w);
 		cam.update();
 
 		mapStage.act(Gdx.graphics.getDeltaTime());
@@ -106,6 +117,7 @@ public class MainScreen extends BaseScreen implements Screen{
 		}
 //		cam.viewportWidth = camSize;
 //		cam.viewportHeight = camSize * height/width;
+
 		cam.update();
 		mapStage.getViewport().update(width,height,true);
 		uiStage.getViewport().update(width,height,true);
@@ -127,8 +139,9 @@ public class MainScreen extends BaseScreen implements Screen{
 	}
 
 	@Override
-	public void dispose() {
-
+	public void dispose(){
+		mapStage.dispose();
+		uiStage.dispose();
 	}
 
 }

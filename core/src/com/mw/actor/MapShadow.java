@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -19,12 +18,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import com.mw.map.DungeonMap;
 import com.mw.utils.Dungeon;
-
-import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by BanditCat on 2016/3/29.
@@ -50,6 +44,7 @@ public class MapShadow extends Actor{
     private Pixmap pixmap;
     private Texture texture;
     private Array<GridPoint2> showTiles = new Array<GridPoint2>();
+
 
     public MapShadow(OrthographicCamera camera,int width,int height,DungeonMap dungeonMap) {
         this.dungeonMap = dungeonMap;
@@ -144,7 +139,7 @@ public class MapShadow extends Actor{
         float sy = (sightPosIndex.y*32)+16;//视野的纵坐标
         Pixmap.setBlending(Pixmap.Blending.None);
         //画半黑阴影
-        pixmap.setColor(new Color(0,0,0,0.6f));
+        pixmap.setColor(new Color(0,0,0,0.3f));
         pixmap.fillRectangle(0,0,width,height);
 //        pixmap.fillRectangle((int)sx-sightWidth/2,(int)(height-sy)-sightHeight/2,sightWidth,sightHeight);
 
@@ -191,6 +186,7 @@ public class MapShadow extends Actor{
 //            pixmap.drawLine((int)arr[i],(int)(height-arr[i+1]),(int)arr[i+2],(int)(height-arr[i+3]));
 //        }
         texture.draw(pixmap,0,0);
+
 
     }
 

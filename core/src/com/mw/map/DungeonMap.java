@@ -190,17 +190,18 @@ public class DungeonMap extends TiledMap {
     private String getResName(int value){
         String name = "";
         switch(value) {
-            case Dungeon.tileUnused:name="block01-original";break;
-            case Dungeon.tileDirtWall:name="block01-original"; break;
-            case Dungeon.tileDirtFloor:name="block02"; break;
-            case Dungeon.tileStoneWall:name="stone-original"; break;
-            case Dungeon.tileCorridor:name="block02"; break;
+            case Dungeon.tileUnused:name="stone01";break;
+            case Dungeon.tileDirtWall:name="block01"; break;
+            case Dungeon.tileDirtFloor:name="sand01"; break;
+            case Dungeon.tileStoneWall:name="stone"; break;
+            case Dungeon.tileCorridor:name="sand01"; break;
             case Dungeon.tileDoor:name="door"; break;
             case Dungeon.tileUpStairs:name="upstair"; break;
             case Dungeon.tileDownStairs:name="downstair"; break;
-            case Dungeon.tileChest:name="cup02-original"; break;
+            case Dungeon.tileChest:name="cup01"; break;
             case Dungeon.tileDoorOpen:name="down"; break;
             case Dungeon.tileNothing:name="empty-original"; break;
+            default:name = "";break;
         }
         return name;
     }

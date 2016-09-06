@@ -22,7 +22,6 @@ import com.mw.factory.ItemFactory;
 import com.mw.logic.Logic;
 import com.mw.logic.characters.base.Monster;
 import com.mw.logic.characters.base.Player;
-import com.mw.logic.item.base.Food;
 import com.mw.logic.item.base.Item;
 import com.mw.map.DungeonMap;
 import com.mw.model.MapInfoModel;
@@ -319,7 +318,7 @@ public class  MapStage extends Stage{
 		renderer.render(new int[]{0,1,2});
 		//余下actor绘制
 		super.draw();
-		renderer.render(new int[]{3});
+//		renderer.render(new int[]{3});
 	}
 
 	@Override

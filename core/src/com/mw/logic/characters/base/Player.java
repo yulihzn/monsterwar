@@ -7,7 +7,6 @@ import com.mw.logic.characters.npc.Ghost;
 import com.mw.logic.item.base.Food;
 import com.mw.logic.item.base.Item;
 import com.mw.map.DungeonMap;
-import com.mw.stage.MapStage;
 import com.mw.utils.Dungeon;
 import com.mw.utils.GameDataHelper;
 
