@@ -86,11 +86,13 @@ public class Logic {
             }
         }
         checkPlayer();
+        sendLogMessage("");
+
     }
 
     private void checkPlayer() {
         if(player.getInfo().getHealthPoint()<=0){
-            if(gameEventListener != null){
+            for (GameEventListener gameEventListener:gameEventListeners) {
                 gameEventListener.GameOver();
             }
         }
@@ -122,13 +124,32 @@ public class Logic {
     private void endRound(){
 
     }
-    private GameEventListener gameEventListener = null;
 
-    public void setGameEventListener(GameEventListener gameEventListener) {
-        this.gameEventListener = gameEventListener;
+    private Array<Logic.GameEventListener> gameEventListeners = new Array<Logic.GameEventListener>();
+
+    public void addGameEventListener(GameEventListener gameEventListener) {
+        this.gameEventListeners.add(gameEventListener);
+    }
+    public void removeGameEventListener(GameEventListener gameEventListener) {
+        this.gameEventListeners.removeValue(gameEventListener,false);
     }
 
     public interface GameEventListener{
         void GameOver();
+    }
+
+    public void sendLogMessage(String msg){
+        if(logMessageListener != null){
+            logMessageListener.sendMessage(msg);
+        }
+    }
+    private LogMessageListener logMessageListener;
+
+    public void setLogMessageListener(LogMessageListener logMessageListener) {
+        this.logMessageListener = logMessageListener;
+    }
+
+    public interface LogMessageListener{
+        void sendMessage(String msg);
     }
 }

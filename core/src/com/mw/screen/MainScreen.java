@@ -19,7 +19,7 @@ import com.mw.utils.GameInputMultiplexer;
 
 public class MainScreen extends BaseScreen implements Screen{
 	private MapStage mapStage;
-	private Stage uiStage;
+	private UiStage uiStage;
 
 	private OrthographicCamera cam;
 	CameraController controller;
@@ -65,7 +65,7 @@ public class MainScreen extends BaseScreen implements Screen{
 	@Override
 	public void show() {
 
-		uiStage = new UiStage(cam,this);
+		uiStage = new UiStage(this);
 		mapStage = new MapStage(cam,this);
 		mapStage.setDebugUnderMouse(true);
 		inputMultiplexer.addProcessor(uiStage);

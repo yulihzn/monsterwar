@@ -108,7 +108,7 @@ public class  MapStage extends Stage{
 		elementsInterFace.getSightPosIndex().y = man.getActor().getTilePosIndex().y;
 		elementsInterFace.drawTile();
 
-		Logic.getInstance().setGameEventListener(gameEventListener);
+		Logic.getInstance().addGameEventListener(gameEventListener);
 
 	}
 	private Logic.GameEventListener gameEventListener = new Logic.GameEventListener() {
