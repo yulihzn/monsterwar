@@ -7,6 +7,7 @@ import com.mw.logic.characters.npc.Ghost;
 import com.mw.logic.item.base.Food;
 import com.mw.logic.item.base.Item;
 import com.mw.map.DungeonMap;
+import com.mw.ui.LogMessageTable;
 import com.mw.utils.Dungeon;
 import com.mw.utils.GameDataHelper;
 
@@ -58,8 +59,10 @@ public class Player extends Character {
         if(playerActionListener != null){
             if(dungeonMap.getMapInfo().getMapArray()[x][y].getBlock() == Dungeon.tileUpStairs){
                 playerActionListener.move(ACTION_UP,x,y);
+                Logic.getInstance().sendLogMessage("你费力地爬了上来", LogMessageTable.TYPE_NORMAL);
             }else if(dungeonMap.getMapInfo().getMapArray()[x][y].getBlock() == Dungeon.tileDownStairs){
                 playerActionListener.move(ACTION_DOWN,x,y);
+                Logic.getInstance().sendLogMessage("不知道这底下是什么", LogMessageTable.TYPE_NORMAL);
             }
         }
     }
@@ -106,8 +109,14 @@ public class Player extends Character {
     }
 
     @Override
+    protected void attackCalculate(Character attacker, Character defender) {
+        super.attackCalculate(attacker, defender);
+    }
+
+    @Override
     protected void getItem(Item item) {
         super.getItem(item);
+        Logic.getInstance().sendLogMessage("真好吃，生命恢复了"+item.getInfo().getHealthPoint()+"点",LogMessageTable.TYPE_GOOD);
         int hp = getInfo().getHealthPoint()+item.getInfo().getHealthPoint();
         this.getInfo().setHealthPoint(hp);
         this.setInfo(this.getInfo());

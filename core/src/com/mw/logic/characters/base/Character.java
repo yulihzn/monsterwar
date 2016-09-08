@@ -13,12 +13,14 @@ import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.mw.actor.CharacterActor;
 import com.mw.logic.Logic;
 import com.mw.logic.characters.info.CharacterInfo;
+import com.mw.logic.characters.info.PlayerInfo;
 import com.mw.logic.item.base.Item;
 import com.mw.map.AStarMap;
 import com.mw.map.AStarNode;
 import com.mw.map.DungeonMap;
 import com.mw.model.MapInfoModel;
 import com.mw.stage.MapStage;
+import com.mw.ui.LogMessageTable;
 import com.mw.utils.Dungeon;
 import com.mw.utils.GameDataHelper;
 
@@ -258,9 +260,17 @@ public abstract class Character implements Telegraph {
         int defender_hp = defender.getInfo().getHealthPoint();//血量
         int defender_dp = defender.getInfo().getDefensePoint();//防御力
 
-        defender_hp -= attacker_ap-defender_dp>0?attacker_ap-defender_dp:0;
+        int damage = attacker_ap-defender_dp>0?attacker_ap-defender_dp:0;
+
+        defender_hp -= damage;
         defender.getInfo().setHealthPoint(defender_hp);
         defender.setInfo(defender.getInfo());
+        int type = LogMessageTable.TYPE_BAD;
+        if(attacker.getInfo().getName().equals(PlayerInfo.NAME)){
+            type = LogMessageTable.TYPE_WARNING;
+        }
+
+        Logic.getInstance().sendLogMessage(attacker.getInfo().getName()+"对"+defender.getInfo().getName()+"造成了"+damage+"点伤害", type);
 
     }
 

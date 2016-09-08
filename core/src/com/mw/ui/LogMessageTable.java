@@ -7,34 +7,40 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.mw.logic.Logic;
+import com.mw.model.LogModel;
 
 /**
  * Created by BanditCat on 2016/9/7.
  */
 public class LogMessageTable extends Table {
     private FreeTypeFontGenerator generator;
-    private FreeTypeFontGenerator.FreeTypeFontParameter fontParameter;
-    private BitmapFont bitmapFont;
+    private LazyBitmapFont bitmapFont;
     private Texture texture;
-    private String str="test";
+    private ScrollPane scrollPane;
+    private Array<LogModel> msgList = new Array<LogModel>();
+    public final static int TYPE_NORMAL = 0;//普通类型
+    public final static int TYPE_WARNING = 1;//警告类型
+    public final static int TYPE_BAD = 2;//危险类型
+    public final static int TYPE_GOOD = 3;//增益类型
+    private Color[]colors = {Color.LIGHT_GRAY,Color.YELLOW,Color.RED,Color.GREEN};
+
+
     public LogMessageTable() {
         init();
     }
 
     private void init() {
         int w = Gdx.graphics.getWidth()/2;
-        int h = 200;
+        int h = 20;
         generator = new FreeTypeFontGenerator(Gdx.files.internal("data/font.ttf"));
-        fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        fontParameter.characters = str;
-        fontParameter.size = 16;
-        bitmapFont = generator.generateFont(fontParameter);
+        bitmapFont = new LazyBitmapFont(generator,14);
 
         Pixmap pixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888); // Pixmap.Format.RGBA8888);
         // Create a texture to contain the pixmap
@@ -50,34 +56,51 @@ public class LogMessageTable extends Table {
         setWidth(w);
         setHeight(h);
         Table table = new Table();
-        final ScrollPane scrollPane = new ScrollPane(table);
+        scrollPane = new ScrollPane(table);
         table.pad(5).defaults().expandX().space(5);
-        for (int i = 0; i < 10; i++) {
-            table.row();
-            Label label = new Label(i+"12345678",new Label.LabelStyle(bitmapFont, Color.WHITE));
-            label.setText(label.getText()+"防御123456781234防御1234567812345防御1234567812345防御1234567812345防御1234567812345防御1234567812345防御12345678123455");
-            label.setWidth(w);
-            label.setWrap(true);
-            table.add(label).expandX().fillX();
-        }
         add(scrollPane).expand().fill().colspan(5);
         row().space(5).padBottom(5);
-        addAction(Actions.fadeOut(0));
-        setVisible(false);
+//        addAction(Actions.fadeOut(0));
+//        setVisible(false);
         Logic.getInstance().setLogMessageListener(logMessageListener);
+
+    }
+
+    /**
+     * 添加一条消息
+     * @param msg
+     */
+    private void addMsg(String msg,int type){
+        //列表添加消息
+        msgList.insert(0,new LogModel(msg,type,msgList.size));
+        //新建一个label
+        Table table = ((Table)scrollPane.getWidget());
+        Label label = new Label("",new Label.LabelStyle(bitmapFont, Color.WHITE));
+        int w = Gdx.graphics.getWidth()/2;
+        label.setWidth(w);
+        label.setWrap(true);
+        table.row();
+        table.add(label).expandX().fillX();
+        //重新赋值所有的label
+        for (int i = 0; i < table.getCells().size; i++) {
+            Cell cell = table.getCells().get(i);
+            cell.getActor().setColor(colors[msgList.get(i).getType()]);
+            ((Label)cell.getActor()).setText(msgList.get(i).getMsg());
+        }
 
     }
     private Logic.LogMessageListener logMessageListener = new Logic.LogMessageListener() {
 
         @Override
-        public void sendMessage(String msg) {
-            setVisible(true);
-            addAction(Actions.sequence(Actions.fadeIn(0.1f),Actions.delay(1,Actions.fadeOut(3f)),Actions.run(new Runnable() {
-                @Override
-                public void run() {
-                    setVisible(false);
-                }
-            })));
+        public void sendMessage(String msg,int type) {
+            addMsg(msg,type);
+//            setVisible(true);
+//            addAction(Actions.sequence(Actions.fadeIn(0.1f),Actions.delay(1,Actions.fadeOut(3f)),Actions.run(new Runnable() {
+//                @Override
+//                public void run() {
+//                    setVisible(false);
+//                }
+//            })));
         }
     };
     public void dispose(){

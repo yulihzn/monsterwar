@@ -86,7 +86,6 @@ public class Logic {
             }
         }
         checkPlayer();
-        sendLogMessage("");
 
     }
 
@@ -138,9 +137,9 @@ public class Logic {
         void GameOver();
     }
 
-    public void sendLogMessage(String msg){
+    public void sendLogMessage(String msg,int type){
         if(logMessageListener != null){
-            logMessageListener.sendMessage(msg);
+            logMessageListener.sendMessage(msg,type);
         }
     }
     private LogMessageListener logMessageListener;
@@ -150,6 +149,6 @@ public class Logic {
     }
 
     public interface LogMessageListener{
-        void sendMessage(String msg);
+        void sendMessage(String msg,int type);
     }
 }

@@ -6,6 +6,21 @@ package com.mw.model;
 public class LogModel {
     private String msg;
     private int id;
+    private int type;
+
+    public LogModel(String msg,int type,int id) {
+        this.id = id;
+        this.msg = msg;
+        this.type = type;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public int getId() {
         return id;
