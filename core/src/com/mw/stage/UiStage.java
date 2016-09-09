@@ -30,6 +30,7 @@ public class UiStage extends Stage {
     private LazyBitmapFont bitmapFont;
 
     private ImageButton ib_back;
+    private ImageButton ib_menu;
     private TextureAtlas atlas;
     private static final float BACK_PADDING = 10f;
 
@@ -46,6 +47,7 @@ public class UiStage extends Stage {
 
     public UiStage(final MainScreen mainScreen) {
         setViewport(new ScreenViewport());
+        setDebugAll(true);
         generator = new FreeTypeFontGenerator(Gdx.files.internal("data/font.ttf"));
         bitmapFont = new LazyBitmapFont(generator,16);
 
@@ -54,7 +56,6 @@ public class UiStage extends Stage {
         hpLabel = new GameInfoLabel("",new Label.LabelStyle(bitmapFont,Color.WHITE));
         apLabel = new GameInfoLabel("",new Label.LabelStyle(bitmapFont,Color.WHITE));
         dpLabel = new GameInfoLabel("",new Label.LabelStyle(bitmapFont,Color.WHITE));
-
 
         atlas = new TextureAtlas(Gdx.files.internal("images/buttons.pack"));
         TextureRegionDrawable imageUp = new TextureRegionDrawable(atlas.findRegion("button_back_normal"));
@@ -70,7 +71,19 @@ public class UiStage extends Stage {
             }
 
         });
+        ib_menu = new ImageButton(imageUp, imageDown);
+        ib_menu.setPosition(Gdx.graphics.getWidth()-ib_menu.getWidth()-20,20);
+        ib_menu.addListener(new ClickListener() {
+
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                mainScreen.showCharacterStage();
+                super.clicked(event, x, y);
+            }
+
+        });
         addActor(ib_back);
+        addActor(ib_menu);
         logMessageTable = new LogMessageTable();
         addActor(logMessageTable);
         addActor(levelLabel);

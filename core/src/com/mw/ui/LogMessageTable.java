@@ -43,7 +43,6 @@ public class LogMessageTable extends Table {
         bitmapFont = new LazyBitmapFont(generator,14);
 
         Pixmap pixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888); // Pixmap.Format.RGBA8888);
-        // Create a texture to contain the pixmap
         texture = new Texture(w, h, Pixmap.Format.RGBA8888); // Pixmap.Format.RGBA8888);
         texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Linear);
         texture.setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);

@@ -1,17 +1,16 @@
 package com.mw.screen;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mw.base.BaseScreen;
 import com.mw.game.MainGame;
 import com.mw.map.DungeonMap;
+import com.mw.stage.CharacterStage;
 import com.mw.stage.MapStage;
 import com.mw.stage.UiStage;
 import com.mw.utils.CameraController;
@@ -20,6 +19,7 @@ import com.mw.utils.GameInputMultiplexer;
 public class MainScreen extends BaseScreen implements Screen{
 	private MapStage mapStage;
 	private UiStage uiStage;
+	private CharacterStage characterStage;
 
 	private OrthographicCamera cam;
 	CameraController controller;
@@ -66,13 +66,25 @@ public class MainScreen extends BaseScreen implements Screen{
 	public void show() {
 
 		uiStage = new UiStage(this);
+		characterStage = new CharacterStage(this);
 		mapStage = new MapStage(cam,this);
 		mapStage.setDebugUnderMouse(true);
+		hideCharacterStage();
+
+	}
+	public void showCharacterStage(){
+		inputMultiplexer.clear();
+		inputMultiplexer.addProcessor(characterStage);
+		Gdx.input.setInputProcessor(inputMultiplexer);
+		characterStage.setVisible(true);
+	}
+	public void hideCharacterStage(){
+		inputMultiplexer.clear();
 		inputMultiplexer.addProcessor(uiStage);
 		inputMultiplexer.addProcessor(gestureDetector);
 		inputMultiplexer.addProcessor(mapStage);
 		Gdx.input.setInputProcessor(inputMultiplexer);
-
+		characterStage.setVisible(false);
 	}
 	private void elementTouch(String name,float x, float y) {
 	}
@@ -105,9 +117,13 @@ public class MainScreen extends BaseScreen implements Screen{
 		mapStage.draw();
 		uiStage.act(Gdx.graphics.getDeltaTime());
 		uiStage.draw();
+		characterStage.act(Gdx.graphics.getDeltaTime());
+		characterStage.draw();
 	}
 
-
+	public CharacterStage getCharacterStage() {
+		return characterStage;
+	}
 
 	@Override
 	public void resize(int width, int height) {
@@ -119,6 +135,7 @@ public class MainScreen extends BaseScreen implements Screen{
 //		cam.viewportHeight = camSize * height/width;
 
 		cam.update();
+		characterStage.getViewport().update(width,height,true);
 		mapStage.getViewport().update(width,height,true);
 		uiStage.getViewport().update(width,height,true);
 	}
@@ -140,6 +157,7 @@ public class MainScreen extends BaseScreen implements Screen{
 
 	@Override
 	public void dispose(){
+		characterStage.dispose();
 		mapStage.dispose();
 		uiStage.dispose();
 	}

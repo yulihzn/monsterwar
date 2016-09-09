@@ -318,7 +318,7 @@ public class  MapStage extends Stage{
 		renderer.render(new int[]{0,1,2});
 		//余下actor绘制
 		super.draw();
-//		renderer.render(new int[]{3});
+		renderer.render(new int[]{3});
 	}
 
 	@Override
