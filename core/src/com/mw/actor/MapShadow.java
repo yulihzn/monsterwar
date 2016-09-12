@@ -139,52 +139,41 @@ public class MapShadow extends Actor{
         float sy = (sightPosIndex.y*32)+16;//视野的纵坐标
         Pixmap.setBlending(Pixmap.Blending.None);
         //画半黑阴影
-        pixmap.setColor(new Color(0,0,0,0.3f));
+        pixmap.setColor(new Color(0,0,0,0.6f));
         pixmap.fillRectangle(0,0,width,height);
-//        pixmap.fillRectangle((int)sx-sightWidth/2,(int)(height-sy)-sightHeight/2,sightWidth,sightHeight);
 
-//        for (int i = 0; i < shadowArray.length; i++) {
-//            for (int j = 0; j < shadowArray[0].length; j++) {
-//                if(shadowArray[i][j]==1){
-//                    pixmap.fillRectangle(i*32,j*32,(i+1)*32,(j-1)*32);
-//                }
+//        circles = getCircle(sightPosIndex.x,sightPosIndex.y,sightRadius);
+//        pixmap.setColor(new Color(0,0,255,0.5f));
+//        for (GridPoint2 p:circles
+//                ) {
+//            if(p.x<0||p.y<0||p.x>=dungeonMap.getMapInfo().getMapArray()[0].length||p.y>=dungeonMap.getMapInfo().getMapArray().length){
+//                continue;
+//            }
+//            if(!isBlock(p.x,p.y)){
+//                pixmap.fillRectangle(p.x*32,height-p.y*32-32,32,32);
 //            }
 //        }
-//        pixmap.fillRectangle((int)sightRectangle.x,(int)(height-sightRectangle.y),(int)sightRectangle.width,(int)sightRectangle.height);
-//        int r = (int)((Math.sqrt(sightRectangle.width*sightRectangle.width/4+sightRectangle.height*sightRectangle.height/4)));
-//        if(r < 16+32){
-//            r = 16+32;
-//        }
-//        //存储每一个视野圆
-//        Circle circle = new Circle(sightPosIndex.x*32+16,sightPosIndex.y*32+16,r);
-//        shadowCircles.put(sightPosIndex.x+"+"+sightPosIndex.y,circle);
-//        for(Map.Entry<String,Circle> entry : shadowCircles.entrySet()){
-//            int tempX = (int)entry.getValue().x;
-//            int tempY = (int)entry.getValue().y;
-//            pixmap.fillCircle(tempX,height-tempY,(int)entry.getValue().radius);
-//
-//        }
 
-//        pixmap.fillCircle((int)sx,(int)(height-sy),r);
         //画透明阴影
         //坐标系y是反过来的
         pixmap.setColor(new Color(0,0,0,0.1f));
         for(int i = 0;i+3< arr.length;i+=2){
-            pixmap.fillTriangle((int)sx,(int)(height-sy),(int)arr[i],(int)(height-arr[i+1]),(int)arr[i+2],(int)(height-arr[i+3]));
+//            pixmap.fillTriangle((int)sx,(int)(height-sy),(int)arr[i],(int)(height-arr[i+1]),(int)arr[i+2],(int)(height-arr[i+3]));
         }
         for(GridPoint2 p:showTiles){
-//            pixmap.fillRectangle(p.x*32,height-p.y*32-32,32,32);
+            pixmap.fillRectangle(p.x*32,height-p.y*32-32,32,32);
             dungeonMap.changeShadow(p.x,p.y);
         }
         for (int i = 0; i < connectLines.size ; i++) {
             GridPoint2 p = connectLines.get(i).getPoint();
-//            pixmap.fillRectangle(p.x*32,height-p.y*32-32,32,32);
+            pixmap.fillRectangle(p.x*32,height-p.y*32-32,32,32);
             dungeonMap.changeShadow(p.x,p.y);
         }
 //        pixmap.setColor(new Color(0,255,0,0.6f));
 //        for(int i = 0;i+3<arr.length;i+=2){
 //            pixmap.drawLine((int)arr[i],(int)(height-arr[i+1]),(int)arr[i+2],(int)(height-arr[i+3]));
 //        }
+
         texture.draw(pixmap,0,0);
 
 
@@ -593,5 +582,38 @@ public class MapShadow extends Actor{
         // return intersection point and intersect id
         return new float[]{ p.x, p.y, i};
     }
+
+    private Array<GridPoint2> circles = new Array<GridPoint2>();
+
+    private void addPoints(Array<GridPoint2> circles,int x0,int y0,int x,int y){
+        circles.add(new GridPoint2(x+x0,y+y0));
+        circles.add(new GridPoint2(x+x0,-y+y0));
+        circles.add(new GridPoint2(y+x0,x+y0));
+        circles.add(new GridPoint2(y+x0,-x+y0));
+        circles.add(new GridPoint2(-x+x0,-y+y0));
+        circles.add(new GridPoint2(-x+x0,y+y0));
+        circles.add(new GridPoint2(-y+x0,-x+y0));
+        circles.add(new GridPoint2(-y+x0,x+y0));
+    }
+    private Array<GridPoint2> getCircle(int x0,int y0,int r){
+        Array<GridPoint2> circles = new Array<GridPoint2>();
+        int x,y,d,yi;
+        d=3-2*r;
+        x=0;y=r;
+        while (x<y){
+            for(yi=x;yi<=y;yi++){
+                addPoints(circles,x0,y0,x,yi);
+            }
+            if(d<0){
+                d=d+4*x+6;
+            }else{
+                d=d+4*(x-y)+10;
+                y--;
+            }
+            x++;
+        }
+        return circles;
+    }
+
 
 }
