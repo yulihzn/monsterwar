@@ -36,7 +36,7 @@ public class ItemFactory {
     public Food getFood(){
         Food food = new Food(dungeonMap);
         food.setInfo(new FoodInfo(1,0,0,0,0));
-        FoodActor foodActor = new FoodActor(textureAtlas,"food1",camera);
+        FoodActor foodActor = new FoodActor(textureAtlas,FoodInfo.REGION_NAME,camera);
         foodActor.setPosition(-100,-100);
         food.setActor(foodActor);
         mapStage.addActor(foodActor);

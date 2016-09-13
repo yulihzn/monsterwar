@@ -1,6 +1,5 @@
 package com.mw.logic;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.mw.logic.characters.base.Monster;
 import com.mw.logic.characters.base.Player;
@@ -9,6 +8,7 @@ import com.mw.logic.characters.npc.Ghost;
 import com.mw.logic.item.base.Food;
 import com.mw.logic.item.base.Item;
 import com.mw.logic.item.info.FoodInfo;
+import com.mw.profiles.GameFileHelper;
 
 /**
  * Created by BanditCat on 2016/8/10.
@@ -86,6 +86,7 @@ public class Logic {
             }
         }
         checkPlayer();
+        endRound();
 
     }
 
@@ -121,7 +122,8 @@ public class Logic {
     }
 
     private void endRound(){
-
+        //每回合都保存
+        GameFileHelper.getInstance().saveProfile(GameFileHelper.DEFAULT_PROFILE);
     }
 
     private Array<Logic.GameEventListener> gameEventListeners = new Array<Logic.GameEventListener>();

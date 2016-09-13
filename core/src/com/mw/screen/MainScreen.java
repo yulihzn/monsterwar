@@ -26,9 +26,9 @@ public class MainScreen extends BaseScreen implements Screen{
 	GestureDetector gestureDetector;
 	private long startTime = TimeUtils.nanoTime();
 
-	private float worldWidth = DungeonMap.TILE_SIZE*32;
-	private float worldHeight = DungeonMap.TILE_SIZE*32;
-	private float camSize = DungeonMap.TILE_SIZE*32;
+	private float worldWidth = DungeonMap.TILE_SIZE_WIDTH*32;
+	private float worldHeight = DungeonMap.TILE_SIZE_HEIGHT*32;
+	private float camSize = DungeonMap.TILE_SIZE_WIDTH*32;
 
 	private GameInputMultiplexer inputMultiplexer;
 

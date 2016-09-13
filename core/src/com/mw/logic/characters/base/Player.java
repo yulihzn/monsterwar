@@ -9,7 +9,7 @@ import com.mw.logic.item.base.Item;
 import com.mw.map.DungeonMap;
 import com.mw.ui.LogMessageTable;
 import com.mw.utils.Dungeon;
-import com.mw.utils.GameDataHelper;
+import com.mw.profiles.GameFileHelper;
 
 /**
  * Created by BanditCat on 2016/7/25.
@@ -34,7 +34,7 @@ public class Player extends Character {
     @Override
     protected void moveFinish(int x, int y) {
         super.moveFinish(x, y);
-        GameDataHelper.getInstance().setCurrentStep(PlayerInfo.NAME,GameDataHelper.getInstance().getCurrentStep(PlayerInfo.NAME)+1);
+        GameFileHelper.getInstance().setCurrentStep(PlayerInfo.NAME, GameFileHelper.getInstance().getCurrentStep(PlayerInfo.NAME)+1);
 
     }
 
@@ -87,7 +87,7 @@ public class Player extends Character {
     public void stopMoving() {
         super.stopMoving();
         if(path.size()-1 <= pathIndex){
-            GameDataHelper.getInstance().saveGameMap(dungeonMap.getMapInfo(),GameDataHelper.getInstance().getCurrentLevel());
+            GameFileHelper.getInstance().saveGameMap(dungeonMap.getMapInfo(), GameFileHelper.getInstance().getCurrentLevel());
         }else{
             Logic.getInstance().beginRound(path.get(path.size()-1).getX(),path.get(path.size()-1).getY());
         }
@@ -126,7 +126,7 @@ public class Player extends Character {
     @Override
     public void setInfo(CharacterInfo characterInfo) {
         super.setInfo(characterInfo);
-        GameDataHelper.getInstance().setPlayerInfo((PlayerInfo) characterInfo);
+        GameFileHelper.getInstance().setPlayerInfo((PlayerInfo) characterInfo);
     }
 
     private PlayerActionListener playerActionListener;

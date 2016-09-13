@@ -1,16 +1,11 @@
 package com.mw.actor;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.mw.map.DungeonMap;
-import com.mw.utils.GameDataHelper;
+import com.mw.profiles.GameFileHelper;
 
 /**
  * Created by BanditCat on 2016/3/23 0023.
@@ -47,10 +42,11 @@ public class GameMapTile extends Actor {
     public void setTilePosIndex(GridPoint2 tilePosIndex) {
         this.tilePosIndex = tilePosIndex;//设置下标
         setPosition(tilePosIndex.x<<5,tilePosIndex.y<<5);//设置actor位置
-        GameDataHelper.getInstance().setCharacterPos(regionName,tilePosIndex.x,tilePosIndex.y);
+        GameFileHelper.getInstance().setCharacterPos(regionName,tilePosIndex.x,tilePosIndex.y);
     }
     public void setTilePosIndexOnly(GridPoint2 tilePosIndex) {
         this.tilePosIndex = tilePosIndex;//设置下标
+        GameFileHelper.getInstance().setCharacterPos(regionName,tilePosIndex.x,tilePosIndex.y);
     }
 
     public int getTileIndex() {

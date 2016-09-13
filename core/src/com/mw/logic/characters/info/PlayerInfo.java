@@ -5,6 +5,7 @@ package com.mw.logic.characters.info;
  */
 public class PlayerInfo extends CharacterInfo {
     public static final String NAME = "man";
+    public static final String REGION_NAME = "fool";
     public PlayerInfo() {
         this.setName(NAME);
     }

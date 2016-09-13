@@ -2,7 +2,6 @@ package com.mw.stage;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -19,7 +18,7 @@ import com.mw.screen.TransferScreen;
 import com.mw.ui.GameInfoLabel;
 import com.mw.ui.LazyBitmapFont;
 import com.mw.ui.LogMessageTable;
-import com.mw.utils.GameDataHelper;
+import com.mw.profiles.GameFileHelper;
 
 
 /**
@@ -109,9 +108,9 @@ public class UiStage extends Stage {
             logMessageTable.setHeight(100);
             logMessageTable.setPosition(0,0);
         }
-        PlayerInfo playerInfo = GameDataHelper.getInstance().getPlayerInfo();
-        String level = "关卡:"+GameDataHelper.getInstance().getCurrentLevel();
-        String step = "步数:"+GameDataHelper.getInstance().getCurrentStep(PlayerInfo.NAME);
+        PlayerInfo playerInfo = GameFileHelper.getInstance().getPlayerInfo();
+        String level = "关卡:"+ GameFileHelper.getInstance().getCurrentLevel();
+        String step = "步数:"+ GameFileHelper.getInstance().getCurrentStep(PlayerInfo.NAME);
         String hp = "血量:"+playerInfo.getHealthPoint();
         String ap = "攻击:"+playerInfo.getAttackPoint();
         String dp = "防御:"+playerInfo.getDefensePoint();

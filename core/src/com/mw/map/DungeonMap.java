@@ -13,9 +13,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.mw.model.MapInfo;
 import com.mw.model.MapInfoModel;
 import com.mw.utils.Dungeon;
-import com.mw.utils.GameDataHelper;
-
-import java.util.HashMap;
+import com.mw.profiles.GameFileHelper;
 
 /**
  * Created by BanditCat on 2016/3/25.
@@ -27,7 +25,8 @@ public class DungeonMap extends TiledMap {
     private TiledMapTileLayer shadowLayer;
     private int width,height;
     private MapInfo mapInfo;
-    public static final int TILE_SIZE = 16;
+    public static final int TILE_SIZE_WIDTH = 32;
+    public static final int TILE_SIZE_HEIGHT = 16;
     private TextureAtlas textureAtlas;
     private Dungeon dungeon;
     public static String LAYER_FLOOR = "LAYER_FLOOR";
@@ -41,7 +40,7 @@ public class DungeonMap extends TiledMap {
 
     public DungeonMap() {
         initMap();
-        this.level = GameDataHelper.getInstance().getCurrentLevel();
+        this.level = GameFileHelper.getInstance().getCurrentLevel();
         initDungeon(level);
     }
 
@@ -50,8 +49,8 @@ public class DungeonMap extends TiledMap {
      */
     private void initMap() {
         //因为阴影层多右上两条边有16的偏移，宽高要加1
-        this.height = TILE_SIZE+1;
-        this.width = TILE_SIZE+1;
+        this.height = TILE_SIZE_HEIGHT+1;
+        this.width = TILE_SIZE_WIDTH+1;
         this.floorLayer = new TiledMapTileLayer(width,height,32,32);
         this.blockLayer = new TiledMapTileLayer(width,height,32,32);
         this.decorateLayer = new TiledMapTileLayer(width,height,32,32);
@@ -80,11 +79,11 @@ public class DungeonMap extends TiledMap {
      * @param level
      */
     public void initDungeon(int level){
-        mapInfo = GameDataHelper.getInstance().getGameMap(level);
+        mapInfo = GameFileHelper.getInstance().getGameMap(level);
         if(mapInfo == null){
             mapInfo = new MapInfo();
             dungeon = new Dungeon();
-            dungeon.createDungeon(TILE_SIZE,TILE_SIZE,5000);
+            dungeon.createDungeon(TILE_SIZE_WIDTH,TILE_SIZE_HEIGHT,5000);
             int[][] dungeonArray = dungeon.getDungeonArray();
             mapInfo.setMapArray(new MapInfoModel[width][height]);
             mapInfo.setLevel(level);
@@ -114,8 +113,8 @@ public class DungeonMap extends TiledMap {
             }
         }
         //保存地图
-        GameDataHelper.getInstance().setCurrentLevel(level);
-        GameDataHelper.getInstance().saveGameMap(mapInfo,level);
+        GameFileHelper.getInstance().setCurrentLevel(level);
+        GameFileHelper.getInstance().saveGameMap(mapInfo,level);
         upDateTilesType();
 
     }
@@ -160,7 +159,7 @@ public class DungeonMap extends TiledMap {
         }
         this.blockLayer.getCell(x,y).getTile().setTextureRegion(textureAtlas.findRegion(name));
         mapInfo.getMapArray()[x][y].setBlock(value);
-        GameDataHelper.getInstance().saveGameMap(mapInfo,GameDataHelper.getInstance().getCurrentLevel());
+        GameFileHelper.getInstance().saveGameMap(mapInfo, GameFileHelper.getInstance().getCurrentLevel());
     }
     //改变阴影方块
     private void changeShadowTileType(int value,int x,int y){

@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.mw.actor.ParticleEffectActor;
 import com.mw.base.BaseScreen;
 import com.mw.game.MainGame;
+import com.mw.profiles.GameFileHelper;
 
 public class StartScreen extends BaseScreen implements Screen{
 	private Stage stage;
@@ -67,7 +68,7 @@ public class StartScreen extends BaseScreen implements Screen{
 		particleEffectActor.setPposition(Gdx.graphics.getWidth()/2 + 330*backgroundScale, 140*backgroundScale);
 		particleEffectActor.getEffect().scaleEffect(2.0f);
 		stage.addActor(particleEffectActor);
-
+		GameFileHelper.getInstance().loadProfile(GameFileHelper.DEFAULT_PROFILE);
 
 
 	}

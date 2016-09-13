@@ -1,42 +1,50 @@
-package com.mw.utils;
+package com.mw.profiles;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.utils.Base64Coder;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.mw.logic.characters.info.CharacterInfo;
 import com.mw.logic.characters.info.PlayerInfo;
 import com.mw.model.MapInfo;
 
 /**
  * Created by BanditCat on 2016/7/4.
  */
-public class GameDataHelper {
+public class GameFileHelper {
     public static final String DEFAULT_PROFILE = "default";
-    private static GameDataHelper gameDataHelper;
+    private static GameFileHelper gameFileHelper;
     public static final String DIR_MAP = "/level/level_map_";
+    public static final String DIR_SAVE = "/save/";
     public static final String SUFFIXES_MAP = ".map";
     public static final String SUFFIXES_GAME = ".sav";
     private ObjectMap<String,Object> objectMap = new ObjectMap<String, Object>();
-    private Json json = new Json();
+    private boolean isNewProfile=false;
+    private Json json;
 
-
-
-    public static GameDataHelper getInstance()
-    {
-        if (gameDataHelper==null)
-        {
-            gameDataHelper = new GameDataHelper();
-        }
-        return gameDataHelper;
+    public boolean isNewProfile() {
+        return isNewProfile;
     }
-    private void GameDataHelper(){
+
+    public void setNewProfile(boolean newProfile) {
+        isNewProfile = newProfile;
+    }
+
+    public static GameFileHelper getInstance()
+    {
+        if (gameFileHelper ==null)
+        {
+            gameFileHelper = new GameFileHelper();
+        }
+        return gameFileHelper;
+    }
+    private GameFileHelper(){
+        json = new Json();
+        json.setOutputType(JsonWriter.OutputType.json);
     }
     public void saveGameMap(MapInfo mapInfo, int level){
-        String str = json.toJson(mapInfo);
+        String str = json.prettyPrint(mapInfo);
         FileHandle file = Gdx.files.local(DIR_MAP+level+SUFFIXES_MAP);
         file.writeString(str,false);
 
@@ -60,33 +68,46 @@ public class GameDataHelper {
      * 玩家信息：层数，位置
      */
     public void setCharacterPos(String name,int x,int y){
-        preferences.putInteger(name+"x",x);
-        preferences.putInteger(name+"y",y);
+        putSaveObject(GameFileStr.CURPOS+name,new GridPoint2(x,y));
     }
     public GridPoint2 getCharacterPos(String name){
-        return new GridPoint2(preferences.getInteger(name+"x",-1),preferences.getInteger(name+"y",-1));
+        GridPoint2 gridPoint2 = getSaveObject(GameFileStr.CURPOS+name,GridPoint2.class);
+        if(null == gridPoint2){
+            return new GridPoint2(-1,-1);
+        }
+        return gridPoint2;
     }
     public void setCurrentLevel(int level){
-        preferences.putInteger("level",level);
+        putSaveObject(GameFileStr.LEVEL,level);
     }
     public int getCurrentLevel(){
-        return preferences.getInteger("level",0);
+        Integer level = getSaveObject(GameFileStr.LEVEL,Integer.class);
+        if(null == level){
+            level = 0;
+        }
+        return level;
     }
 
     public void setCurrentStep(String name,int step){
-        preferences.putInteger(name+"step",step);
+        putSaveObject(GameFileStr.STEP+name,step);
     }
     public int getCurrentStep(String name){
-        return preferences.getInteger(name+"step",0);
+        Integer step = getSaveObject(GameFileStr.STEP+name,Integer.class);
+        if(null == step){
+            step = 0;
+        }
+        return step;
     }
 
     public void setPlayerInfo(PlayerInfo characterInfo){
-        Json json = new Json();
-        String str = json.toJson(characterInfo);
-        objectMap.put("info",str);
+        putSaveObject(GameFileStr.INFO,characterInfo);
     }
     public PlayerInfo getPlayerInfo(){
-        return json.fromJson(PlayerInfo.class,preferences.getString("info"));
+        PlayerInfo playerInfo = getSaveObject(GameFileStr.INFO,PlayerInfo.class);
+        if(null == playerInfo){
+            return new PlayerInfo();
+        }
+        return playerInfo;
     }
 
     public void putSaveObject(String key,Object object){
@@ -101,12 +122,32 @@ public class GameDataHelper {
         return object;
     }
 
-    public void saveProfile(){
-        String text = json.toJson(objectMap);
-        writeProfileToStorage(DEFAULT_PROFILE, text, true);
+    public void saveProfile(String profileName){
+        String text = json.prettyPrint(objectMap);
+        writeProfileToStorage(DIR_SAVE+profileName+SUFFIXES_GAME, text, true);
+    }
+    public void loadProfile(String profileName){
+        if(isNewProfile ){
+            saveProfile(profileName);
+        }
+
+        String fullProfileFileName = DIR_SAVE+profileName+SUFFIXES_GAME;
+        boolean doesProfileFileExist = Gdx.files.local(fullProfileFileName).exists();
+
+        if( !doesProfileFileExist ){
+            //System.out.println("File doesn't exist!");
+            return;
+        }
+
+        FileHandle encodedFile = Gdx.files.local(fullProfileFileName);
+        String s = encodedFile.readString();
+
+
+        objectMap = json.fromJson(ObjectMap.class,s);
+        isNewProfile = false;
     }
     public void writeProfileToStorage(String profileName, String fileData, boolean overwrite){
-        String fullFilename = profileName+SUFFIXES_GAME;
+        String fullFilename = profileName;
 
         boolean localFileExists = Gdx.files.local(fullFilename).exists();
 
@@ -115,10 +156,8 @@ public class GameDataHelper {
             return;
         }
 
-        FileHandle file =  null;
-
         if( Gdx.files.isLocalStorageAvailable() ) {
-            file = Gdx.files.local(fullFilename);
+            FileHandle file = Gdx.files.local(fullFilename);
             String encodedString = fileData;
             file.writeString(encodedString, !overwrite);
         }

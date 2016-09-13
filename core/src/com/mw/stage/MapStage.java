@@ -27,7 +27,7 @@ import com.mw.map.DungeonMap;
 import com.mw.model.MapInfoModel;
 import com.mw.screen.MainScreen;
 import com.mw.utils.Dungeon;
-import com.mw.utils.GameDataHelper;
+import com.mw.profiles.GameFileHelper;
 import com.mw.utils.KeyBoardController;
 import com.mw.factory.CharacterFactory;
 
@@ -74,7 +74,7 @@ public class  MapStage extends Stage{
 //		dungeonArray =dungeon.getDungeonArray();
 */
 		//初始化地图
-		level = GameDataHelper.getInstance().getCurrentLevel();
+		level = GameFileHelper.getInstance().getCurrentLevel();
 		dungeonMap = new DungeonMap();
 		//获取渲染
 		renderer = new OrthogonalTiledMapRenderer(dungeonMap,1f);
@@ -93,14 +93,14 @@ public class  MapStage extends Stage{
 		generateMonsters();
 		generateItems();
 
-		mapShadow = new MapShadow(camera,DungeonMap.TILE_SIZE<<5,DungeonMap.TILE_SIZE<<5,dungeonMap);
+		mapShadow = new MapShadow(camera,DungeonMap.TILE_SIZE_WIDTH<<5,DungeonMap.TILE_SIZE_HEIGHT<<5,dungeonMap);
 		mapShadow.setPosition(0,0);
 		addActor(mapShadow);
 		mapShadow.setZIndex(300);
 		mapShadow.getSightPosIndex().x = man.getActor().getTilePosIndex().x;
 		mapShadow.getSightPosIndex().y = man.getActor().getTilePosIndex().y;
 		mapShadow.updateLines();
-		elementsInterFace = new ElementsInterFace(camera,DungeonMap.TILE_SIZE<<5,DungeonMap.TILE_SIZE<<5,dungeonMap);
+		elementsInterFace = new ElementsInterFace(camera,DungeonMap.TILE_SIZE_WIDTH<<5,DungeonMap.TILE_SIZE_HEIGHT<<5,dungeonMap);
 		elementsInterFace.setPosition(0,0);
 		addActor(elementsInterFace);
 		elementsInterFace.setZIndex(1000);
@@ -219,7 +219,7 @@ public class  MapStage extends Stage{
 	//调整玩家位置让他不卡墙
 	public void adjustPlayerPos(int action){
 		int type = -1;
-		if(GameDataHelper.getInstance().getCharacterPos(man.getActor().getRegionName()).x == -1){
+		if(GameFileHelper.getInstance().getCharacterPos(man.getActor().getRegionName()).x == -1){
 			type = -2;
 		}
 		switch (action){
@@ -232,10 +232,10 @@ public class  MapStage extends Stage{
 				man.getActor().setTilePosIndex(dungeonMap.getMapInfo().getDownstairsIndex());
 				break;
 			default:
-				if(GameDataHelper.getInstance().getCharacterPos(man.getActor().getRegionName()).x == -1){
+				if(GameFileHelper.getInstance().getCharacterPos(man.getActor().getRegionName()).x == -1){
 					man.getActor().setTilePosIndex(dungeonMap.getMapInfo().getUpstairsIndex());
 				}else{
-					man.getActor().setTilePosIndex(GameDataHelper.getInstance().getCharacterPos(man.getActor().getRegionName()));
+					man.getActor().setTilePosIndex(GameFileHelper.getInstance().getCharacterPos(man.getActor().getRegionName()));
 				}
 				break;
 		}
@@ -278,7 +278,7 @@ public class  MapStage extends Stage{
 		int endX=startX;int endY=startY;
 		switch (KeyBoardController.getInstance().getKeyType(keyCode)){
 			case KeyBoardController.UP:
-				if(endY+1<DungeonMap.TILE_SIZE&&!man.isMoving()){
+				if(endY+1<DungeonMap.TILE_SIZE_HEIGHT&&!man.isMoving()){
 					endY+=1;
 					Logic.getInstance().beginRound(endX,endY);
 				}
@@ -296,7 +296,7 @@ public class  MapStage extends Stage{
 				}
 				break;
 			case KeyBoardController.RIGHT:
-				if(endX+1<DungeonMap.TILE_SIZE&&!man.isMoving()){
+				if(endX+1<DungeonMap.TILE_SIZE_WIDTH&&!man.isMoving()){
 					endX+=1;
 					Logic.getInstance().beginRound(endX,endY);
 				}

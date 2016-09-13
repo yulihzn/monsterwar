@@ -39,7 +39,6 @@ public class MapShadow extends Actor{
 
     public boolean isChangedPos = false;
 
-    private Rectangle sightRectangle = new Rectangle(0,0,0,0);
 
     private Pixmap pixmap;
     private Texture texture;
@@ -201,64 +200,6 @@ public class MapShadow extends Actor{
                 next = en.getNext();
                 ed = en;
             }
-//            Vector2
-//            lbY=new Vector2(width,0),rbY=new Vector2(0,0)
-//            ,ltY=new Vector2(width,0),rtY=new Vector2(0,0)
-//            ,ltX=new Vector2(0,0),lbX=new Vector2(0,height)
-//            ,rtX=new Vector2(0,0),rbX=new Vector2(0,height);
-            float maxx=0,maxy=0,minx=width,miny=height;
-//            for (int i = 0; i+1 < floatArray.size; i+=2) {
-//                float x = floatArray.get(i);
-//                float y = floatArray.get(i+1);
-//                if(x >= maxx){//最大x值的y轴，轴上有rtX,rbX
-//                    maxx = x;
-//                    rbX.x = x;
-//                    if(y<=rbX.y){
-//                        rbX.y = y;
-//                    }
-//                    rtX.x = x;
-//                    if(y>=rtX.y){
-//                        rtX.y = y;
-//                    }
-//                }
-//                if(y >= maxy){//最大y值的x轴，轴上有ltY,rtY
-//                    maxy = y;
-//                    ltY.y = y;
-//                    if(x <= ltY.x){
-//                        ltY.x = x;
-//                    }
-//                    rtY.y= y;
-//                    if(x >= rtY.x){
-//                        rtY.x = x;
-//                    }
-//                }
-//                if(x <= minx){//最小x值的y轴，轴上有ltX,lbX
-//                    minx = x;
-//                    ltX.x = x;
-//                    if(y >= ltX.y){
-//                        ltX.y = y;
-//                    }
-//                    lbX.x = x;
-//                    if(y <= lbX.y){
-//                        lbX.y = y;
-//                    }
-//                }
-//                if(y <= miny){//最小y值的x轴，轴上有lbY,rbY
-//                    miny = y;
-//                    lbY.y = y;
-//                    if(x <= lbY.x){
-//                        lbY.x = x;
-//                    }
-//                    rbY.y = y;
-//                    if(x >= rbY.x){
-//                        rbY.x = x;
-//                    }
-//                }
-//            }
-            sightRectangle.x = minx;
-            sightRectangle.y = miny;
-            sightRectangle.width = maxx-minx;
-            sightRectangle.height = maxy-miny;
         }
     }
 
@@ -321,16 +262,16 @@ public class MapShadow extends Actor{
             iMin = 0;
         }
         int iMax = sightPosIndex.x + sightRadius+1;
-        if(iMax > DungeonMap.TILE_SIZE){
-            iMax =  DungeonMap.TILE_SIZE;
+        if(iMax > DungeonMap.TILE_SIZE_WIDTH){
+            iMax =  DungeonMap.TILE_SIZE_WIDTH;
         }
         int jMin = sightPosIndex.y - sightRadius;
         if(jMin < 0){
             jMin = 0;
         }
         int jMax = sightPosIndex.y + sightRadius+1;
-        if(jMax >  DungeonMap.TILE_SIZE){
-            jMax =  DungeonMap.TILE_SIZE;
+        if(jMax >  DungeonMap.TILE_SIZE_HEIGHT){
+            jMax =  DungeonMap.TILE_SIZE_HEIGHT;
         }
         for (int i = iMin; i < iMax; i++) {
             for (int j = jMin; j < jMax; j++) {

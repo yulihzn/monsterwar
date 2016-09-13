@@ -527,9 +527,9 @@ public class Dungeon {
 
 
     public int[][] getDungeonArray(){
-        int[][] array = new int[ysize][xsize];
-        for (int y = 0; y < ysize; y++) {
-            for (int x = 0; x < xsize; x++) {
+        int[][] array = new int[xsize][ysize];
+        for (int x = 0; x < xsize; x++) {
+            for (int y = 0; y < ysize; y++) {
                 array[x][y] = getCell(x,y);
             }
         }

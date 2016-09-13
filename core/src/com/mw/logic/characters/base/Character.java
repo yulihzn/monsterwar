@@ -1,6 +1,5 @@
 package com.mw.logic.characters.base;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.fsm.DefaultStateMachine;
 import com.badlogic.gdx.ai.fsm.StateMachine;
 import com.badlogic.gdx.ai.msg.Telegram;
@@ -19,10 +18,8 @@ import com.mw.map.AStarMap;
 import com.mw.map.AStarNode;
 import com.mw.map.DungeonMap;
 import com.mw.model.MapInfoModel;
-import com.mw.stage.MapStage;
 import com.mw.ui.LogMessageTable;
 import com.mw.utils.Dungeon;
-import com.mw.utils.GameDataHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,19 +125,22 @@ public abstract class Character implements Telegraph {
     private void initAStarArray(MapInfoModel[][] array){
         int x = 0,y = 0;
         if(array != null && array.length>0){
-            x = array[0].length;
-            y = array.length;
+            x = array.length;
+            y = array[0].length;
         }
+        //这里A*的数组是反过来的。。。
         aStarMap = new AStarMap(x,y);
-        int[][] aStarData = new int[x][y];
-        for (int i = 0; i < x; i++) {
-            for (int j = 0; j < y; j++) {
-                if(array[i][j].getBlock() == Dungeon.tileStoneWall
-                        ||array[i][j].getBlock()== Dungeon.tileDirtWall
-                        ||array[i][j].getBlock()== Dungeon.tileUnused){
-                    aStarData[j][i] = 1;
+        int[][] aStarData = new int[y][x];
+        for (int i = 0; i < y; i++) {
+            for (int j = 0; j < x; j++) {
+                int block = array[j][i].getBlock();
+                if(block == Dungeon.tileStoneWall
+                        ||block== Dungeon.tileDirtWall
+                        ||block== Dungeon.tileUnused
+                        ||block== Dungeon.tileNothing){
+                    aStarData[i][j] = 1;
                 }else{
-                    aStarData[j][i] = 0;
+                    aStarData[i][j] = 0;
                 }
             }
         }
