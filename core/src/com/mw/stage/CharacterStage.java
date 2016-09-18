@@ -12,7 +12,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.mw.actor.MagicBottle;
 import com.mw.screen.MainScreen;
 import com.mw.ui.LazyBitmapFont;
 
@@ -31,16 +34,21 @@ public class CharacterStage extends Stage {
     private MainScreen mainScreen;
     private TextureAtlas textureAtlas;
 
+    private Array<MagicBottle> bottles = new Array<MagicBottle>();
+
+
     public CharacterStage(final MainScreen mainScreen) {
         this.mainScreen = mainScreen;
         setViewport(new ScreenViewport());
         setDebugAll(true);
-        int w = Gdx.graphics.getWidth()-Gdx.graphics.getWidth()/10;
-        int h = Gdx.graphics.getHeight()-Gdx.graphics.getHeight()/10;
         generator = new FreeTypeFontGenerator(Gdx.files.internal("data/font.ttf"));
         bitmapFont = new LazyBitmapFont(generator,14);
         textureAtlas = new TextureAtlas(Gdx.files.internal("tiles.pack"));
-
+        addBackGround();
+    }
+    private void addBackGround(){
+        int w = Gdx.graphics.getWidth()-Gdx.graphics.getWidth()/10;
+        int h = Gdx.graphics.getHeight()-Gdx.graphics.getHeight()/10;
         Pixmap pixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888); // Pixmap.Format.RGBA8888);
         texture = new Texture(w, h, Pixmap.Format.RGBA8888); // Pixmap.Format.RGBA8888);
         texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Linear);
@@ -65,6 +73,25 @@ public class CharacterStage extends Stage {
 
         });
         addActor(backGround);
+        addMagicBottle();
+    }
+
+    private void addMagicBottle(){
+        int w = Gdx.graphics.getWidth()/10;
+        int h = w*2;
+        bottles.clear();
+        bottles.add(new MagicBottle(MagicBottle.SWORD));
+        bottles.add(new MagicBottle(MagicBottle.WAND));
+        bottles.add(new MagicBottle(MagicBottle.CUP));
+        bottles.add(new MagicBottle(MagicBottle.COIN));
+        backGround.left().bottom();
+        for (int i = 0; i < bottles.size; i++) {
+            MagicBottle m = bottles.get(i);
+            m.setBounds(50*i,0,50,80);
+            m.setCurNum(i*10);
+            m.invalidate();
+            backGround.add(m);
+        }
     }
 
     public boolean isVisible() {
@@ -74,6 +101,14 @@ public class CharacterStage extends Stage {
     public void setVisible(boolean visible) {
         isVisible = visible;
         backGround.setVisible(visible);
+        if(isVisible){
+            for (int i = 0; i < bottles.size; i++) {
+                MagicBottle m = bottles.get(i);
+                m.setBounds(50*i,0,50,80);
+                m.setCurNum(i*10);
+                m.invalidate();
+            }
+        }
     }
 
     @Override
@@ -105,7 +140,8 @@ public class CharacterStage extends Stage {
         int h = Gdx.graphics.getHeight()-Gdx.graphics.getHeight()/10;
         backGround.setWidth(w);
         backGround.setHeight(h);
-        backGround.setPosition(Gdx.graphics.getWidth()/20,Gdx.graphics.getWidth()/20);
+        backGround.setPosition(Gdx.graphics.getWidth()/20,Gdx.graphics.getHeight()/20);
+
 
     }
 
@@ -115,6 +151,9 @@ public class CharacterStage extends Stage {
         generator.dispose();
         bitmapFont.dispose();
         textureAtlas.dispose();
+        for (MagicBottle m:bottles){
+            m.dispose();
+        }
     }
 
 

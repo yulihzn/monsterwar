@@ -126,6 +126,8 @@ public class UiStage extends Stage {
         dpLabel.setText(dp);
         dpLabel.setPosition(w-hpLabel.getGlyphLayout().width-20,h-hpLabel.getGlyphLayout().height*3-20);
 
+        ib_menu.setPosition(w-ib_menu.getWidth()-20,20);
+
     }
 
     @Override

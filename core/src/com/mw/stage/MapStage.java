@@ -79,10 +79,7 @@ public class  MapStage extends Stage{
 		//获取渲染
 		renderer = new OrthogonalTiledMapRenderer(dungeonMap,1f);
 		//为每个tile加上actor和相应的监听
-		for (MapLayer layer : dungeonMap.getLayers()) {
-			TiledMapTileLayer tiledLayer = (TiledMapTileLayer)layer;
-			createActorsForLayer(tiledLayer);
-		}
+		createActorsForLayer((TiledMapTileLayer)dungeonMap.getLayers().get(DungeonMap.LAYER_SHADOW));
 		characterFactory = new CharacterFactory(this);
 		itemFactory = new ItemFactory(this);
 		//添加角色
