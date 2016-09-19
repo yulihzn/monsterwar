@@ -42,7 +42,7 @@ public class CharacterStage extends Stage {
         setViewport(new ScreenViewport());
         setDebugAll(true);
         generator = new FreeTypeFontGenerator(Gdx.files.internal("data/font.ttf"));
-        bitmapFont = new LazyBitmapFont(generator,14);
+        bitmapFont = new LazyBitmapFont(generator,10);
         textureAtlas = new TextureAtlas(Gdx.files.internal("tiles.pack"));
         addBackGround();
     }
@@ -80,16 +80,15 @@ public class CharacterStage extends Stage {
         int w = Gdx.graphics.getWidth()/10;
         int h = w*2;
         bottles.clear();
-        bottles.add(new MagicBottle(MagicBottle.SWORD));
-        bottles.add(new MagicBottle(MagicBottle.WAND));
-        bottles.add(new MagicBottle(MagicBottle.CUP));
-        bottles.add(new MagicBottle(MagicBottle.COIN));
+        bottles.add(new MagicBottle(MagicBottle.SWORD,bitmapFont));
+        bottles.add(new MagicBottle(MagicBottle.WAND,bitmapFont));
+        bottles.add(new MagicBottle(MagicBottle.CUP,bitmapFont));
+        bottles.add(new MagicBottle(MagicBottle.COIN,bitmapFont));
         backGround.left().bottom();
         for (int i = 0; i < bottles.size; i++) {
             MagicBottle m = bottles.get(i);
             m.setBounds(50*i,0,50,80);
             m.setCurNum(i*10);
-            m.invalidate();
             backGround.add(m);
         }
     }
@@ -106,7 +105,6 @@ public class CharacterStage extends Stage {
                 MagicBottle m = bottles.get(i);
                 m.setBounds(50*i,0,50,80);
                 m.setCurNum(i*10);
-                m.invalidate();
             }
         }
     }

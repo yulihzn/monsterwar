@@ -7,51 +7,54 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.mw.ui.LazyBitmapFont;
 
 /**
  * Created by BanditCat on 2016/3/23 0023.
  */
-public class MagicBottle extends Actor {
+public class MagicBottle extends Table {
     public static final int SWORD = 0;
     public static final int WAND = 1;
     public static final int CUP = 2;
     public static final int COIN = 3;
-    private Texture texture;
-    private Pixmap pixmap;
+    private TextureAtlas textureAtlas;
     private int type = -1;
     private Color[]colors={Color.GREEN,Color.RED,Color.YELLOW,Color.GOLD};
+    private String[]names = {"bottle0","bottle1","bottle2","bottle3","bottle4"};
     private int maxNum = 100;
     private int curNum = 0;
+    private Image image;
+    private LazyBitmapFont bitmapFont;
+    private Label text;
+    private Sprite sprite;
 
-    public MagicBottle(int type) {
+    public MagicBottle(int type,LazyBitmapFont bitmapFont) {
+        this.bitmapFont = bitmapFont;
         this.type = type;
-        int w = 512;
-        int h = 512;
-        pixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888); // Pixmap.Format.RGBA8888);
-        texture = new Texture(w, h, Pixmap.Format.RGBA8888); // Pixmap.Format.RGBA8888);
-        texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Linear);
-        texture.setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);
-        texture.draw(pixmap, 0, 0);
+        textureAtlas = new TextureAtlas(Gdx.files.internal("tiles.pack"));
+        image = new Image(textureAtlas.findRegion(names[type]));
+        text = new Label("",new Label.LabelStyle(bitmapFont,Color.WHITE));
+        image.setScale(2);
+        image.setPosition(0,0);
+        add(image);
+        add(text);
+        sprite = new Sprite(textureAtlas.findRegion(names[4]));
+        sprite.setScale(2);
+        sprite.setColor(colors[type]);
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        //混合模式
-        Gdx.gl.glEnable(GL20.GL_BLEND);
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA,GL20.GL_ONE_MINUS_SRC_ALPHA);
-        batch.draw(texture,getX(),getY());
+        sprite.draw(batch);
         super.draw(batch, parentAlpha);
-        Gdx.gl.glDisable(GL20.GL_BLEND);
-    }
-
-    public void invalidate(){
-        pixmap.setColor(new Color(255,255,255,0.9f));
-        pixmap.fillRectangle(0,0,(int)getWidth(),(int)getHeight());
-        pixmap.setColor(colors[type]);
-        float h = getHeight()*(float)curNum/(float)maxNum;
-        pixmap.fillRectangle(0,0,(int)getWidth(),(int)h);
-        texture.draw(pixmap,0,0);
     }
 
     public int getCurNum() {
@@ -73,10 +76,16 @@ public class MagicBottle extends Actor {
     @Override
     public void act(float delta) {
         super.act(delta);
+        text.setText(curNum+"/"+maxNum);
+        text.setPosition(getWidth()/2-text.getGlyphLayout().width/2,getHeight()/2);
+        if(getParent() != null){
+            float h = sprite.getHeight()*curNum/maxNum;
+            sprite.setBounds(getParent().getX()+getX()+sprite.getRegionWidth()/2,getParent().getY()+getY()+sprite.getRegionHeight()/2
+                    ,sprite.getWidth(),10);
+        }
     }
 
     public void dispose(){
-        pixmap.dispose();
-        texture.dispose();
+        textureAtlas.dispose();
     }
 }
