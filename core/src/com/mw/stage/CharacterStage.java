@@ -13,11 +13,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mw.actor.MagicBottle;
 import com.mw.screen.MainScreen;
+import com.mw.ui.InventoryTable;
 import com.mw.ui.LazyBitmapFont;
+import com.mw.ui.PlayerAvatarTable;
 
 
 /**
@@ -29,6 +30,8 @@ public class CharacterStage extends Stage {
 
     private Texture texture;
     private Table backGround;
+    private InventoryTable inventoryTable;
+    private PlayerAvatarTable playerAvatarTable;
     private boolean isVisible = false;
 
     private MainScreen mainScreen;
@@ -46,6 +49,16 @@ public class CharacterStage extends Stage {
         textureAtlas = new TextureAtlas(Gdx.files.internal("tiles.pack"));
         addBackGround();
     }
+
+    private void addInventory() {
+        inventoryTable = new InventoryTable();
+        backGround.add(inventoryTable).top().right();
+    }
+    private void addAvatar() {
+        playerAvatarTable = new PlayerAvatarTable();
+        backGround.add(playerAvatarTable).center();
+    }
+
     private void addBackGround(){
         int w = Gdx.graphics.getWidth()-Gdx.graphics.getWidth()/10;
         int h = Gdx.graphics.getHeight()-Gdx.graphics.getHeight()/10;
@@ -56,6 +69,7 @@ public class CharacterStage extends Stage {
         pixmap.setColor(new Color(0,0,0,0.9f));
         pixmap.fillRectangle(0,0,w,h);
         texture.draw(pixmap, 0, 0);
+        pixmap.dispose();
         backGround = new Table();
         backGround.setWidth(w);
         backGround.setHeight(h);
@@ -74,6 +88,8 @@ public class CharacterStage extends Stage {
         });
         addActor(backGround);
         addMagicBottle();
+        addAvatar();
+        addInventory();
     }
 
     private void addMagicBottle(){
@@ -88,8 +104,8 @@ public class CharacterStage extends Stage {
         for (int i = 0; i < bottles.size; i++) {
             MagicBottle m = bottles.get(i);
             m.setBounds(50*i,0,50,80);
-            m.setCurNum(i*10);
-            backGround.add(m);
+            m.setCurNum(i*30);
+            backGround.add(m).bottom().left();
         }
     }
 
@@ -104,7 +120,7 @@ public class CharacterStage extends Stage {
             for (int i = 0; i < bottles.size; i++) {
                 MagicBottle m = bottles.get(i);
                 m.setBounds(50*i,0,50,80);
-                m.setCurNum(i*10);
+                m.setCurNum(i*30);
             }
         }
     }
@@ -149,6 +165,8 @@ public class CharacterStage extends Stage {
         generator.dispose();
         bitmapFont.dispose();
         textureAtlas.dispose();
+        inventoryTable.dispose();
+        playerAvatarTable.dispose();
         for (MagicBottle m:bottles){
             m.dispose();
         }
