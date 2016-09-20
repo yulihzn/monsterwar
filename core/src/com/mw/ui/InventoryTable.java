@@ -7,11 +7,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.mw.model.LogModel;
@@ -25,6 +27,7 @@ public class InventoryTable extends Table {
     private Array<Array<Image>> images = new Array<Array<Image>>();
     private TextureAtlas textureAtlas;
     private int len = 0;
+    private FloatingTable floatingTable;
     public InventoryTable() {
         textureAtlas = new TextureAtlas(Gdx.files.internal("tiles.pack"));
         int w = Gdx.graphics.getWidth()/3;
@@ -51,10 +54,19 @@ public class InventoryTable extends Table {
         for (int i = 0; i < 200 ; i++) {
             addItem();
         }
+        floatingTable = new FloatingTable();
+        table.addActor(floatingTable);
     }
     private void addItem(){
-        Table table = ((Table)scrollPane.getWidget());
-        Image image = new Image(textureAtlas.findRegion("bottle1"));
+        final Table table = ((Table)scrollPane.getWidget());
+        final Image image = new Image(textureAtlas.findRegion("bottle1"));
+        image.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                floatingTable.show(image.getX()+x,image.getY()+y);
+            }
+        });
         boolean needNew = false;
         for (Array<Image> array:images){
             needNew = true;
@@ -76,5 +88,6 @@ public class InventoryTable extends Table {
     public void dispose(){
         texture.dispose();
         textureAtlas.dispose();
+        floatingTable.dispose();
     }
 }
