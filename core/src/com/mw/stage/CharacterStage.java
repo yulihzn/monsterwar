@@ -43,7 +43,6 @@ public class CharacterStage extends Stage {
     public CharacterStage(final MainScreen mainScreen) {
         this.mainScreen = mainScreen;
         setViewport(new ScreenViewport());
-        setDebugAll(true);
         generator = new FreeTypeFontGenerator(Gdx.files.internal("data/font.ttf"));
         bitmapFont = new LazyBitmapFont(generator,10);
         textureAtlas = new TextureAtlas(Gdx.files.internal("tiles.pack"));

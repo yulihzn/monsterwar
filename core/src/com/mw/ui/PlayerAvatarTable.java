@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.mw.avatar.Avatar;
 
 /**
  * Created by BanditCat on 2016/9/20.
@@ -16,7 +17,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 public class PlayerAvatarTable extends Table {
     private Texture texture;
     private TextureAtlas textureAtlas;
+    private Avatar avatar;
     public PlayerAvatarTable() {
+        avatar = new Avatar();
         textureAtlas = new TextureAtlas(Gdx.files.internal("tiles.pack"));
         int w = Gdx.graphics.getWidth()/4;
         int h = Gdx.graphics.getHeight()/4;
@@ -32,13 +35,14 @@ public class PlayerAvatarTable extends Table {
         setPosition(0,0);
         setWidth(w);
         setHeight(h);
-        Image image = new Image(textureAtlas.findRegion("man"));
+        Image image = new Image(avatar.getTexture());
         image.setScale(5);
         image.setPosition(0,0);
-        add(image);
+        bottom().left().add(image);
     }
     public void dispose(){
         texture.dispose();
         textureAtlas.dispose();
+        avatar.dispose();
     }
 }
