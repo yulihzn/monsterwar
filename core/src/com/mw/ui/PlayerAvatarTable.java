@@ -6,8 +6,10 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.mw.avatar.Avatar;
 
@@ -36,9 +38,16 @@ public class PlayerAvatarTable extends Table {
         setWidth(w);
         setHeight(h);
         Image image = new Image(avatar.getTexture());
-        image.setScale(5);
+        image.setScale(10);
         image.setPosition(0,0);
         bottom().left().add(image);
+        image.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                avatar.upDateAvatar();
+            }
+        });
     }
     public void dispose(){
         texture.dispose();

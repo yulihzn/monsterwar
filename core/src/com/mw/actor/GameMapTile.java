@@ -46,7 +46,6 @@ public class GameMapTile extends Actor {
     }
     public void setTilePosIndexOnly(GridPoint2 tilePosIndex) {
         this.tilePosIndex = tilePosIndex;//设置下标
-        GameFileHelper.getInstance().setCharacterPos(regionName,tilePosIndex.x,tilePosIndex.y);
     }
 
     public int getTileIndex() {
