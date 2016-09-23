@@ -69,7 +69,7 @@ public class MainScreen extends BaseScreen implements Screen{
 		characterStage = new CharacterStage(this);
 		mapStage = new MapStage(cam,this);
 		mapStage.setDebugUnderMouse(true);
-		hideCharacterStage();
+		showCharacterStage();
 
 	}
 	public void showCharacterStage(){

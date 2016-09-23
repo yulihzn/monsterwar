@@ -7,6 +7,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -37,15 +40,25 @@ public class PlayerAvatarTable extends Table {
         setPosition(0,0);
         setWidth(w);
         setHeight(h);
-        Image image = new Image(avatar.getTexture());
+        final Image image = new Image(avatar.getTexture());
         image.setScale(10);
         image.setPosition(0,0);
         bottom().left().add(image);
+
         image.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                avatar.upDateAvatar();
+                SequenceAction sequenceAction = Actions.sequence();
+                for (int i = 0; i < 3; i++) {
+                    sequenceAction.addAction(Actions.delay(0.03f,Actions.run(new Runnable() {
+                        @Override
+                        public void run() {
+                            avatar.upDateAvatar();
+                        }
+                    })));
+                }
+                image.addAction(sequenceAction);
             }
         });
     }
