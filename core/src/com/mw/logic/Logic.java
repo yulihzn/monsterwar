@@ -1,6 +1,7 @@
 package com.mw.logic;
 
 import com.badlogic.gdx.utils.Array;
+import com.mw.logic.characters.base.Character;
 import com.mw.logic.characters.base.Monster;
 import com.mw.logic.characters.base.Player;
 import com.mw.logic.characters.info.GhostInfo;
@@ -9,6 +10,7 @@ import com.mw.logic.item.base.Food;
 import com.mw.logic.item.base.Item;
 import com.mw.logic.item.info.FoodInfo;
 import com.mw.profiles.GameFileHelper;
+import com.mw.ui.LogMessageTable;
 
 /**
  * Created by BanditCat on 2016/8/10.
@@ -36,6 +38,14 @@ public class Logic {
         }
         return inStance;
     }
+    public static final int DIR_TOP = 1;
+    public static final int DIR_BOTTOM = 2;
+    public static final int DIR_LEFT = 3;
+    public static final int DIR_RIGHT = 4;
+    public static final int DIR_TOPLEFT = 5;
+    public static final int DIR_TOPRIGHT= 6;
+    public static final int DIR_BOTTOMLEFT = 7;
+    public static final int DIR_BOTTOMRIGHT = 8;
 
     private Array<Monster> monsterArray = new Array<Monster>();
 
@@ -89,6 +99,12 @@ public class Logic {
         endRound();
 
     }
+    //每回合检查玩家的视野是否到了边界,如果到了边界，相应的边界的一组数据替换成新的数据，边界的对立面
+    public void reachTheEdge(int dir){
+        for (GameEventListener gameEventListener:gameEventListeners) {
+            gameEventListener.reachTheEdge(dir);
+        }
+    }
 
     private void checkPlayer() {
         if(player.getInfo().getHealthPoint()<=0){
@@ -137,11 +153,17 @@ public class Logic {
 
     public interface GameEventListener{
         void GameOver();
+        void reachTheEdge(int dir);
     }
 
     public void sendLogMessage(String msg,int type){
         if(logMessageListener != null){
             logMessageListener.sendMessage(msg,type);
+        }
+    }
+    public void sendLogMessage(String msg){
+        if(logMessageListener != null){
+            logMessageListener.sendMessage(msg, LogMessageTable.TYPE_NORMAL);
         }
     }
     private LogMessageListener logMessageListener;

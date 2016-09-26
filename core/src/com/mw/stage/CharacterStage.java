@@ -13,8 +13,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mw.actor.MagicBottle;
+import com.mw.game.MainGame;
 import com.mw.screen.MainScreen;
 import com.mw.ui.InventoryTable;
 import com.mw.ui.LazyBitmapFont;
@@ -42,7 +44,7 @@ public class CharacterStage extends Stage {
 
     public CharacterStage(final MainScreen mainScreen) {
         this.mainScreen = mainScreen;
-        setViewport(new ScreenViewport());
+        setViewport(new FitViewport(MainGame.worldWidth,MainGame.worldHeight));
         generator = new FreeTypeFontGenerator(Gdx.files.internal("data/font.ttf"));
         bitmapFont = new LazyBitmapFont(generator,10);
         textureAtlas = new TextureAtlas(Gdx.files.internal("tiles.pack"));
@@ -59,8 +61,8 @@ public class CharacterStage extends Stage {
     }
 
     private void addBackGround(){
-        int w = Gdx.graphics.getWidth()-Gdx.graphics.getWidth()/10;
-        int h = Gdx.graphics.getHeight()-Gdx.graphics.getHeight()/10;
+        int w = MainGame.worldWidth/10;
+        int h = MainGame.worldHeight-MainGame.worldHeight/10;
         Pixmap pixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888); // Pixmap.Format.RGBA8888);
         texture = new Texture(w, h, Pixmap.Format.RGBA8888); // Pixmap.Format.RGBA8888);
         texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Linear);
@@ -72,7 +74,7 @@ public class CharacterStage extends Stage {
         backGround = new Table();
         backGround.setWidth(w);
         backGround.setHeight(h);
-        backGround.setPosition(Gdx.graphics.getWidth()/10,Gdx.graphics.getWidth()/10);
+        backGround.setPosition(MainGame.worldWidth/10,MainGame.worldHeight);
         backGround.setVisible(isVisible);
         TextureRegion textureRegion = new TextureRegion(texture,w,h);
         backGround.setBackground(new TextureRegionDrawable(textureRegion));
@@ -92,7 +94,7 @@ public class CharacterStage extends Stage {
     }
 
     private void addMagicBottle(){
-        int w = Gdx.graphics.getWidth()/10;
+        int w = MainGame.worldWidth/10;
         int h = w*2;
         bottles.clear();
         bottles.add(new MagicBottle(MagicBottle.SWORD,bitmapFont));
@@ -149,11 +151,11 @@ public class CharacterStage extends Stage {
             return;
         }
         super.draw();
-        int w = Gdx.graphics.getWidth()-Gdx.graphics.getWidth()/10;
-        int h = Gdx.graphics.getHeight()-Gdx.graphics.getHeight()/10;
+        int w = MainGame.worldWidth-MainGame.worldHeight/10;
+        int h = MainGame.worldHeight-MainGame.worldHeight/10;
         backGround.setWidth(w);
         backGround.setHeight(h);
-        backGround.setPosition(Gdx.graphics.getWidth()/20,Gdx.graphics.getHeight()/20);
+        backGround.setPosition(MainGame.worldWidth/20,MainGame.worldHeight/20);
 
 
     }

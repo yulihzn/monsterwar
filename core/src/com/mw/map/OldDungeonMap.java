@@ -10,29 +10,25 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.MathUtils;
-import com.mw.logic.Logic;
 import com.mw.model.MapInfo;
 import com.mw.model.MapInfoModel;
-import com.mw.utils.Dungeon;
 import com.mw.profiles.GameFileHelper;
-import com.mw.utils.WildDungeon;
-
-import java.util.Arrays;
+import com.mw.utils.Dungeon;
 
 /**
  * Created by BanditCat on 2016/3/25.
  */
-public class DungeonMap extends TiledMap {
+public class OldDungeonMap extends TiledMap {
     private TiledMapTileLayer floorLayer;
     private TiledMapTileLayer blockLayer;
     private TiledMapTileLayer decorateLayer;
     private TiledMapTileLayer shadowLayer;
     private int width,height;
     private MapInfo mapInfo;
-    public static final int TILE_SIZE_WIDTH = 16;
+    public static final int TILE_SIZE_WIDTH = 32;
     public static final int TILE_SIZE_HEIGHT = 16;
     private TextureAtlas textureAtlas;
-    private WildDungeon dungeon;
+    private Dungeon dungeon;
     public static String LAYER_FLOOR = "LAYER_FLOOR";
     public static String LAYER_BLOCK = "LAYER_BLOCK";
     public static String LAYER_DECORATE = "LAYER_DECORATE";
@@ -42,7 +38,7 @@ public class DungeonMap extends TiledMap {
     private TextureAtlas shadowTextureAtlas;
     //shadowIndex = {{0,4,8,12},{1,5,9,13},{2,6,10,14},{3,7,11,15}};
 
-    public DungeonMap() {
+    public OldDungeonMap() {
         initMap();
         this.level = GameFileHelper.getInstance().getCurrentLevel();
         initDungeon(level);
@@ -86,7 +82,7 @@ public class DungeonMap extends TiledMap {
         mapInfo = GameFileHelper.getInstance().getGameMap(level);
         if(mapInfo == null){
             mapInfo = new MapInfo();
-            dungeon = new WildDungeon();
+            dungeon = new Dungeon();
             dungeon.createDungeon(TILE_SIZE_WIDTH,TILE_SIZE_HEIGHT,5000);
             int[][] dungeonArray = dungeon.getDungeonArray();
             mapInfo.setMapArray(new MapInfoModel[width][height]);
@@ -121,42 +117,6 @@ public class DungeonMap extends TiledMap {
         GameFileHelper.getInstance().saveGameMap(mapInfo,level);
         upDateTilesType();
 
-    }
-    //更新新一列地图
-    public void upDateDungeon(int dir){
-        MapInfoModel[][]maps = mapInfo.getMapArray();
-        switch (dir){
-            case Logic.DIR_BOTTOM:
-                MapInfoModel[][]tempmaps= new MapInfoModel[maps.length][maps[0].length];
-                for (int i = 0; i < tempmaps.length; i++) {
-                    for (int j = 0; j < tempmaps[0].length; j++) {
-                        if(i < tempmaps.length-2){//原数组一直复制到倒数第二排
-                            tempmaps[i][j] = maps[i+1][j];
-                        }else if(i == tempmaps.length-2){//针对倒数第二排创建新的一组元素
-                            MapInfoModel mim = new MapInfoModel();
-                            //阴影要多两条边
-                            if(i<DungeonMap.TILE_SIZE_WIDTH&&j<DungeonMap.TILE_SIZE_HEIGHT){
-                                mim.setBlock(Dungeon.tileDirtFloor);
-                                mim.setFloor(Dungeon.tileDirtFloor);
-                            }else{
-                                mim.setFloor(Dungeon.tileNothing);
-                                mim.setBlock(Dungeon.tileNothing);
-                            }
-
-                            mim.setShadow(0);
-                            mim.setShadowClick(0);
-                            mim.setPos(new GridPoint2(i,j));
-                            mim.setElement(MathUtils.random(3));
-                            tempmaps[i][j] = mim;
-                        }else if(i == tempmaps.length-1){
-                            tempmaps[i][j] = maps[i][j];
-                        }
-                    }
-                }
-                mapInfo.setMapArray(tempmaps);
-                upDateTilesType();
-                break;
-        }
     }
 
     /**

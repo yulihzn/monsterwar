@@ -45,8 +45,8 @@ public class MainScreen extends BaseScreen implements Screen{
 	public MainScreen(MainGame mainGame) {
 		super(mainGame);
 		this.mainGame = mainGame;
-		float w = Gdx.graphics.getWidth();
-		float h = Gdx.graphics.getHeight();
+		float w = MainGame.worldWidth;
+		float h = MainGame.worldHeight;
 		cam = new OrthographicCamera(camSize, camSize*(h/w));
 		cam.position.set(worldWidth / 2f, worldHeight / 2f, 0);
 		cam.zoom = 1.5f;
@@ -69,7 +69,7 @@ public class MainScreen extends BaseScreen implements Screen{
 		characterStage = new CharacterStage(this);
 		mapStage = new MapStage(cam,this);
 		mapStage.setDebugUnderMouse(true);
-		showCharacterStage();
+		hideCharacterStage();
 
 	}
 	public void showCharacterStage(){
@@ -107,8 +107,8 @@ public class MainScreen extends BaseScreen implements Screen{
 //		cam.position.y = MathUtils.clamp(cam.position.y, effectiveViewportHeight / 2f, worldtHeight - effectiveViewportHeight / 2f);
 		cam.position.x = MathUtils.clamp(cam.position.x, 0, worldWidth);
 		cam.position.y = MathUtils.clamp(cam.position.y, 0, worldHeight);
-		float w = Gdx.graphics.getWidth();
-		float h = Gdx.graphics.getHeight();
+		float w = MainGame.worldWidth;
+		float h = MainGame.worldHeight;
 		cam.viewportWidth = camSize;
 		cam.viewportHeight = camSize*(h/w);
 		cam.update();

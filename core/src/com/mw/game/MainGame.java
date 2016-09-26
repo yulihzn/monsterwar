@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.mw.screen.StartScreen;
 
 public class MainGame extends Game {
+	public static final int worldWidth = 800;
+	public static final int worldHeight = 600;
 
 	@Override
 	public void create() {

@@ -10,7 +10,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.mw.game.MainGame;
 import com.mw.logic.characters.info.PlayerInfo;
 import com.mw.screen.MainScreen;
 import com.mw.screen.StartScreen;
@@ -45,8 +47,7 @@ public class UiStage extends Stage {
     private LogMessageTable logMessageTable;
 
     public UiStage(final MainScreen mainScreen) {
-        setViewport(new ScreenViewport());
-        setDebugAll(true);
+        setViewport(new FitViewport(MainGame.worldWidth,MainGame.worldHeight));
         generator = new FreeTypeFontGenerator(Gdx.files.internal("data/font.ttf"));
         bitmapFont = new LazyBitmapFont(generator,16);
 
@@ -60,7 +61,7 @@ public class UiStage extends Stage {
         TextureRegionDrawable imageUp = new TextureRegionDrawable(atlas.findRegion("button_back_normal"));
         TextureRegionDrawable imageDown = new TextureRegionDrawable(atlas.findRegion("button_back_pressed"));
         ib_back = new ImageButton(imageUp, imageDown);
-        ib_back.setPosition(BACK_PADDING, Gdx.graphics.getHeight()-BACK_PADDING-ib_back.getHeight());
+        ib_back.setPosition(BACK_PADDING, MainGame.worldHeight-BACK_PADDING-ib_back.getHeight());
         ib_back.addListener(new ClickListener() {
 
             @Override
@@ -71,7 +72,7 @@ public class UiStage extends Stage {
 
         });
         ib_menu = new ImageButton(imageUp, imageDown);
-        ib_menu.setPosition(Gdx.graphics.getWidth()-ib_menu.getWidth()-20,20);
+        ib_menu.setPosition(MainGame.worldWidth-ib_menu.getWidth()-20,20);
         ib_menu.addListener(new ClickListener() {
 
             @Override
@@ -101,8 +102,8 @@ public class UiStage extends Stage {
     @Override
     public void draw() {
         super.draw();
-        float w = Gdx.graphics.getWidth();
-        float h = Gdx.graphics.getHeight();
+        float w = MainGame.worldWidth;
+        float h = MainGame.worldHeight;
         if(logMessageTable != null){
             logMessageTable.setWidth(w/2);
             logMessageTable.setHeight(100);
@@ -141,7 +142,7 @@ public class UiStage extends Stage {
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
-        if(Gdx.graphics.getHeight()-screenY < scrollHeight){
+        if(MainGame.worldHeight-screenY < scrollHeight){
             isScroll = true;
         }else {
             isScroll = false;

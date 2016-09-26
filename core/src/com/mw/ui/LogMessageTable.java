@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
+import com.mw.game.MainGame;
 import com.mw.logic.Logic;
 import com.mw.model.LogModel;
 
@@ -37,10 +38,10 @@ public class LogMessageTable extends Table {
     }
 
     private void init() {
-        int w = Gdx.graphics.getWidth()/2;
+        int w = MainGame.worldWidth/2;
         int h = 20;
         generator = new FreeTypeFontGenerator(Gdx.files.internal("data/font.ttf"));
-        bitmapFont = new LazyBitmapFont(generator,14);
+        bitmapFont = new LazyBitmapFont(generator,12);
 
         Pixmap pixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888); // Pixmap.Format.RGBA8888);
         texture = new Texture(w, h, Pixmap.Format.RGBA8888); // Pixmap.Format.RGBA8888);
@@ -75,7 +76,7 @@ public class LogMessageTable extends Table {
         //新建一个label
         Table table = ((Table)scrollPane.getWidget());
         Label label = new Label("",new Label.LabelStyle(bitmapFont, Color.WHITE));
-        int w = Gdx.graphics.getWidth()/2;
+        int w = MainGame.worldWidth /2;
         label.setWidth(w);
         label.setWrap(true);
         table.row();

@@ -169,14 +169,23 @@ public abstract class Character implements Telegraph {
         if(hasUnit(x,y)){
             return false;
         }
+        //碰到敌人停下来
         if(hasEnemy(x,y)){
             attackUnit(curPos);
+            return false;
+        }
+        //视野到地图边界停下来
+        if(isReachTheEdge(x,y)){
             return false;
         }
         moveBegin(x,y);
         return true;
         //当前单位的下一条和其余npc的下一条相同的话对比各个单位的速度，如果速度一致优先玩家然后是npc列表第一个
     }
+
+    protected boolean isReachTheEdge(int x, int y) {
+        return false;
+    };
 
     protected void moveBegin(int x, int y){
 

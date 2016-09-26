@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
+import com.mw.game.MainGame;
 import com.mw.model.LogModel;
 
 /**
@@ -30,8 +31,8 @@ public class InventoryTable extends Table {
     private FloatingTable floatingTable;
     public InventoryTable() {
         textureAtlas = new TextureAtlas(Gdx.files.internal("tiles.pack"));
-        int w = Gdx.graphics.getWidth()/3;
-        int h = Gdx.graphics.getHeight()/3;
+        int w = MainGame.worldWidth /3;
+        int h = MainGame.worldHeight/3;
         Pixmap pixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
         texture = new Texture(w, h, Pixmap.Format.RGBA8888);
         texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Linear);

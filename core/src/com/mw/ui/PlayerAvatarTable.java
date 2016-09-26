@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.mw.avatar.Avatar;
+import com.mw.game.MainGame;
 
 /**
  * Created by BanditCat on 2016/9/20.
@@ -26,8 +27,8 @@ public class PlayerAvatarTable extends Table {
     public PlayerAvatarTable() {
         avatar = new Avatar();
         textureAtlas = new TextureAtlas(Gdx.files.internal("tiles.pack"));
-        int w = Gdx.graphics.getWidth()/4;
-        int h = Gdx.graphics.getHeight()/4;
+        int w = MainGame.worldWidth /4;
+        int h = MainGame.worldHeight/4;
         Pixmap pixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
         texture = new Texture(w, h, Pixmap.Format.RGBA8888);
         texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Linear);

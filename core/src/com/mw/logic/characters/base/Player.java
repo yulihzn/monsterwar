@@ -68,6 +68,17 @@ public class Player extends Character {
     }
 
     @Override
+    protected boolean isReachTheEdge(int x, int y) {
+        if(x<getInfo().getSightRange()||getInfo().getSightRange()+x>DungeonMap.TILE_SIZE_WIDTH
+                ||y<getInfo().getSightRange()||getInfo().getSightRange()+y>DungeonMap.TILE_SIZE_HEIGHT){
+            Logic.getInstance().sendLogMessage("那边不知道有什么，我先观望一下", LogMessageTable.TYPE_NORMAL);
+            Logic.getInstance().reachTheEdge(Logic.DIR_BOTTOM);
+            return true;
+        }
+        return super.isReachTheEdge(x, y);
+    }
+
+    @Override
     public boolean hasEnemy(int x, int y) {
         boolean isEnemy=false;
         for (Monster monster : Logic.getInstance().getMonsterArray()){

@@ -34,7 +34,7 @@ public class CharacterFactory {
 
     public Player getPlayer(){
         Player player = new Player(dungeonMap);
-        player.setInfo(new PlayerInfo(10,1,1,0,1,3));
+        player.setInfo(new PlayerInfo(10,1,1,0,1,5));
         PlayerActor manActor = new PlayerActor(player,textureAtlas,PlayerInfo.REGION_NAME,camera,dungeonMap);
         manActor.setPosition(-100,-100);
         player.setActor(manActor);

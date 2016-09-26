@@ -16,6 +16,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
+import com.mw.logic.Logic;
 import com.mw.map.DungeonMap;
 import com.mw.utils.Dungeon;
 import java.util.HashMap;
@@ -51,6 +52,7 @@ public class MapShadow extends Actor{
         this.height = height;
         this.width = width;
         shapeRenderer = new ShapeRenderer();
+        sightRadius = Logic.getInstance().getPlayer().getInfo().getSightRange();
 
         // Create an empty dynamic pixmap
         pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888); // Pixmap.Format.RGBA8888);
