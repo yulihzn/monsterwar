@@ -72,7 +72,25 @@ public class Player extends Character {
         if(x<getInfo().getSightRange()||getInfo().getSightRange()+x>DungeonMap.TILE_SIZE_WIDTH
                 ||y<getInfo().getSightRange()||getInfo().getSightRange()+y>DungeonMap.TILE_SIZE_HEIGHT){
             Logic.getInstance().sendLogMessage("那边不知道有什么，我先观望一下", LogMessageTable.TYPE_NORMAL);
-            Logic.getInstance().reachTheEdge(Logic.DIR_BOTTOM);
+            int curX = getActor().getTilePosIndex().x;
+            int curY = getActor().getTilePosIndex().y;
+            if(curX>x&&curY==y){
+                Logic.getInstance().reachTheEdge(Logic.DIR_LEFT);
+            }else if(curX<x&&curY==y){
+                Logic.getInstance().reachTheEdge(Logic.DIR_RIGHT);
+            }else if(curY<y&&curX==x){
+                Logic.getInstance().reachTheEdge(Logic.DIR_TOP);
+            }else if(curY>y&&curX==x){
+                Logic.getInstance().reachTheEdge(Logic.DIR_BOTTOM);
+            }else if(curY<y&&curX<x){
+                Logic.getInstance().reachTheEdge(Logic.DIR_TOPRIGHT);
+            }else if(curY<y&&curX>x){
+                Logic.getInstance().reachTheEdge(Logic.DIR_TOPLEFT);
+            }else if(curY>y&&curX>x){
+                Logic.getInstance().reachTheEdge(Logic.DIR_BOTTOMLEFT);
+            }else if(curY>y&&curX<x){
+                Logic.getInstance().reachTheEdge(Logic.DIR_BOTTOMRIGHT);
+            }
             return true;
         }
         return super.isReachTheEdge(x, y);

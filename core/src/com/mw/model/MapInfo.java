@@ -2,6 +2,7 @@ package com.mw.model;
 
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.mw.map.DungeonMap;
 
 /**
@@ -13,6 +14,7 @@ public class MapInfo {
     private int level;
     private GridPoint2 upstairsIndex;
     private GridPoint2 downstairsIndex;
+    private ObjectMap<String,GridPoint2>indexList = new ObjectMap<String, GridPoint2>();
 
     public MapInfoModel[][] getMapArray() {
         return mapArray;

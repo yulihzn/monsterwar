@@ -52,9 +52,9 @@ public class DungeonMap extends TiledMap {
      * 初始化地图资源
      */
     private void initMap() {
-        //因为阴影层多右上两条边有16的偏移，宽高要加1
-        this.height = TILE_SIZE_HEIGHT+1;
-        this.width = TILE_SIZE_WIDTH+1;
+        //因为阴影层多右上两条边有16的偏移，宽高要加1//这里暂时先不加这个阴影
+        this.height = TILE_SIZE_HEIGHT;
+        this.width = TILE_SIZE_WIDTH;
         this.floorLayer = new TiledMapTileLayer(width,height,32,32);
         this.blockLayer = new TiledMapTileLayer(width,height,32,32);
         this.decorateLayer = new TiledMapTileLayer(width,height,32,32);
@@ -106,7 +106,7 @@ public class DungeonMap extends TiledMap {
                         }
                     }else{
                         mim.setFloor(Dungeon.tileNothing);
-                        mim.setBlock(Dungeon.tileNothing);
+                        mim.setBlock(Dungeon.tileChest);
                     }
                     mim.setShadow(0);
                     mim.setShadowClick(0);
@@ -119,50 +119,130 @@ public class DungeonMap extends TiledMap {
         //保存地图
         GameFileHelper.getInstance().setCurrentLevel(level);
         GameFileHelper.getInstance().saveGameMap(mapInfo,level);
-        upDateTilesType();
+        initTilesType();
 
     }
     //更新新一列地图
     public void upDateDungeon(int dir){
         MapInfoModel[][]maps = mapInfo.getMapArray();
-        switch (dir){
-            case Logic.DIR_BOTTOM:
-                MapInfoModel[][]tempmaps= new MapInfoModel[maps.length][maps[0].length];
-                for (int i = 0; i < tempmaps.length; i++) {
-                    for (int j = 0; j < tempmaps[0].length; j++) {
-                        if(i < tempmaps.length-2){//原数组一直复制到倒数第二排
-                            tempmaps[i][j] = maps[i+1][j];
-                        }else if(i == tempmaps.length-2){//针对倒数第二排创建新的一组元素
-                            MapInfoModel mim = new MapInfoModel();
-                            //阴影要多两条边
-                            if(i<DungeonMap.TILE_SIZE_WIDTH&&j<DungeonMap.TILE_SIZE_HEIGHT){
-                                mim.setBlock(Dungeon.tileDirtFloor);
-                                mim.setFloor(Dungeon.tileDirtFloor);
-                            }else{
-                                mim.setFloor(Dungeon.tileNothing);
-                                mim.setBlock(Dungeon.tileNothing);
-                            }
-
-                            mim.setShadow(0);
-                            mim.setShadowClick(0);
-                            mim.setPos(new GridPoint2(i,j));
-                            mim.setElement(MathUtils.random(3));
-                            tempmaps[i][j] = mim;
-                        }else if(i == tempmaps.length-1){
-                            tempmaps[i][j] = maps[i][j];
+        MapInfoModel[][]tempmaps= new MapInfoModel[maps.length][maps[0].length];
+        //这里的坐标系是自然坐标系，左下角为圆点，i是x，j是y
+        for (int i = 0; i < tempmaps.length; i++) {
+            for (int j = 0; j < tempmaps[0].length; j++) {
+                switch (dir){
+                    case Logic.DIR_BOTTOM:
+                        if(j == 0){//第一排获取新的元素
+                            tempmaps[i][j] = getNewMapInfoModel(i,j,Dungeon.tileDirtFloor);
+                        }else if(j > 0){//第二排从原数组的第一排开始复制
+                            tempmaps[i][j]=maps[i][j-1];
                         }
-                    }
+                        break;
+                    case Logic.DIR_TOP:
+                        if(j == tempmaps[0].length-1){//倒数第一排获取新的元素
+                            tempmaps[i][j] = getNewMapInfoModel(i,j,Dungeon.tileDirtFloor);
+                        }else if(j<tempmaps[0].length-1){//第一排从原数组的第二排开始复制
+                            tempmaps[i][j]=maps[i][j+1];
+                        }
+                        break;
+                    case Logic.DIR_LEFT:
+                        if(i==0){//第一列获取新的元素
+                            tempmaps[i][j]=getNewMapInfoModel(i,j,Dungeon.tileDirtFloor);
+                        }else if(i>0){//第二列从原数组的第一列开始复制
+                            tempmaps[i][j]=maps[i-1][j];
+                        }
+                        break;
+                    case Logic.DIR_RIGHT:
+                        if(i == tempmaps.length-1){//倒数第一列获取新的元素
+                            tempmaps[i][j] = getNewMapInfoModel(i,j,Dungeon.tileDirtFloor);
+                        }else if(i<tempmaps.length-1){//第一列从原数组的第二列开始复制
+                            tempmaps[i][j]=maps[i+1][j];
+                        }
+                        break;
+                    case Logic.DIR_BOTTOMLEFT:
+                        if(j == 0||i==0){//第一排第一列获取新的元素
+                            tempmaps[i][j] = getNewMapInfoModel(i,j,Dungeon.tileDirtFloor);
+                        }else if(j > 0&&i>0){
+                            tempmaps[i][j]=maps[i-1][j-1];
+                        }
+                        break;
+                    case Logic.DIR_BOTTOMRIGHT:
+                        if(j == 0||i == tempmaps.length-1){//第一排最后一列获取新的元素
+                            tempmaps[i][j] = getNewMapInfoModel(i,j,Dungeon.tileDirtFloor);
+                        }else if(j > 0&&i<tempmaps.length-1){
+                            tempmaps[i][j]=maps[i+1][j-1];
+                        }
+                        break;
+                    case Logic.DIR_TOPLEFT:
+                        if(j == tempmaps[0].length-1||i==0){//最后一排第一列获取新的元素
+                            tempmaps[i][j] = getNewMapInfoModel(i,j,Dungeon.tileDirtFloor);
+                        }else if(j<tempmaps[0].length-1&&i>0){
+                            tempmaps[i][j]=maps[i-1][j+1];
+                        }
+                        break;
+                    case Logic.DIR_TOPRIGHT:
+                        if(j == tempmaps[0].length-1||i == tempmaps.length-1){//最后一排最后一列获取新的元素
+                            tempmaps[i][j] = getNewMapInfoModel(i,j,Dungeon.tileDirtFloor);
+                        }else if(j<tempmaps[0].length-1&&i<tempmaps.length-1){
+                            tempmaps[i][j]=maps[i+1][j+1];
+                        }
+                        break;
+
                 }
-                mapInfo.setMapArray(tempmaps);
-                upDateTilesType();
-                break;
+
+            }
         }
+        mapInfo.setMapArray(tempmaps);
+        upDateTilesType();
+    }
+    private MapInfoModel getNewMapInfoModel(int x,int y,int block){
+        MapInfoModel mim = new MapInfoModel();
+        //阴影要多两条边
+        if(x<DungeonMap.TILE_SIZE_WIDTH&&y<DungeonMap.TILE_SIZE_HEIGHT){
+            mim.setBlock(block);
+            mim.setFloor(Dungeon.tileDirtFloor);
+            if(block==Dungeon.tileUpStairs){
+                mapInfo.setUpstairsIndex(new GridPoint2(x,y));
+            }
+            if(block==Dungeon.tileDownStairs){
+                mapInfo.setDownstairsIndex(new GridPoint2(x,y));
+            }
+        }else{
+            mim.setFloor(Dungeon.tileNothing);
+            mim.setBlock(Dungeon.tileChest);
+        }
+
+        mim.setShadow(0);
+        mim.setShadowClick(0);
+        mim.setPos(new GridPoint2(x,y));
+        mim.setElement(MathUtils.random(3));
+        return mim;
     }
 
     /**
-     * 更新数组贴图
+     * 刷新数组贴图
      */
     public void upDateTilesType(){
+        for (int i = 0; i < mapInfo.getMapArray().length; i++) {
+            for (int j = 0; j < mapInfo.getMapArray()[0].length; j++) {
+                //障碍层
+                int tileType = mapInfo.getMapArray()[i][j].getBlock();
+                blockLayer.getCell(i,j).getTile().setId(tileType);
+                blockLayer.getCell(i,j).getTile().setTextureRegion(textureAtlas.findRegion(getResName(tileType)));
+
+                //地表层
+                floorLayer.getCell(i,j).getTile().setId(Dungeon.tileDirtFloor);
+                floorLayer.getCell(i,j).getTile().setTextureRegion(textureAtlas.findRegion(getResName(Dungeon.tileDirtFloor)));
+
+                //阴影层
+                shadowLayer.getCell(i,j).getTile().setTextureRegion(shadowTextureAtlas.findRegion(""+mapInfo.getMapArray()[i][j].getShadow()));
+                shadowLayer.getCell(i,j).getTile().setId(mapInfo.getMapArray()[i][j].getShadow());
+            }
+        }
+    }
+    /**
+     * 建立数组贴图
+     */
+    public void initTilesType(){
         for (int i = 0; i < mapInfo.getMapArray().length; i++) {
             for (int j = 0; j < mapInfo.getMapArray()[0].length; j++) {
                 //障碍层

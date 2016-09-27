@@ -410,6 +410,7 @@ public class  MapStage extends Stage{
 		public void clicked(InputEvent event, float x, float y) {
 			System.out.println(actor.getX()+","+actor.getY() +"value = "+actor.getCell().getTile().getId()+ " has been clicked.");
 			Logic.getInstance().beginRound(actor.getTilePosIndex().x,actor.getTilePosIndex().y);
+			Logic.getInstance().sendLogMessage("x="+actor.getTilePosIndex().x+",y="+actor.getTilePosIndex().y);
 		}
 	}
 
