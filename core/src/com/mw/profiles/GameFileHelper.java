@@ -63,6 +63,9 @@ public class GameFileHelper {
         }
         return null;
     }
+    public void saveGameMap(MapInfo mapInfo){
+        String str = json.prettyPrint(mapInfo);
+    }
 
     /**
      * 玩家信息：层数，位置
