@@ -21,6 +21,7 @@ import com.mw.screen.MainScreen;
 import com.mw.ui.InventoryTable;
 import com.mw.ui.LazyBitmapFont;
 import com.mw.ui.PlayerAvatarTable;
+import com.mw.ui.WorldMapTable;
 
 
 /**
@@ -34,6 +35,7 @@ public class CharacterStage extends Stage {
     private Table backGround;
     private InventoryTable inventoryTable;
     private PlayerAvatarTable playerAvatarTable;
+    private WorldMapTable worldMapTable;
     private boolean isVisible = false;
 
     private MainScreen mainScreen;
@@ -91,6 +93,8 @@ public class CharacterStage extends Stage {
         addMagicBottle();
         addAvatar();
         addInventory();
+        worldMapTable = new WorldMapTable();
+        backGround.addActor(worldMapTable);
     }
 
     private void addMagicBottle(){
