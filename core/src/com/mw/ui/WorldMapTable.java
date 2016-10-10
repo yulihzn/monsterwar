@@ -36,7 +36,7 @@ public class WorldMapTable extends Table {
         int w = MainGame.worldWidth;
         int h = MainGame.worldHeight;
         generator = new FreeTypeFontGenerator(Gdx.files.internal("data/font.ttf"));
-        bitmapFont = new LazyBitmapFont(generator,12);
+        bitmapFont = new LazyBitmapFont(generator,8);
 
         Pixmap pixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
         texture = new Texture(w, h, Pixmap.Format.RGBA8888);
