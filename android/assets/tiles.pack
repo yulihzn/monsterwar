@@ -52,114 +52,149 @@ bottle4
   orig: 32, 32
   offset: 0, 0
   index: -1
-cup01
+building
   rotate: false
   xy: 224, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-door
+cup01
   rotate: false
   xy: 256, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-down
+dirt
   rotate: false
   xy: 288, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-downstair
+door
   rotate: false
   xy: 320, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-empty-original
+down
   rotate: false
   xy: 352, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-food
+downstair
   rotate: false
   xy: 384, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-food1
+empty-original
   rotate: false
   xy: 416, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-fool
+food
   rotate: false
   xy: 448, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-ghost
+food1
   rotate: false
   xy: 480, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-grass01
+fool
   rotate: false
   xy: 512, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-man
+ghost
   rotate: false
   xy: 544, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-sand01
+grass
   rotate: false
   xy: 576, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-stone
+grass01
   rotate: false
   xy: 608, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-stone01
+man
   rotate: false
   xy: 640, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-transparent
+sand01
   rotate: false
   xy: 672, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-upstair
+stone
   rotate: false
   xy: 704, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+stone01
+  rotate: false
+  xy: 736, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+transparent
+  rotate: false
+  xy: 768, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+tree
+  rotate: false
+  xy: 800, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+upstair
+  rotate: false
+  xy: 832, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+water
+  rotate: false
+  xy: 864, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

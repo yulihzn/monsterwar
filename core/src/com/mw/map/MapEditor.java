@@ -7,6 +7,20 @@ import com.badlogic.gdx.utils.Array;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * 生成256x256大地图
+ * 将地图分成16x16个大区域命名为area0_0，area0_1...保存到一个列表
+ * 每个大区域保存了当前生成的地貌属性，例如：整体属性-城堡，其中一格是城墙
+ * 挑选特定的一个大区域例如area5_5是野外，其中一个元素map0_0是草地，生成该小区域是类型是野外草地，
+ * 将生成的map放入area里面的map列表，直到生成了256个map，代表area建立完毕保存到json。
+ * 放置玩家到map8_8里面的8,8的位置定位出生地点，保存玩家的大区域位置，小区域位置和具体位置。
+ * 1.读取map8_8到展示的地图里面，当玩家视野到了移动地图的时候截取对应数组部分到新数组里面，但是这样太复杂了。。。
+ * 2.一次性读取大区域到map里面，但是可能会占用太多内存。
+ * 3.到了地图边界的时候进入下一个场景需要读图。
+ * 无缝的办法
+ * 1.读取map8_8和它周围的8
+ *
+ */
 public class MapEditor {
 	public static final int DIRT = 0;
 	public static final int GRASS = 1;
@@ -58,18 +72,28 @@ public class MapEditor {
 				}
 			}
 		}
+		Array<GridPoint2> indexs = new Array<GridPoint2>();
+		for (int i = 0; i < arr.length; i+=16) {
+			for (int j = 0; j < arr[0].length; j+=16) {
+				indexs.add(new GridPoint2(i,j));
+			}
+		}
 		castles.clear();
 		for (int i = 0; i < 22; i++) {
-			if(i<2){
-				buildCastle(i*16,i*16);
-			}else
-			buildCastle(random.nextInt(16)*16,random.nextInt(16)*16);
+			GridPoint2 g = indexs.get(random.nextInt(indexs.size));
+			buildCastle(g.x,g.y);
+			indexs.removeValue(g,false);
+		}
+		for (int i = 0; i < 56; i++) {
+			GridPoint2 g = indexs.get(random.nextInt(indexs.size));
+			buildVillage(g.x,g.y);
+			indexs.removeValue(g,false);
 		}
 		castles.sort();
 //		for (int i = 0; i < castles.size; i++) {
 //			Castle castle = castles.get(i);
 //		}
-		buildRoad(castles.get(0),castles.get(1));
+//		buildRoad(castles.get(0),castles.get(1));
 
 	}
 	private Array<GridPoint2> getRoadList(GridPoint2 p1, GridPoint2 p2){
@@ -177,6 +201,19 @@ public class MapEditor {
 		}
 		castles.add(castle);
 
+	}
+	private void buildVillage(int x0,int y0){
+		Village village = new Village(x0,y0,random);
+		int[][] a = village.getArr();
+		for (int i = 0; i < a.length; i++) {
+			for (int j = 0; j < a[0].length; j++) {
+				arr[x0+i][y0+j]=a[i][j];
+			}
+		}
+	}
+
+	public int[][] getArr() {
+		return arr;
 	}
 
 	public String getArrayString(){
