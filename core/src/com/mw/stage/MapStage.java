@@ -25,6 +25,7 @@ import com.mw.logic.characters.base.Monster;
 import com.mw.logic.characters.base.Player;
 import com.mw.logic.item.base.Item;
 import com.mw.map.DungeonMap;
+import com.mw.map.MapGenerator;
 import com.mw.model.MapInfoModel;
 import com.mw.screen.MainScreen;
 import com.mw.utils.Dungeon;
@@ -109,6 +110,7 @@ public class  MapStage extends Stage{
 //		elementsInterFace.drawTile();
 
 		Logic.getInstance().addGameEventListener(logicEventListener);
+		MapGenerator.getInstance();
 
 	}
 	private LogicEventListener logicEventListener = new LogicEventListener() {

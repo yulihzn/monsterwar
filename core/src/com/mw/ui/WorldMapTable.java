@@ -1,6 +1,8 @@
 package com.mw.ui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -8,8 +10,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -28,6 +32,8 @@ import com.mw.map.DungeonMap;
 import com.mw.map.MapEditor;
 import com.mw.map.WorldMap;
 import com.mw.model.LogModel;
+import com.mw.model.WorldMapModel;
+import com.mw.profiles.GameFileHelper;
 import com.mw.stage.MapStage;
 
 /**
@@ -42,6 +48,7 @@ public class WorldMapTable extends Table {
 
     private WorldMap worldMap;
     private TiledMapRenderer renderer;
+    private OrthographicCamera camera;
 
 
     public WorldMapTable() {
@@ -73,14 +80,26 @@ public class WorldMapTable extends Table {
         row().space(5).padBottom(5);
 //        MapEditor mapEditor = new MapEditor();
 //        mapEditor.Create();
-//        String s = mapEditor.getArrayString();
-//        Label label = new Label(s,new Label.LabelStyle(bitmapFont, Color.WHITE));
-//        table.add(label).expandX().fillX();
-        worldMap = new WorldMap();
+        WorldMapModel worldMapModel = GameFileHelper.getInstance().getWorldMap(GameFileHelper.DEFAULT_PROFILE);
+        if(worldMapModel != null){
+            MapEditor mapEditor = new MapEditor();
+            mapEditor.setArr(worldMapModel.getArr());
+            String s = mapEditor.getArrayString();
+            Label label = new Label(s,new Label.LabelStyle(bitmapFont, Color.WHITE));
+            table.add(label).expandX().fillX();
+        }
+//        worldMap = new WorldMap();
+//        //获取渲染
+//        renderer = new OrthogonalTiledMapRenderer(worldMap,1/16f);
+//        OrthographicCamera camera = new OrthographicCamera(800,600);
+//        renderer.setView(new OrthographicCamera(800,600));
+//        camera.translate(0,0);
         //获取渲染
-        renderer = new OrthogonalTiledMapRenderer(worldMap,0.2f);
-        OrthographicCamera camera = new OrthographicCamera(800,600);
-        renderer.setView(new OrthographicCamera(800,600));
+//        TiledMap map = new TmxMapLoader().load("test.tmx");
+//        renderer = new OrthogonalTiledMapRenderer(worldMap, 1f / 32f);
+//        camera = new OrthographicCamera();
+//        camera.setToOrtho(false, (w/h)*10, 10);
+//        camera.update();
     }
     private void createActorsForLayer(TiledMapTileLayer tiledLayer) {
         for (int x = 0; x < tiledLayer.getWidth(); x++) {
@@ -126,6 +145,9 @@ public class WorldMapTable extends Table {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
-        renderer.render(new int[]{0,1,2});
+//        camera.update();
+//        renderer.setView(camera);
+////        renderer.render();
+//        renderer.render(new int[]{0,1,2});
     }
 }

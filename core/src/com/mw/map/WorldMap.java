@@ -75,11 +75,11 @@ public class WorldMap extends TiledMap {
      * @param level
      */
     public void initWorld(int level){
-        mapInfo = GameFileHelper.getInstance().getGameMap(level);
+        mapInfo = GameFileHelper.getInstance().getGameMap(9999);
         if(mapInfo == null){
             mapInfo = new MapInfo();
             mapEditor = new MapEditor();
-            mapEditor.Create();
+            mapEditor.create();
 
             int[][] worldArray = mapEditor.getArr();
             mapInfo.setMapArray(new MapInfoModel[width][height]);
@@ -103,8 +103,7 @@ public class WorldMap extends TiledMap {
             }
         }
         //保存地图
-        GameFileHelper.getInstance().setCurrentLevel(level);
-        GameFileHelper.getInstance().saveGameMap(mapInfo,level);
+        GameFileHelper.getInstance().saveGameMap(mapInfo,9999);
         upDateTilesType();
 
     }

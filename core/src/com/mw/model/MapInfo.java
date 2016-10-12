@@ -12,6 +12,7 @@ import com.mw.map.DungeonMap;
 public class MapInfo {
     private MapInfoModel[][] mapArray;
     private int level;
+    private int type;//类型
     private GridPoint2 upstairsIndex;
     private GridPoint2 downstairsIndex;
     private ObjectMap<String,GridPoint2>indexList = new ObjectMap<String, GridPoint2>();
@@ -38,6 +39,14 @@ public class MapInfo {
 
     public void setDownstairsIndex(GridPoint2 downstairsIndex) {
         this.downstairsIndex = downstairsIndex;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     public GridPoint2 getUpstairsIndex() {

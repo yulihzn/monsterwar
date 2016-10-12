@@ -3,6 +3,8 @@ package com.mw.map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
+import com.mw.model.*;
+import com.mw.model.Castle;
 
 import java.util.List;
 import java.util.Random;
@@ -22,6 +24,9 @@ import java.util.Random;
  *
  */
 public class MapEditor {
+	public static final int CASTLE = 100;
+	public static final int VILLAGE = 101;
+
 	public static final int DIRT = 0;
 	public static final int GRASS = 1;
 	public static final int TREE = 2;
@@ -42,11 +47,11 @@ public class MapEditor {
 	double x0 = 0, y0 = 0, dx = 20, dy = 20;
 	int w = block, h = block, d = 2;
 
-	private Array<Castle> castles = new Array<Castle>();
+	private WorldMapModel worldMapModel = new WorldMapModel();
 	public MapEditor() {
 		random = new Random(System.currentTimeMillis());
 	}
-	public void Create() {
+	public WorldMapModel create() {
 		random.setSeed(System.currentTimeMillis());
 		dx = 20+random.nextInt(20);
 		dy = 20+random.nextInt(20);
@@ -78,7 +83,7 @@ public class MapEditor {
 				indexs.add(new GridPoint2(i,j));
 			}
 		}
-		castles.clear();
+		worldMapModel.getAreas().clear();
 		for (int i = 0; i < 22; i++) {
 			GridPoint2 g = indexs.get(random.nextInt(indexs.size));
 			buildCastle(g.x,g.y);
@@ -89,12 +94,17 @@ public class MapEditor {
 			buildVillage(g.x,g.y);
 			indexs.removeValue(g,false);
 		}
-		castles.sort();
+		for (int i = 0; i < 178; i++) {
+			GridPoint2 g = indexs.get(random.nextInt(indexs.size));
+			buildWild(g.x,g.y);
+			indexs.removeValue(g,false);
+		}
 //		for (int i = 0; i < castles.size; i++) {
 //			Castle castle = castles.get(i);
 //		}
 //		buildRoad(castles.get(0),castles.get(1));
-
+		worldMapModel.setArr(arr);
+		return worldMapModel;
 	}
 	private Array<GridPoint2> getRoadList(GridPoint2 p1, GridPoint2 p2){
 		int x0 = Math.min(p1.x,p2.x);
@@ -131,7 +141,7 @@ public class MapEditor {
 		return array;
 	}
 	//连接2个城堡
-	private void buildRoad(Castle castle1,Castle castle2){
+	private void buildRoad(com.mw.model.Castle castle1, com.mw.model.Castle castle2){
 		GridPoint2 p1 = new GridPoint2();
 		GridPoint2 p2 = new GridPoint2();
 		//判断位置，有8种情况，四面八方
@@ -192,24 +202,36 @@ public class MapEditor {
 	}
 
 	private void buildCastle(int x0,int y0) {
-		Castle castle = new Castle(x0,y0,random);
+		com.mw.model.Castle castle = new Castle(x0,y0,random);
 		int[][] a = castle.getArr();
 		for (int i = 0; i < a.length; i++) {
 			for (int j = 0; j < a[0].length; j++) {
 				arr[x0+i][y0+j]=a[i][j];
 			}
 		}
-		castles.add(castle);
+		worldMapModel.getAreas().put(castle.getName(),castle);
 
 	}
 	private void buildVillage(int x0,int y0){
-		Village village = new Village(x0,y0,random);
+		com.mw.model.Village village = new com.mw.model.Village(x0,y0,random);
 		int[][] a = village.getArr();
 		for (int i = 0; i < a.length; i++) {
 			for (int j = 0; j < a[0].length; j++) {
 				arr[x0+i][y0+j]=a[i][j];
 			}
 		}
+		worldMapModel.getAreas().put(village.getName(),village);
+	}
+
+	private void buildWild(int x0,int y0){
+		Wild wild = new Wild(x0,y0,random);
+		int[][] a = wild.getArr();
+		for (int i = 0; i < a.length; i++) {
+			for (int j = 0; j < a[0].length; j++) {
+				a[i][j]=arr[x0+i][y0+j];
+			}
+		}
+		worldMapModel.getAreas().put(wild.getName(),wild);
 	}
 
 	public int[][] getArr() {
@@ -240,5 +262,9 @@ public class MapEditor {
 			stringBuilder.append("\n");
 		}
 		return stringBuilder.toString();
+	}
+
+	public void setArr(int[][] arr) {
+		this.arr = arr;
 	}
 }

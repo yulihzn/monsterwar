@@ -2,8 +2,12 @@ package com.mw.map;
 
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.MathUtils;
+import com.mw.model.Area;
+import com.mw.model.AreaModel;
 import com.mw.model.MapInfo;
 import com.mw.model.MapInfoModel;
+import com.mw.model.WorldMapModel;
+import com.mw.profiles.GameFileHelper;
 import com.mw.utils.Dungeon;
 import com.mw.utils.WildDungeon;
 
@@ -38,19 +42,38 @@ public class MapGenerator {
 
     private WildDungeon dungeon;
     private MapInfo[][] maps = new MapInfo[9][9];
+    private MapEditor mapEditor = new MapEditor();
+
+    private WorldMapModel worldMapModel;
+    private AreaModel areaModel;
 
     private void init() {
         dungeon = new WildDungeon();
+        worldMapModel = GameFileHelper.getInstance().getWorldMap(GameFileHelper.DEFAULT_PROFILE);
+        if(worldMapModel == null){
+            worldMapModel = mapEditor.create();
+            GameFileHelper.getInstance().saveWorldMap(GameFileHelper.DEFAULT_PROFILE,worldMapModel);
+        }
+        GridPoint2 areaPos = GameFileHelper.getInstance().getAreaPos(GameFileHelper.DEFAULT_PROFILE);
+        Area area = worldMapModel.getAreas().get("area"+areaPos.x+"_"+areaPos.y);
+        areaModel = GameFileHelper.getInstance().getAreaMap(GameFileHelper.DEFAULT_PROFILE,area);
+        if(areaModel == null){
+            initArea(area);
+        }
 
     }
-    public void generateDungeons(){
-
-        for (int i = 0; i < 16; i++) {
-            for (int j = 0; j < 16; j++) {
-                maps[i][j]=getNewMapInfo();
+    //初始化区域
+    private void initArea(Area area) {
+        areaModel = new AreaModel();
+        areaModel.setArea(area);
+        for (int i = 0; i < areaModel.getMapInfos().length; i++) {
+            for (int j = 0; j < areaModel.getMapInfos()[0].length; j++) {
+                areaModel.getMapInfos()[i][j]=getNewMapInfo();
             }
         }
+        GameFileHelper.getInstance().saveAreaMap(GameFileHelper.DEFAULT_PROFILE,areaModel);
     }
+
     private MapInfo getNewMapInfo(){
         MapInfo mapInfo = new MapInfo();
         dungeon.createDungeon(DungeonMap.TILE_SIZE_WIDTH,DungeonMap.TILE_SIZE_HEIGHT,5000);

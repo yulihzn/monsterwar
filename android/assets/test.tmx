@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="256" height="256" tilewidth="32" tileheight="32" nextobjectid="1">
+ <tileset firstgid="1" name="test" tilewidth="32" tileheight="32" tilecount="32">
+  <image source="tiles.png" width="1024" height="32"/>
+ </tileset>
+ <layer name="块层 1" width="256" height="256">
+  <data encoding="base64" compression="zlib">
+   eJztw8EJAAAMA6Ej+w/db4dQcNVUVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVd8DA/wAHw==
+  </data>
+ </layer>
+</map>

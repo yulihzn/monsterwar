@@ -3,11 +3,18 @@ package com.mw.profiles;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.utils.Base64Coder;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.mw.logic.characters.info.PlayerInfo;
+import com.mw.model.Area;
+import com.mw.model.AreaModel;
 import com.mw.model.MapInfo;
+import com.mw.model.WorldMapModel;
+import com.mw.utils.GZIP;
+
+import java.io.IOException;
 
 /**
  * Created by BanditCat on 2016/7/4.
@@ -16,6 +23,7 @@ public class GameFileHelper {
     public static final String DEFAULT_PROFILE = "default";
     private static GameFileHelper gameFileHelper;
     public static final String DIR_MAP = "/level/level_map_";
+    public static final String DIR_AREA = "/save/area/";
     public static final String DIR_SAVE = "/save/";
     public static final String SUFFIXES_MAP = ".map";
     public static final String SUFFIXES_GAME = ".sav";
@@ -63,8 +71,39 @@ public class GameFileHelper {
         }
         return null;
     }
-    public void saveGameMap(MapInfo mapInfo){
-        String str = json.prettyPrint(mapInfo);
+    public void saveAreaMap(String name, AreaModel model){
+        String str = json.toJson(model);
+        try {
+            str = GZIP.compress(str);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        FileHandle file = Gdx.files.local(DIR_AREA+name+model.getArea().getName()+SUFFIXES_MAP);
+        file.writeString(str,false);
+
+    }
+    public AreaModel getAreaMap(String name,Area area){
+        FileHandle file = Gdx.files.local(DIR_AREA+name+area.getName()+SUFFIXES_MAP);
+        if(file.exists()){
+            try {
+                String str = file.readString();
+                str = GZIP.unCompress(str);
+                return json.fromJson(AreaModel.class,str);
+            }catch (Exception e){
+                e.printStackTrace();
+                Gdx.app.log("Error","区域读取出错...");
+            }
+
+        }
+        return null;
+    }
+
+    public void saveWorldMap(String name, WorldMapModel model){
+        putSaveObject(GameFileStr.WORLD+name,model);
+    }
+    public WorldMapModel getWorldMap(String name){
+        WorldMapModel model = getSaveObject(GameFileStr.WORLD+name,WorldMapModel.class);
+        return model;
     }
 
     /**
@@ -77,6 +116,16 @@ public class GameFileHelper {
         GridPoint2 gridPoint2 = getSaveObject(GameFileStr.CURPOS+name,GridPoint2.class);
         if(null == gridPoint2){
             return new GridPoint2(-1,-1);
+        }
+        return gridPoint2;
+    }
+    public void setAreaPos(String name,int x,int y){
+        putSaveObject(GameFileStr.AREAPOS+name,new GridPoint2(x,y));
+    }
+    public GridPoint2 getAreaPos(String name){
+        GridPoint2 gridPoint2 = getSaveObject(GameFileStr.AREAPOS+name,GridPoint2.class);
+        if(null == gridPoint2){
+            return new GridPoint2(0,0);
         }
         return gridPoint2;
     }

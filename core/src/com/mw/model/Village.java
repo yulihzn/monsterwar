@@ -1,8 +1,7 @@
-package com.mw.map;
+package com.mw.model;
 
 import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.Array;
+import com.mw.map.MapEditor;
 
 import java.util.Random;
 
@@ -10,17 +9,16 @@ import java.util.Random;
  * Created by BanditCat on 2016/10/9.
  */
 
-public class Castle implements Comparable<Castle>{
-    private int x0,y0;
-    private Random random;
-    private int[][]arr = new int[16][16];
+public class Village extends Area{
     private int cx,cy;//要塞
     private GridPoint2[] exits = new GridPoint2[4];//4个门,0,1,2,3,上下左右
 
-    public Castle(int x0, int y0, Random random) {
-        this.random = random;
-        this.x0 = x0;
-        this.y0 = y0;
+    public Village() {
+    }
+
+    public Village(int x0, int y0, Random random) {
+        super(x0, y0, random);
+        this.type = MapEditor.VILLAGE;
         init();
     }
 
@@ -40,13 +38,8 @@ public class Castle implements Comparable<Castle>{
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
                 type = MapEditor.DIRT;
-                //城墙
-                if(i==1||i==14||j==1||j==14){
-                    type = MapEditor.WALL;
-                }
-                //护城河
-                if(i==0||i==15||j==0||j==15){
-                    type = MapEditor.GUARD_WATER;
+                if(random.nextDouble()<0.15){
+                    type = MapEditor.BUILDING2;
                 }
                 //主干道
                 if(i==cx||j==cy) {
@@ -55,14 +48,6 @@ public class Castle implements Comparable<Castle>{
                 //要塞
                 if(i==cx&&j==cy){
                     type = MapEditor.BUILDING;
-                }
-                //箭塔
-                if(((i==cx+1||i==cx-1)&&type == MapEditor.WALL)
-                        ||((j==cy+1||j==cy-1)&&type == MapEditor.WALL)){
-                    type = MapEditor.BUILDING1;
-                }
-                if((i==1||i==14)&&(j==1||j==14)){
-                    type = MapEditor.BUILDING1;
                 }
                 arr[i][j]= type;
             }
@@ -73,10 +58,6 @@ public class Castle implements Comparable<Castle>{
         return exits;
     }
 
-    public int[][] getArr() {
-        return arr;
-    }
-
     public int getCx() {
         return cx;
     }
@@ -85,16 +66,4 @@ public class Castle implements Comparable<Castle>{
         return cy;
     }
 
-    public int getX0() {
-        return x0;
-    }
-
-    public int getY0() {
-        return y0;
-    }
-
-    @Override
-    public int compareTo(Castle o) {
-        return (int)(Math.sqrt(x0*x0+y0*y0)-Math.sqrt(o.getX0()*o.getX0()+o.getY0()*o.getY0()));
-    }
 }
