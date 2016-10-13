@@ -95,7 +95,7 @@ public class WorldMapTable extends Table {
 //        renderer.setView(new OrthographicCamera(800,600));
 //        camera.translate(0,0);
         //获取渲染
-//        TiledMap map = new TmxMapLoader().load("test.tmx");
+        TiledMap map = new TmxMapLoader().load("test.tmx");
 //        renderer = new OrthogonalTiledMapRenderer(worldMap, 1f / 32f);
 //        camera = new OrthographicCamera();
 //        camera.setToOrtho(false, (w/h)*10, 10);

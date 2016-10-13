@@ -11,6 +11,17 @@ import com.mw.profiles.GameFileHelper;
 import com.mw.utils.Dungeon;
 import com.mw.utils.WildDungeon;
 
+import java.awt.Rectangle;
+import java.io.IOException;
+
+import tiled.core.Map;
+import tiled.core.MapLayer;
+import tiled.core.Tile;
+import tiled.core.TileLayer;
+import tiled.core.TileSet;
+import tiled.io.TMXMapWriter;
+import tiled.util.BasicTileCutter;
+
 /**
  * Created by BanditCat on 2016/9/27.
  * 小区域由16x16块组成
@@ -58,10 +69,43 @@ public class MapGenerator {
         Area area = worldMapModel.getAreas().get("area"+areaPos.x+"_"+areaPos.y);
         areaModel = GameFileHelper.getInstance().getAreaMap(GameFileHelper.DEFAULT_PROFILE,area);
         if(areaModel == null){
-            initArea(area);
+//            initArea(area);
         }
+        initTmx();
 
     }
+
+    private void initTmx() {
+        TMXMapWriter mapWriter = new TMXMapWriter();
+        String name = "world.tmx";
+        Map map = new Map(256,256);
+        map.setTileWidth(32);
+        map.setTileHeight(32);
+        TileSet tileSet = new TileSet();
+        tileSet.setTilesetImageFilename("tiles.png");
+        try {
+            tileSet.importTileBitmap("tiles.png",new BasicTileCutter(32,32,0,0));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        map.addTileset(tileSet);
+        MapLayer mapLayer = new TileLayer(256,256);
+        mapLayer.setName("floor");
+        map.addLayer(mapLayer);
+        int[][]arr = worldMapModel.getArr();
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = 0; j < arr[0].length; j++) {
+                Tile tile = tileSet.getTile(1);
+                ((TileLayer)mapLayer).setTileAt(i,j,tile);
+            }
+        }
+        try {
+            mapWriter.writeMap(map,name);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     //初始化区域
     private void initArea(Area area) {
         areaModel = new AreaModel();

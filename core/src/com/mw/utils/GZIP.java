@@ -55,7 +55,7 @@ public class GZIP {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         // 创建一个 ByteArrayInputStream，使用 buf 作为其缓冲区数组
         ByteArrayInputStream in = new ByteArrayInputStream(str
-                .getBytes("ISO-8859-1"));
+                .getBytes("utf-8"));
         // 使用默认缓冲区大小创建新的输入流
         GZIPInputStream gzip = new GZIPInputStream(in);
         byte[] buffer = new byte[256];
