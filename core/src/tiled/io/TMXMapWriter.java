@@ -444,7 +444,7 @@ public class TMXMapWriter {
                     dos.finish();
                 }
 
-                w.writeCDATA(Base64.encodeToString(baos.toByteArray(), true));
+                w.writeCDATA(Base64.encodeToString(baos.toByteArray(), false));
             } else {
                 for (int y = 0; y < l.getHeight(); y++) {
                     for (int x = 0; x < l.getWidth(); x++) {

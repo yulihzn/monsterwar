@@ -13,6 +13,7 @@ import com.mw.utils.WildDungeon;
 
 import java.awt.Rectangle;
 import java.io.IOException;
+import java.util.Properties;
 
 import tiled.core.Map;
 import tiled.core.MapLayer;
@@ -71,7 +72,7 @@ public class MapGenerator {
         if(areaModel == null){
 //            initArea(area);
         }
-        initTmx();
+//        initTmx();
 
     }
 
@@ -96,6 +97,9 @@ public class MapGenerator {
         for (int i = 0; i < arr.length; i++) {
             for (int j = 0; j < arr[0].length; j++) {
                 Tile tile = tileSet.getTile(1);
+                Properties p = new Properties();
+                p.setProperty("testkey","testvalue");
+                tile.setProperties(p);
                 ((TileLayer)mapLayer).setTileAt(i,j,tile);
             }
         }
