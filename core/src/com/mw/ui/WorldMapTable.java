@@ -18,6 +18,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
@@ -37,6 +38,7 @@ import com.mw.map.WorldMap;
 import com.mw.model.LogModel;
 import com.mw.model.WorldMapModel;
 import com.mw.profiles.GameFileHelper;
+import com.mw.stage.CharacterStage;
 import com.mw.stage.MapStage;
 
 /**
@@ -54,7 +56,9 @@ public class WorldMapTable extends Table {
     private OrthographicCamera camera;
 
 
-    public WorldMapTable() {
+
+    public WorldMapTable(OrthographicCamera camera) {
+        this.camera = camera;
         init();
     }
 
@@ -68,7 +72,7 @@ public class WorldMapTable extends Table {
         texture = new Texture(w, h, Pixmap.Format.RGBA8888);
         texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Linear);
         texture.setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);
-        pixmap.setColor(new Color(0,0,0,1f));
+        pixmap.setColor(new Color(0,255,0,0.5f));
         pixmap.fillRectangle(0,0,w,h);
         texture.draw(pixmap, 0, 0);
         TextureRegion textureRegion = new TextureRegion(texture,w,h);
@@ -100,14 +104,11 @@ public class WorldMapTable extends Table {
         //获取渲染
         TmxWorldMap tmxWorldMap = new TmxWorldMap(TmxWorldMap.TILE_SIZE_WIDTH,TmxWorldMap.TILE_SIZE_HEIGHT);
         TiledMap map = tmxWorldMap.getTileMap();
-        map.getLayers().get(TmxWorldMap.LAYER_SHADOW).setVisible(true);
+        map.getLayers().get(TmxWorldMap.LAYER_SHADOW).setVisible(false);
         tmxWorldMap.changeTile(TmxWorldMap.LAYER_SHADOW,21);
-        tmxWorldMap.saveTiledMap();
-        renderer = new OrthogonalTiledMapRenderer(map, 1f / 32f);
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, (800/600)*32, 32);
-        camera.position.set(0,0,0);
-        camera.update();
+//        tmxWorldMap.saveTiledMap();
+        renderer = new OrthogonalTiledMapRenderer(map, 1f);
+
     }
     private void createActorsForLayer(TiledMapTileLayer tiledLayer) {
         for (int x = 0; x < tiledLayer.getWidth(); x++) {
@@ -152,10 +153,24 @@ public class WorldMapTable extends Table {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        batch.setProjectionMatrix(camera.combined);
         super.draw(batch, parentAlpha);
-        camera.update();
         renderer.setView(camera);
         renderer.render();
 //        renderer.render(new int[]{0,1,2});
     }
+
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+        camera.zoom = MathUtils.clamp(camera.zoom,0.1f, CharacterStage.camSize/camera.viewportWidth*2);
+        camera.position.x = MathUtils.clamp(camera.position.x,0,CharacterStage.camSize);
+        camera.position.y = MathUtils.clamp(camera.position.y,0,CharacterStage.camSize);
+        float w = MainGame.worldWidth;
+        float h = MainGame.worldHeight;
+        camera.viewportWidth = CharacterStage.camSize;
+        camera.viewportHeight = CharacterStage.camSize*(h/w);
+        camera.update();
+    }
+
 }

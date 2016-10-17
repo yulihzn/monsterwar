@@ -2,6 +2,7 @@ package com.mw.stage;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -36,6 +37,8 @@ public class CharacterStage extends Stage {
     private InventoryTable inventoryTable;
     private PlayerAvatarTable playerAvatarTable;
     private WorldMapTable worldMapTable;
+    public static final float camSize = 256*32;
+    private OrthographicCamera camera;
     private boolean isVisible = false;
 
     private MainScreen mainScreen;
@@ -45,6 +48,7 @@ public class CharacterStage extends Stage {
 
 
     public CharacterStage(final MainScreen mainScreen) {
+        setDebugUnderMouse(true);
         this.mainScreen = mainScreen;
         setViewport(new FitViewport(MainGame.worldWidth,MainGame.worldHeight));
         generator = new FreeTypeFontGenerator(Gdx.files.internal("data/font.ttf"));
@@ -65,8 +69,8 @@ public class CharacterStage extends Stage {
     private void addBackGround(){
         int w = MainGame.worldWidth/10;
         int h = MainGame.worldHeight-MainGame.worldHeight/10;
-        Pixmap pixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888); // Pixmap.Format.RGBA8888);
-        texture = new Texture(w, h, Pixmap.Format.RGBA8888); // Pixmap.Format.RGBA8888);
+        Pixmap pixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+        texture = new Texture(w, h, Pixmap.Format.RGBA8888);
         texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Linear);
         texture.setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);
         pixmap.setColor(new Color(0,0,0,0.9f));
@@ -93,7 +97,12 @@ public class CharacterStage extends Stage {
         addMagicBottle();
         addAvatar();
         addInventory();
-        worldMapTable = new WorldMapTable();
+        camera = new OrthographicCamera(camSize,camSize*(h/w));
+        camera.zoom = 1.5f;
+        camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
+        camera.update();
+        worldMapTable = new WorldMapTable(camera);
+        worldMapTable.setPosition(0,0);
         backGround.addActor(worldMapTable);
     }
 
@@ -176,6 +185,22 @@ public class CharacterStage extends Stage {
             m.dispose();
         }
     }
-
+    @Override
+    public boolean scrolled(int amount) {
+        Gdx.app.log("scrolled",""+amount);
+        if(amount == -1){
+            camera.zoom += 0.1f;
+        }else if(amount == 1){
+            camera.zoom -= 0.1f;
+        }
+        if(camera.zoom < 0.1f){
+            camera.zoom = 0.1f;
+        }
+        if(camera.zoom > 4.0f){
+            camera.zoom = 4.0f;
+        }
+        Gdx.app.log("zoom",""+camera.zoom);
+        return super.scrolled(amount);
+    }
 
 }
