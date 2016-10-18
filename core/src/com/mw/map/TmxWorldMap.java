@@ -33,7 +33,6 @@ public class TmxWorldMap extends TmxMap {
     public static final int TILE_SIZE_HEIGHT = 256;
     public TmxWorldMap(int width, int height) {
         super(width, height);
-        name = "world.tmx";
     }
 
     @Override
@@ -41,5 +40,11 @@ public class TmxWorldMap extends TmxMap {
         WorldMapModel mapModel = new MapEditor().create();
         int[][] worldArray = mapModel.getArr();
         return worldArray;
+    }
+
+    @Override
+    protected void loadMap() {
+        name = "save/world.tmx";
+        super.loadMap();
     }
 }

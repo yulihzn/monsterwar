@@ -1,5 +1,6 @@
 package com.mw.map;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -37,16 +38,22 @@ public class TmxMap extends Map {
     public TmxMap(int width, int height) {
         super(width, height);
         initMap();
-        try {
-            tileMap = new TmxMapLoader().load(name);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        loadMap();
+
+    }
+
+    protected void loadMap() {
         initWorld();
     }
 
 
     private void initWorld() {
+        try {
+            tileMap = new TmxMapLoader().load(name);
+            return;
+        }catch (Exception e){
+            Gdx.app.log("error","no find the file.");
+        }
         int[][]arr = getMapArray();
         if(arr == null){
             return;
@@ -143,8 +150,11 @@ public class TmxMap extends Map {
         }
         return tile;
     }
-    public void changeTile(String layer,int type){
-        TiledMapTileLayer.Cell cell = ((TiledMapTileLayer)(tileMap.getLayers().get(layer))).getCell(0,0);
+    public void changeTile(String layer,int type,int x,int y){
+        if(x<0||x>=256||y<0||y>=256){
+            return;
+        }
+        TiledMapTileLayer.Cell cell = ((TiledMapTileLayer)(tileMap.getLayers().get(layer))).getCell(x,y);
         TiledMapTile tile = new StaticTiledMapTile(cell.getTile().getTextureRegion());
         tile.setId(type);
         tile.getProperties().putAll(cell.getTile().getProperties());

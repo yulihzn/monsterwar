@@ -71,40 +71,7 @@ public class GameFileHelper {
         }
         return null;
     }
-    public void saveAreaMap(String name, AreaModel model){
-        String str = json.toJson(model);
-        try {
-            str = GZIP.compress(str);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        FileHandle file = Gdx.files.local(DIR_AREA+name+model.getArea().getName()+SUFFIXES_MAP);
-        file.writeString(str,false);
 
-    }
-    public AreaModel getAreaMap(String name,Area area){
-        FileHandle file = Gdx.files.local(DIR_AREA+name+area.getName()+SUFFIXES_MAP);
-        if(file.exists()){
-            try {
-                String str = file.readString();
-                str = GZIP.unCompress(str);
-                return json.fromJson(AreaModel.class,str);
-            }catch (Exception e){
-                e.printStackTrace();
-                Gdx.app.log("Error","区域读取出错...");
-            }
-
-        }
-        return null;
-    }
-
-    public void saveWorldMap(String name, WorldMapModel model){
-        putSaveObject(GameFileStr.WORLD+name,model);
-    }
-    public WorldMapModel getWorldMap(String name){
-        WorldMapModel model = getSaveObject(GameFileStr.WORLD+name,WorldMapModel.class);
-        return model;
-    }
 
     /**
      * 玩家信息：层数，位置

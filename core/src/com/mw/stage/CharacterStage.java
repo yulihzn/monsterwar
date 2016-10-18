@@ -37,7 +37,7 @@ public class CharacterStage extends Stage {
     private InventoryTable inventoryTable;
     private PlayerAvatarTable playerAvatarTable;
     private WorldMapTable worldMapTable;
-    public static final float camSize = 256*32;
+    public static final float camSize = 16;
     private OrthographicCamera camera;
     private boolean isVisible = false;
 
@@ -98,12 +98,12 @@ public class CharacterStage extends Stage {
         addAvatar();
         addInventory();
         camera = new OrthographicCamera(camSize,camSize*(h/w));
-        camera.zoom = 1.5f;
+        camera.zoom = 1.0f;
         camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
         camera.update();
         worldMapTable = new WorldMapTable(camera);
         worldMapTable.setPosition(0,0);
-        backGround.addActor(worldMapTable);
+        addActor(worldMapTable);
     }
 
     private void addMagicBottle(){
@@ -196,8 +196,8 @@ public class CharacterStage extends Stage {
         if(camera.zoom < 0.1f){
             camera.zoom = 0.1f;
         }
-        if(camera.zoom > 4.0f){
-            camera.zoom = 4.0f;
+        if(camera.zoom > 16.0f){
+            camera.zoom = 16.0f;
         }
         Gdx.app.log("zoom",""+camera.zoom);
         return super.scrolled(amount);

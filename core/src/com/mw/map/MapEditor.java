@@ -27,18 +27,18 @@ public class MapEditor {
 	public static final int CASTLE = 100;
 	public static final int VILLAGE = 101;
 
-	public static final int DIRT = 9;
-	public static final int GRASS = 18;
-	public static final int TREE = 25;
-	public static final int WATER = 27;
-	public static final int STONE = 23;
 	public static final int WALL = 0;
-	public static final int DOOR = 10;
 	public static final int ROAD = 1;
+	public static final int BUILDING2 = 6;
 	public static final int BUILDING = 7;
 	public static final int BUILDING1 = 8;
-	public static final int BUILDING2 = 6;
+	public static final int DIRT = 9;
+	public static final int DOOR = 10;
 	public static final int GUARD_WATER = 12;
+	public static final int GRASS = 18;
+	public static final int STONE = 23;
+	public static final int TREE = 25;
+	public static final int WATER = 27;
 	public static final int block = 256;
 	private int[][] arr = new int[block][block];
 	private Random random;
@@ -59,7 +59,7 @@ public class MapEditor {
 		y0 = random.nextInt(9999);
 		for(int i = 0;i < block;i++){
 			for(int j = 0;j < block;j++){
-				arr[i][j] = 0;
+				arr[i][j] = DIRT;
 				double x = dx * i / w + x0,
                         y = dy * j / h + y0;
 				double p = perlin.perlinNoise(x, y);
@@ -217,7 +217,9 @@ public class MapEditor {
 		int[][] a = village.getArr();
 		for (int i = 0; i < a.length; i++) {
 			for (int j = 0; j < a[0].length; j++) {
-				arr[x0+i][y0+j]=a[i][j];
+				if(a[i][j] != DIRT){
+					arr[x0+i][y0+j]=a[i][j];
+				}
 			}
 		}
 		worldMapModel.getAreas().put(village.getName(),village);

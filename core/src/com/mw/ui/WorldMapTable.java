@@ -59,6 +59,7 @@ public class WorldMapTable extends Table {
 
     public WorldMapTable(OrthographicCamera camera) {
         this.camera = camera;
+        camera.position.set(128, 128, 0);
         init();
     }
 
@@ -102,12 +103,19 @@ public class WorldMapTable extends Table {
 //        renderer.setView(new OrthographicCamera(800,600));
 //        camera.translate(0,0);
         //获取渲染
-        TmxWorldMap tmxWorldMap = new TmxWorldMap(TmxWorldMap.TILE_SIZE_WIDTH,TmxWorldMap.TILE_SIZE_HEIGHT);
+        final TmxWorldMap tmxWorldMap = new TmxWorldMap(TmxWorldMap.TILE_SIZE_WIDTH,TmxWorldMap.TILE_SIZE_HEIGHT);
         TiledMap map = tmxWorldMap.getTileMap();
         map.getLayers().get(TmxWorldMap.LAYER_SHADOW).setVisible(false);
-        tmxWorldMap.changeTile(TmxWorldMap.LAYER_SHADOW,21);
 //        tmxWorldMap.saveTiledMap();
-        renderer = new OrthogonalTiledMapRenderer(map, 1f);
+        renderer = new OrthogonalTiledMapRenderer(map, 1f/32f);
+        addCaptureListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                tmxWorldMap.changeTile(TmxWorldMap.LAYER_SHADOW,21,0,0);
+                Gdx.app.log("worldMapTable","x="+x+",y="+y);
+            }
+        });
 
     }
     private void createActorsForLayer(TiledMapTileLayer tiledLayer) {
@@ -163,9 +171,9 @@ public class WorldMapTable extends Table {
     @Override
     public void act(float delta) {
         super.act(delta);
-        camera.zoom = MathUtils.clamp(camera.zoom,0.1f, CharacterStage.camSize/camera.viewportWidth*2);
-        camera.position.x = MathUtils.clamp(camera.position.x,0,CharacterStage.camSize);
-        camera.position.y = MathUtils.clamp(camera.position.y,0,CharacterStage.camSize);
+        camera.zoom = MathUtils.clamp(camera.zoom,0.1f, 16f);
+        camera.position.x = MathUtils.clamp(camera.position.x,0,256);
+        camera.position.y = MathUtils.clamp(camera.position.y,0,256);
         float w = MainGame.worldWidth;
         float h = MainGame.worldHeight;
         camera.viewportWidth = CharacterStage.camSize;
