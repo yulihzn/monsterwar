@@ -1,8 +1,7 @@
 package com.mw.ui;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -12,34 +11,23 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Cell;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.mw.actor.TiledMapActor;
 import com.mw.game.MainGame;
-import com.mw.logic.Logic;
 import com.mw.map.DungeonMap;
-import com.mw.map.MapEditor;
 import com.mw.map.TmxWorldMap;
 import com.mw.map.WorldMap;
-import com.mw.model.LogModel;
-import com.mw.model.WorldMapModel;
-import com.mw.profiles.GameFileHelper;
 import com.mw.stage.CharacterStage;
-import com.mw.stage.MapStage;
 
 /**
  * Created by BanditCat on 2016/9/7.
@@ -108,7 +96,7 @@ public class WorldMapTable extends Table {
         map.getLayers().get(TmxWorldMap.LAYER_SHADOW).setVisible(false);
 //        tmxWorldMap.saveTiledMap();
         renderer = new OrthogonalTiledMapRenderer(map, 1f/32f);
-        addCaptureListener(new ClickListener(){
+        addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -167,10 +155,26 @@ public class WorldMapTable extends Table {
         renderer.render();
 //        renderer.render(new int[]{0,1,2});
     }
-
+    public static final long roundSecond = 10000000;
+    private long roundTime = TimeUtils.nanoTime();
     @Override
     public void act(float delta) {
         super.act(delta);
+
+        if (TimeUtils.nanoTime() - roundTime >= roundSecond) {
+            roundTime = TimeUtils.nanoTime();
+            if(Gdx.input.isKeyPressed(Input.Keys.UP)){
+                camera.translate(0,1);
+            }else if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
+                camera.translate(0,-1);
+            }else if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+                camera.translate(-1,0);
+            }else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+                camera.translate(1,0);
+            }else if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+                camera.position.set(128,128,0);
+            }
+        }
         camera.zoom = MathUtils.clamp(camera.zoom,0.1f, 16f);
         camera.position.x = MathUtils.clamp(camera.position.x,0,256);
         camera.position.y = MathUtils.clamp(camera.position.y,0,256);

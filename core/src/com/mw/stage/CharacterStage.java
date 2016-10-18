@@ -15,7 +15,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mw.actor.MagicBottle;
 import com.mw.game.MainGame;
 import com.mw.screen.MainScreen;
@@ -201,6 +200,29 @@ public class CharacterStage extends Stage {
         }
         Gdx.app.log("zoom",""+camera.zoom);
         return super.scrolled(amount);
+    }
+
+    @Override
+    public boolean keyDown(int keyCode) {
+//        switch (KeyBoardController.getInstance().getKeyType(keyCode)){
+//            case KeyBoardController.UP:
+//                camera.translate(0,1,0);
+//                break;
+//            case KeyBoardController.DOWN:
+//                camera.translate(0,-1,0);
+//                break;
+//            case KeyBoardController.LEFT:
+//                camera.translate(-1,0,0);
+//                break;
+//            case KeyBoardController.RIGHT:
+//                camera.translate(1,0,0);
+//                break;
+//            case KeyBoardController.SPACE:
+//                camera.position.set(128,128,0);
+//                break;
+//
+//        }
+        return super.keyDown(keyCode);
     }
 
 }
