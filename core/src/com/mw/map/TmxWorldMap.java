@@ -33,18 +33,44 @@ public class TmxWorldMap extends TmxMap {
     public static final int TILE_SIZE_HEIGHT = 256;
     public TmxWorldMap(int width, int height) {
         super(width, height);
+        name = "save/world.tmx";
+        initWorld();
     }
 
-    @Override
-    protected int[][] getMapArray() {
+    private int[][] getMapArray() {
         WorldMapModel mapModel = new MapEditor().create();
         int[][] worldArray = mapModel.getArr();
         return worldArray;
     }
 
     @Override
-    protected void loadMap() {
-        name = "save/world.tmx";
-        super.loadMap();
+    protected void initWorld() {
+        super.initWorld();
+        int[][]arr = getMapArray();
+        if(arr == null){
+            return;
+        }
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = 0; j < arr[0].length; j++) {
+                Tile floor = getTileSets().get(0).getTile(MapEditor.DIRT);
+                Tile block = getTileSets().get(0).getTile(arr[i][j]);
+                Tile decorate = getTileSets().get(0).getTile(arr[i][j]);
+                Tile shadow = getTileSets().get(0).getTile(13);
+                floor.getProperties().setProperty("element",""+arr[i][j]);
+                block.getProperties().setProperty("element",""+arr[i][j]);
+                shadow.getProperties().setProperty("visible","0");
+                ((TileLayer)floorLayer).setTileAt(i,j,floor);
+                ((TileLayer)blockLayer).setTileAt(i,j,block);
+                ((TileLayer)decorateLayer).setTileAt(i,j,decorate);
+                ((TileLayer)shadowLayer).setTileAt(i,j,shadow);
+            }
+        }
+        try {
+            TMXMapWriter mapWriter = new TMXMapWriter();
+            mapWriter.writeMap(this,name);
+            tileMap = new TmxMapLoader().load(name);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

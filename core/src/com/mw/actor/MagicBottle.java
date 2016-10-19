@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.mw.ui.LazyBitmapFont;
+import com.mw.utils.AssetManagerHelper;
 
 /**
  * Created by BanditCat on 2016/3/23 0023.
@@ -28,7 +29,7 @@ public class MagicBottle extends Table {
     private TextureAtlas textureAtlas;
     private int type = -1;
     private Color[]colors={Color.GREEN,Color.RED,Color.YELLOW,Color.GOLD};
-    private String[]names = {"bottle0","bottle1","bottle2","bottle3","bottle4"};
+    private String[]names = {"i0","i1","i2","i3","i4"};
     private int maxNum = 100;
     private int curNum = 0;
     private Image image;
@@ -45,14 +46,14 @@ public class MagicBottle extends Table {
     public MagicBottle(int type,LazyBitmapFont bitmapFont) {
         this.bitmapFont = bitmapFont;
         this.type = type;
-        textureAtlas = new TextureAtlas(Gdx.files.internal("tiles.pack"));
-        image = new Image(textureAtlas.findRegion(names[type]));
+        textureAtlas = AssetManagerHelper.getInstance().getTextureAtlas("item");
+        image = new Image(AssetManagerHelper.getInstance().findRegion(names[type]));
         text = new Label("",new Label.LabelStyle(bitmapFont,Color.WHITE));
         image.setScale(2);
         image.setPosition(0,0);
         add(image);
         add(text);
-        sprite = new Sprite(textureAtlas.findRegion(names[4]));
+        sprite = new Sprite(AssetManagerHelper.getInstance().findRegion(names[4]));
         sprite.setScale(1.9f);
         sprite.setColor(colors[type]);
         bottle_h = sprite.getRegionHeight();
@@ -116,6 +117,5 @@ public class MagicBottle extends Table {
     public void dispose(){
         pixmap.dispose();
         texture.dispose();
-        textureAtlas.dispose();
     }
 }

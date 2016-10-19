@@ -41,7 +41,6 @@ public class CharacterStage extends Stage {
     private boolean isVisible = false;
 
     private MainScreen mainScreen;
-    private TextureAtlas textureAtlas;
 
     private Array<MagicBottle> bottles = new Array<MagicBottle>();
 
@@ -52,7 +51,6 @@ public class CharacterStage extends Stage {
         setViewport(new FitViewport(MainGame.worldWidth,MainGame.worldHeight));
         generator = new FreeTypeFontGenerator(Gdx.files.internal("data/font.ttf"));
         bitmapFont = new LazyBitmapFont(generator,10);
-        textureAtlas = new TextureAtlas(Gdx.files.internal("tiles.pack"));
         addBackGround();
     }
 
@@ -177,7 +175,6 @@ public class CharacterStage extends Stage {
         super.dispose();
         generator.dispose();
         bitmapFont.dispose();
-        textureAtlas.dispose();
         inventoryTable.dispose();
         playerAvatarTable.dispose();
         for (MagicBottle m:bottles){

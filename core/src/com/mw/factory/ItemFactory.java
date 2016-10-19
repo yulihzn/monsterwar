@@ -4,6 +4,7 @@ package com.mw.factory;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mw.actor.FoodActor;
 import com.mw.actor.GhostActor;
 import com.mw.actor.PlayerActor;
@@ -21,25 +22,23 @@ import com.mw.stage.MapStage;
  * 角色生成器
  */
 public class ItemFactory {
-    private MapStage mapStage;
+    private Stage stage;
     private DungeonMap dungeonMap;
-    private TextureAtlas textureAtlas;
     private OrthographicCamera camera;
-    public ItemFactory(MapStage mapStage) {
-        this.mapStage = mapStage;
-        dungeonMap = mapStage.getDungeonMap();
-        textureAtlas = mapStage.getTextureAtlas();
-        camera = mapStage.getCamera();
+    public ItemFactory(Stage stage) {
+        this.stage = stage;
+        dungeonMap = ((MapStage)stage).getDungeonMap();
+        camera = ((MapStage)stage).getCamera();
 
     }
 
     public Food getFood(){
         Food food = new Food(dungeonMap);
         food.setInfo(new FoodInfo(1,0,0,0,0));
-        FoodActor foodActor = new FoodActor(textureAtlas,FoodInfo.REGION_NAME,camera);
+        FoodActor foodActor = new FoodActor(FoodInfo.REGION_NAME,camera);
         foodActor.setPosition(-100,-100);
         food.setActor(foodActor);
-        mapStage.addActor(foodActor);
+        stage.addActor(foodActor);
         foodActor.setZIndex(3);
         return food;
     }

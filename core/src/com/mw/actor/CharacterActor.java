@@ -18,8 +18,8 @@ public class CharacterActor extends GameMapTile {
 
 
     protected Character character;
-    public CharacterActor(Character character,TextureAtlas textureAtlas, String regionName, OrthographicCamera cam, DungeonMap dungeonMap) {
-        super(textureAtlas, regionName, cam);
+    public CharacterActor(Character character ,String regionName, OrthographicCamera cam, DungeonMap dungeonMap) {
+        super(regionName, cam);
         this.character = character;
         this.camera = cam;
     }

@@ -4,6 +4,7 @@ package com.mw.factory;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.mw.actor.CharacterActor;
 import com.mw.actor.GhostActor;
@@ -20,25 +21,23 @@ import com.mw.stage.MapStage;
  * 角色生成器
  */
 public class CharacterFactory {
-    private MapStage mapStage;
+    private Stage stage;
     private DungeonMap dungeonMap;
-    private TextureAtlas textureAtlas;
     private OrthographicCamera camera;
-    public CharacterFactory(MapStage mapStage) {
-        this.mapStage = mapStage;
-        dungeonMap = mapStage.getDungeonMap();
-        textureAtlas = mapStage.getTextureAtlas();
-        camera = mapStage.getCamera();
+    public CharacterFactory(Stage stage) {
+        this.stage = stage;
+        dungeonMap = ((MapStage)stage).getDungeonMap();
+        camera = ((MapStage)stage).getCamera();
 
     }
 
     public Player getPlayer(){
         Player player = new Player(dungeonMap);
         player.setInfo(new PlayerInfo(10,1,1,0,1,5));
-        PlayerActor manActor = new PlayerActor(player,textureAtlas,PlayerInfo.REGION_NAME,camera,dungeonMap);
+        PlayerActor manActor = new PlayerActor(player,PlayerInfo.REGION_NAME,camera,dungeonMap);
         manActor.setPosition(-100,-100);
         player.setActor(manActor);
-        mapStage.addActor(manActor);
+        stage.addActor(manActor);
         manActor.setZIndex(3);
         player.getActor().setFocus(true);
         return player;
@@ -46,10 +45,10 @@ public class CharacterFactory {
     public Ghost getGhost(){
         Ghost ghost = new Ghost(dungeonMap);
         ghost.setInfo(new GhostInfo(1,1,1,0,1,3));
-        GhostActor ghostActor = new GhostActor(ghost,textureAtlas,GhostInfo.REGION_NAME,camera,dungeonMap);
+        GhostActor ghostActor = new GhostActor(ghost,GhostInfo.REGION_NAME,camera,dungeonMap);
         ghostActor.setTilePosIndex(new GridPoint2(DungeonMap.TILE_SIZE_WIDTH/2,DungeonMap.TILE_SIZE_HEIGHT/2));
         ghost.setActor(ghostActor);
-        mapStage.addActor(ghostActor);
+        stage.addActor(ghostActor);
         ghostActor.setZIndex(2);
         return ghost;
     }

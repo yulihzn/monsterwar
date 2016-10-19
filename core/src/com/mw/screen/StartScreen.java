@@ -2,6 +2,7 @@ package com.mw.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -15,6 +16,7 @@ import com.mw.actor.ParticleEffectActor;
 import com.mw.base.BaseScreen;
 import com.mw.game.MainGame;
 import com.mw.profiles.GameFileHelper;
+import com.mw.utils.AssetManagerHelper;
 
 public class StartScreen extends BaseScreen implements Screen{
 	private Stage stage;
@@ -55,8 +57,6 @@ public class StartScreen extends BaseScreen implements Screen{
 			}
 			
 		});
-		//test
-		mainGame.setScreen(new TransferScreen(mainGame,new MainScreen(mainGame)));
 		stage.addActor(background);
 		stage.addActor(ib_start);
 		Gdx.input.setInputProcessor(stage);
@@ -70,6 +70,9 @@ public class StartScreen extends BaseScreen implements Screen{
 		stage.addActor(particleEffectActor);
 		GameFileHelper.getInstance().loadProfile(GameFileHelper.DEFAULT_PROFILE);
 
+		//test
+		mainGame.setScreen(new TransferScreen(mainGame,new MainScreen(mainGame)));
+
 
 	}
 
@@ -77,7 +80,6 @@ public class StartScreen extends BaseScreen implements Screen{
 	public void render(float delta) {
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
-
 	}
 
 	@Override

@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.mw.utils.AssetManagerHelper;
 
 /**
  * Created by BanditCat on 2016/9/20.
@@ -25,7 +26,7 @@ public class FloatingTable extends Table {
     public FloatingTable() {
         generator = new FreeTypeFontGenerator(Gdx.files.internal("data/font.ttf"));
         bitmapFont = new LazyBitmapFont(generator,14);
-        textureAtlas = new TextureAtlas(Gdx.files.internal("tiles.pack"));
+        textureAtlas = AssetManagerHelper.getInstance().getTextureAtlas("item");
         int w = 100;
         int h = 100;
         Pixmap pixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
@@ -40,7 +41,7 @@ public class FloatingTable extends Table {
         setPosition(0,0);
         setWidth(w);
         setHeight(h);
-        Image image = new Image(textureAtlas.findRegion("bottle1"));
+        Image image = new Image(AssetManagerHelper.getInstance().findRegion("i1"));
         label = new GameInfoLabel("test",new Label.LabelStyle(bitmapFont,Color.BLACK));
         add(image).center();
         row();
@@ -64,7 +65,6 @@ public class FloatingTable extends Table {
     }
     public void dispose(){
         texture.dispose();
-        textureAtlas.dispose();
         bitmapFont.dispose();
     }
 }

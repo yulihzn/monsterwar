@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.mw.logic.Logic;
 import com.mw.model.MapInfo;
 import com.mw.model.MapInfoModel;
+import com.mw.utils.AssetManagerHelper;
 import com.mw.utils.Dungeon;
 import com.mw.profiles.GameFileHelper;
 import com.mw.utils.WildDungeon;
@@ -74,8 +75,8 @@ public class DungeonMap extends TiledMap {
         layers.add(blockLayer);
         layers.add(decorateLayer);
         layers.add(shadowLayer);
-        textureAtlas = new TextureAtlas(Gdx.files.internal("tiles.pack"));
-        shadowTextureAtlas = new TextureAtlas(Gdx.files.internal("images/shadows.pack"));
+        textureAtlas = AssetManagerHelper.getInstance().getTextureAtlas("wall");
+        shadowTextureAtlas = AssetManagerHelper.getInstance().getTextureAtlas("cover");
     }
 
     /**
@@ -227,14 +228,14 @@ public class DungeonMap extends TiledMap {
                 //障碍层
                 int tileType = mapInfo.getMapArray()[i][j].getBlock();
                 blockLayer.getCell(i,j).getTile().setId(tileType);
-                blockLayer.getCell(i,j).getTile().setTextureRegion(textureAtlas.findRegion(getResName(tileType)));
+                blockLayer.getCell(i,j).getTile().setTextureRegion(AssetManagerHelper.getInstance().findRegion(getResName(tileType)));
 
                 //地表层
                 floorLayer.getCell(i,j).getTile().setId(Dungeon.tileDirtFloor);
-                floorLayer.getCell(i,j).getTile().setTextureRegion(textureAtlas.findRegion(getResName(Dungeon.tileDirtFloor)));
+                floorLayer.getCell(i,j).getTile().setTextureRegion(AssetManagerHelper.getInstance().findRegion(getResName(Dungeon.tileDirtFloor)));
 
                 //阴影层
-                shadowLayer.getCell(i,j).getTile().setTextureRegion(shadowTextureAtlas.findRegion(""+mapInfo.getMapArray()[i][j].getShadow()));
+                shadowLayer.getCell(i,j).getTile().setTextureRegion(AssetManagerHelper.getInstance().findRegion(""+mapInfo.getMapArray()[i][j].getShadow()));
                 shadowLayer.getCell(i,j).getTile().setId(mapInfo.getMapArray()[i][j].getShadow());
             }
         }
@@ -248,21 +249,21 @@ public class DungeonMap extends TiledMap {
                 //障碍层
                 int tileType = mapInfo.getMapArray()[i][j].getBlock();
                 TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-                DungeonTiledMapTile tiledMapTile = new DungeonTiledMapTile(textureAtlas.findRegion(getResName(tileType)));
+                DungeonTiledMapTile tiledMapTile = new DungeonTiledMapTile(AssetManagerHelper.getInstance().findRegion(getResName(tileType)));
                 tiledMapTile.setId(tileType);
                 cell.setTile(tiledMapTile);
                 this.blockLayer.setCell(i,j,cell);
 
                 //地表层
                 TiledMapTileLayer.Cell cellGround = new TiledMapTileLayer.Cell();
-                DungeonTiledMapTile tiledMapTile1 = new DungeonTiledMapTile(textureAtlas.findRegion(getResName(Dungeon.tileDirtFloor)));
+                DungeonTiledMapTile tiledMapTile1 = new DungeonTiledMapTile(AssetManagerHelper.getInstance().findRegion(getResName(Dungeon.tileDirtFloor)));
                 tiledMapTile1.setId(Dungeon.tileDirtFloor);
                 cellGround.setTile(tiledMapTile1);
                 this.floorLayer.setCell(i,j,cellGround);
 
                 //阴影层
                 TiledMapTileLayer.Cell cellShadow = new TiledMapTileLayer.Cell();
-                DungeonTiledMapTile tiledMapTile2 = new DungeonTiledMapTile(shadowTextureAtlas.findRegion(""+mapInfo.getMapArray()[i][j].getShadow()));
+                DungeonTiledMapTile tiledMapTile2 = new DungeonTiledMapTile(AssetManagerHelper.getInstance().findRegion(""+mapInfo.getMapArray()[i][j].getShadow()));
                 tiledMapTile2.setId(mapInfo.getMapArray()[i][j].getShadow());
                 //点击位置为4个方块的左下，所以整体要向左下移动16个像素表示点击的是中间
                 tiledMapTile2.setOffsetX(-16);
@@ -277,7 +278,7 @@ public class DungeonMap extends TiledMap {
         if(name.equals("")){
             return;
         }
-        this.blockLayer.getCell(x,y).getTile().setTextureRegion(textureAtlas.findRegion(name));
+        this.blockLayer.getCell(x,y).getTile().setTextureRegion(AssetManagerHelper.getInstance().findRegion(name));
         mapInfo.getMapArray()[x][y].setBlock(value);
         GameFileHelper.getInstance().saveGameMap(mapInfo, GameFileHelper.getInstance().getCurrentLevel());
     }
@@ -291,7 +292,7 @@ public class DungeonMap extends TiledMap {
         if(tiledMapTile.getId()>15){
             tiledMapTile.setId(15);
         }
-        tiledMapTile.setTextureRegion(shadowTextureAtlas.findRegion(tiledMapTile.getId()+""));
+        tiledMapTile.setTextureRegion(AssetManagerHelper.getInstance().findRegion(tiledMapTile.getId()+""));
         mapInfo.getMapArray()[x][y].setShadow(tiledMapTile.getId());
     }
     public void changeShadow(int x,int y){
@@ -309,17 +310,17 @@ public class DungeonMap extends TiledMap {
     private String getResName(int value){
         String name = "";
         switch(value) {
-            case Dungeon.tileUnused:name="stone01";break;
-            case Dungeon.tileDirtWall:name="block01"; break;
-            case Dungeon.tileDirtFloor:name="sand01"; break;
-            case Dungeon.tileStoneWall:name="stone"; break;
-            case Dungeon.tileCorridor:name="sand01"; break;
-            case Dungeon.tileDoor:name="door"; break;
-            case Dungeon.tileUpStairs:name="upstair"; break;
-            case Dungeon.tileDownStairs:name="downstair"; break;
-            case Dungeon.tileChest:name="cup01"; break;
-            case Dungeon.tileDoorOpen:name="down"; break;
-            case Dungeon.tileNothing:name="empty-original"; break;
+            case Dungeon.tileUnused:name="w2";break;
+            case Dungeon.tileDirtWall:name="w1"; break;
+            case Dungeon.tileDirtFloor:name="f4"; break;
+            case Dungeon.tileStoneWall:name="w0"; break;
+            case Dungeon.tileCorridor:name="f4"; break;
+            case Dungeon.tileDoor:name="b0"; break;
+            case Dungeon.tileUpStairs:name="b4"; break;
+            case Dungeon.tileDownStairs:name="b3"; break;
+            case Dungeon.tileChest:name="i5"; break;
+            case Dungeon.tileDoorOpen:name="b1"; break;
+            case Dungeon.tileNothing:name="c0"; break;
             default:name = "";break;
         }
         return name;
@@ -342,7 +343,5 @@ public class DungeonMap extends TiledMap {
     @Override
     public void dispose() {
         super.dispose();
-        shadowTextureAtlas.dispose();
-        textureAtlas.dispose();
     }
 }

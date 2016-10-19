@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.mw.game.MainGame;
 import com.mw.model.LogModel;
+import com.mw.utils.AssetManagerHelper;
 
 /**
  * Created by BanditCat on 2016/9/20.
@@ -30,7 +31,7 @@ public class InventoryTable extends Table {
     private int len = 0;
     private FloatingTable floatingTable;
     public InventoryTable() {
-        textureAtlas = new TextureAtlas(Gdx.files.internal("tiles.pack"));
+        textureAtlas = AssetManagerHelper.getInstance().getTextureAtlas("item");
         int w = MainGame.worldWidth /3;
         int h = MainGame.worldHeight/3;
         Pixmap pixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
@@ -60,7 +61,7 @@ public class InventoryTable extends Table {
     }
     private void addItem(){
         final Table table = ((Table)scrollPane.getWidget());
-        final Image image = new Image(textureAtlas.findRegion("bottle1"));
+        final Image image = new Image(AssetManagerHelper.getInstance().findRegion("i1"));
         image.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {

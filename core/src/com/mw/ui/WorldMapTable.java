@@ -11,11 +11,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -24,9 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mw.actor.TiledMapActor;
 import com.mw.game.MainGame;
-import com.mw.map.DungeonMap;
 import com.mw.map.TmxWorldMap;
-import com.mw.map.WorldMap;
 import com.mw.stage.CharacterStage;
 
 /**
@@ -39,7 +34,6 @@ public class WorldMapTable extends Table {
     private ScrollPane scrollPane;
     private Color[]colors = {Color.LIGHT_GRAY,Color.YELLOW,Color.RED,Color.GREEN};
 
-    private WorldMap worldMap;
     private TiledMapRenderer renderer;
     private OrthographicCamera camera;
 
@@ -106,26 +100,6 @@ public class WorldMapTable extends Table {
         });
 
     }
-    private void createActorsForLayer(TiledMapTileLayer tiledLayer) {
-        for (int x = 0; x < tiledLayer.getWidth(); x++) {
-            for (int y = 0; y < tiledLayer.getHeight(); y++) {
-                TiledMapTileLayer.Cell cell = tiledLayer.getCell(x, y);
-                TiledMapActor actor;
-                if(cell != null){
-                    actor = new TiledMapActor(worldMap, tiledLayer, cell,new GridPoint2(x,y));
-                    addActor(actor);
-                    actor.setZIndex(0);
-                    actor.setBounds(x * tiledLayer.getTileWidth(), y * tiledLayer.getTileHeight(), tiledLayer.getTileWidth(),
-                            tiledLayer.getTileHeight());
-                    if(tiledLayer.getName().equals(DungeonMap.LAYER_SHADOW)){
-                        actor.setZIndex(3);
-                    }
-                    EventListener eventListener = new TiledMapClickListener(actor);
-                    actor.addListener(eventListener);
-                }
-            }
-        }
-    }
     public class TiledMapClickListener extends ClickListener {
 
         private TiledMapActor actor;
@@ -143,8 +117,6 @@ public class WorldMapTable extends Table {
         texture.dispose();
         bitmapFont.dispose();
         generator.dispose();
-        worldMap.dispose();
-
     }
 
     @Override

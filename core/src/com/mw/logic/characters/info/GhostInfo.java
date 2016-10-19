@@ -5,7 +5,7 @@ package com.mw.logic.characters.info;
  */
 public class GhostInfo extends CharacterInfo {
     public static final String NAME = "ghost";
-    public static final String REGION_NAME = "ghost";
+    public static final String REGION_NAME = "p2";
 
     public GhostInfo() {
         this.setName(NAME);

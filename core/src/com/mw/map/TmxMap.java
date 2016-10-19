@@ -38,53 +38,17 @@ public class TmxMap extends Map {
     public TmxMap(int width, int height) {
         super(width, height);
         initMap();
-        loadMap();
-
     }
 
-    protected void loadMap() {
-        initWorld();
-    }
-
-
-    private void initWorld() {
+    protected void initWorld() {
         try {
             tileMap = new TmxMapLoader().load(name);
             return;
         }catch (Exception e){
             Gdx.app.log("error","no find the file.");
         }
-        int[][]arr = getMapArray();
-        if(arr == null){
-            return;
-        }
-        for (int i = 0; i < arr.length; i++) {
-            for (int j = 0; j < arr[0].length; j++) {
-                Tile floor = getTileSets().get(0).getTile(MapEditor.DIRT);
-                Tile block = getTileSets().get(0).getTile(arr[i][j]);
-                Tile decorate = getTileSets().get(0).getTile(arr[i][j]);
-                Tile shadow = getTileSets().get(0).getTile(13);
-                floor.getProperties().setProperty("element",""+arr[i][j]);
-                block.getProperties().setProperty("element",""+arr[i][j]);
-                shadow.getProperties().setProperty("visible","0");
-                ((TileLayer)floorLayer).setTileAt(i,j,floor);
-                ((TileLayer)blockLayer).setTileAt(i,j,block);
-                ((TileLayer)decorateLayer).setTileAt(i,j,decorate);
-                ((TileLayer)shadowLayer).setTileAt(i,j,shadow);
-            }
-        }
-        try {
-            TMXMapWriter mapWriter = new TMXMapWriter();
-            mapWriter.writeMap(this,name);
-            tileMap = new TmxMapLoader().load(name);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
-    protected int[][] getMapArray() {
-        return null;
-    };
+    }
 
     private void initMap() {
         setTileHeight(32);

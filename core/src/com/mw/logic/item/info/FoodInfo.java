@@ -5,7 +5,7 @@ package com.mw.logic.item.info;
  */
 public class FoodInfo extends ItemInfo {
     public static final String NAME = "food";
-    public static final String REGION_NAME = "food1";
+    public static final String REGION_NAME = "i7";
 
 
     public FoodInfo() {

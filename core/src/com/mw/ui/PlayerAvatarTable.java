@@ -22,11 +22,9 @@ import com.mw.game.MainGame;
  */
 public class PlayerAvatarTable extends Table {
     private Texture texture;
-    private TextureAtlas textureAtlas;
     private Avatar avatar;
     public PlayerAvatarTable() {
         avatar = new Avatar();
-        textureAtlas = new TextureAtlas(Gdx.files.internal("tiles.pack"));
         int w = MainGame.worldWidth /4;
         int h = MainGame.worldHeight/4;
         Pixmap pixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
@@ -65,7 +63,6 @@ public class PlayerAvatarTable extends Table {
     }
     public void dispose(){
         texture.dispose();
-        textureAtlas.dispose();
         avatar.dispose();
     }
 }

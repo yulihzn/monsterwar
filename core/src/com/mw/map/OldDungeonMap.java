@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.mw.model.MapInfo;
 import com.mw.model.MapInfoModel;
 import com.mw.profiles.GameFileHelper;
+import com.mw.utils.AssetManagerHelper;
 import com.mw.utils.Dungeon;
 
 /**
@@ -128,21 +129,21 @@ public class OldDungeonMap extends TiledMap {
                 //障碍层
                 int tileType = mapInfo.getMapArray()[i][j].getBlock();
                 TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-                DungeonTiledMapTile tiledMapTile = new DungeonTiledMapTile(textureAtlas.findRegion(getResName(tileType)));
+                DungeonTiledMapTile tiledMapTile = new DungeonTiledMapTile(AssetManagerHelper.getInstance().findRegion(getResName(tileType)));
                 tiledMapTile.setId(tileType);
                 cell.setTile(tiledMapTile);
                 this.blockLayer.setCell(i,j,cell);
 
                 //地表层
                 TiledMapTileLayer.Cell cellGround = new TiledMapTileLayer.Cell();
-                DungeonTiledMapTile tiledMapTile1 = new DungeonTiledMapTile(textureAtlas.findRegion(getResName(Dungeon.tileDirtFloor)));
+                DungeonTiledMapTile tiledMapTile1 = new DungeonTiledMapTile(AssetManagerHelper.getInstance().findRegion(getResName(Dungeon.tileDirtFloor)));
                 tiledMapTile1.setId(Dungeon.tileDirtFloor);
                 cellGround.setTile(tiledMapTile1);
                 this.floorLayer.setCell(i,j,cellGround);
 
                 //阴影层
                 TiledMapTileLayer.Cell cellShadow = new TiledMapTileLayer.Cell();
-                DungeonTiledMapTile tiledMapTile2 = new DungeonTiledMapTile(shadowTextureAtlas.findRegion(""+mapInfo.getMapArray()[i][j].getShadow()));
+                DungeonTiledMapTile tiledMapTile2 = new DungeonTiledMapTile(AssetManagerHelper.getInstance().findRegion(""+mapInfo.getMapArray()[i][j].getShadow()));
                 tiledMapTile2.setId(mapInfo.getMapArray()[i][j].getShadow());
                 //点击位置为4个方块的左下，所以整体要向左下移动16个像素表示点击的是中间
                 tiledMapTile2.setOffsetX(-16);
@@ -157,7 +158,7 @@ public class OldDungeonMap extends TiledMap {
         if(name.equals("")){
             return;
         }
-        this.blockLayer.getCell(x,y).getTile().setTextureRegion(textureAtlas.findRegion(name));
+        this.blockLayer.getCell(x,y).getTile().setTextureRegion(AssetManagerHelper.getInstance().findRegion(name));
         mapInfo.getMapArray()[x][y].setBlock(value);
         GameFileHelper.getInstance().saveGameMap(mapInfo, GameFileHelper.getInstance().getCurrentLevel());
     }
@@ -171,7 +172,7 @@ public class OldDungeonMap extends TiledMap {
         if(tiledMapTile.getId()>15){
             tiledMapTile.setId(15);
         }
-        tiledMapTile.setTextureRegion(shadowTextureAtlas.findRegion(tiledMapTile.getId()+""));
+        tiledMapTile.setTextureRegion(AssetManagerHelper.getInstance().findRegion(tiledMapTile.getId()+""));
         mapInfo.getMapArray()[x][y].setShadow(tiledMapTile.getId());
     }
     public void changeShadow(int x,int y){

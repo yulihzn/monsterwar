@@ -2,6 +2,7 @@ package com.mw.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.mw.actor.LoadingImage;
 import com.mw.base.BaseScreen;
 import com.mw.game.MainGame;
+import com.mw.utils.AssetManagerHelper;
 
 public class TransferScreen extends BaseScreen implements Screen {
 	private LoadingImage image_loading;
@@ -41,15 +43,15 @@ public class TransferScreen extends BaseScreen implements Screen {
 		
 		stage = new Stage();
 		stage.addActor(image_loading);
-		timer.scheduleTask(new Timer.Task() {
-
-			@Override
-			public void run() {
-				if(baseScreen != null){
-					mainGame.setScreen(baseScreen);
-				}
-			}
-		}, DURATION);
+//		timer.scheduleTask(new Timer.Task() {
+//
+//			@Override
+//			public void run() {
+//				if(baseScreen != null){
+//					mainGame.setScreen(baseScreen);
+//				}
+//			}
+//		}, DURATION);
 
 	}
 
@@ -58,7 +60,12 @@ public class TransferScreen extends BaseScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
-
+		AssetManager assetManager = AssetManagerHelper.getInstance().getAssetManager();
+		if(assetManager.update()){
+			if(baseScreen != null){
+				mainGame.setScreen(baseScreen);
+			}
+		}
 	}
 
 	@Override

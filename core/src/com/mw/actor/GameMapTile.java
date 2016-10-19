@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.mw.profiles.GameFileHelper;
+import com.mw.utils.AssetManagerHelper;
 
 /**
  * Created by BanditCat on 2016/3/23 0023.
@@ -14,11 +15,9 @@ public class GameMapTile extends Actor {
     private String regionName = "";
     private int tileIndex = 0;
     private GridPoint2 tilePosIndex = new GridPoint2(0,0);
-    private TextureAtlas textureAtlas;
     private OrthographicCamera cam;
 
-    public GameMapTile(TextureAtlas textureAtlas, String regionName,OrthographicCamera cam) {
-        this.textureAtlas = textureAtlas;
+    public GameMapTile(String regionName,OrthographicCamera cam) {
         this.regionName = regionName;
         this.cam = cam;
     }
@@ -26,7 +25,7 @@ public class GameMapTile extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         batch.setProjectionMatrix(cam.combined);
-        batch.draw(textureAtlas.findRegion(regionName), getX(), getY());
+        batch.draw(AssetManagerHelper.getInstance().findRegion(regionName), getX(), getY());
         super.draw(batch, parentAlpha);
     }
 

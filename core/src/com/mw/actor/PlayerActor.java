@@ -11,8 +11,8 @@ import com.mw.map.DungeonMap;
 public class PlayerActor extends CharacterActor {
 
 
-    public PlayerActor(Character character, TextureAtlas textureAtlas, String regionName, OrthographicCamera cam, DungeonMap dungeonMap) {
-        super(character,textureAtlas, regionName, cam,dungeonMap);
+    public PlayerActor(Character character, String regionName, OrthographicCamera cam, DungeonMap dungeonMap) {
+        super(character,regionName, cam,dungeonMap);
     }
 
 
