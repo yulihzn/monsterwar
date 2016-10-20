@@ -48,8 +48,11 @@ import java.util.Random;
  *
  */
 public class MapEditor {
+	public static long SEED = 123;
+
 	public static final int CASTLE = 100;
 	public static final int VILLAGE = 101;
+	public static final int WILD = 102;
 
 	public static final int WALL = 0;
 	public static final int ROAD = 1;
@@ -72,11 +75,11 @@ public class MapEditor {
 	int w = block, h = block, d = 2;
 
 	private WorldMapModel worldMapModel = new WorldMapModel();
-	public MapEditor() {
-		random = new Random(System.currentTimeMillis());
+	public MapEditor(long seed) {
+		random = new Random(seed);
 	}
 	public WorldMapModel create() {
-		random.setSeed(System.currentTimeMillis());
+		//噪声建立地形
 		dx = 20+random.nextInt(20);
 		dy = 20+random.nextInt(20);
 		x0 = random.nextInt(9999);
@@ -101,23 +104,28 @@ public class MapEditor {
 				}
 			}
 		}
+		//存储256个点遍历列表生成对应大区域
 		Array<GridPoint2> indexs = new Array<GridPoint2>();
 		for (int i = 0; i < arr.length; i+=16) {
 			for (int j = 0; j < arr[0].length; j+=16) {
 				indexs.add(new GridPoint2(i,j));
 			}
 		}
+		//初始化大区域列表
 		worldMapModel.getAreas().clear();
+		//添加22个城堡
 		for (int i = 0; i < 22; i++) {
 			GridPoint2 g = indexs.get(random.nextInt(indexs.size));
 			buildCastle(g.x,g.y);
 			indexs.removeValue(g,false);
 		}
+		//添加56个村庄
 		for (int i = 0; i < 56; i++) {
 			GridPoint2 g = indexs.get(random.nextInt(indexs.size));
 			buildVillage(g.x,g.y);
 			indexs.removeValue(g,false);
 		}
+		//添加178个野外
 		for (int i = 0; i < 178; i++) {
 			GridPoint2 g = indexs.get(random.nextInt(indexs.size));
 			buildWild(g.x,g.y);

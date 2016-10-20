@@ -91,6 +91,7 @@ public class UiStage extends Stage {
         addActor(hpLabel);
         addActor(apLabel);
         addActor(dpLabel);
+        logMessageTable.setVisible(false);
 
     }
 

@@ -32,6 +32,9 @@ public class CameraController implements GestureDetector.GestureListener{
         Gdx.app.log("GestureDetectorTest", "tap at " + x + ", " + y + ", count: " + count);
         tapX = x;
         tapY = y;
+        if(onTouchListener != null){
+            onTouchListener.onTap(x,y);
+        }
         return false;
     }
 
@@ -50,8 +53,8 @@ public class CameraController implements GestureDetector.GestureListener{
     public boolean fling(float velocityX, float velocityY, int button) {
         Gdx.app.log("GestureDetectorTest", "fling " + velocityX + ", " + velocityY);
         flinging = true;
-        velX = camera.zoom * velocityX * 0.5f;
-        velY = camera.zoom * velocityY * 0.5f;
+        velX = camera.zoom * velocityX * 0.1f;
+        velY = camera.zoom * velocityY * 0.1f;
         return false;
     }
 

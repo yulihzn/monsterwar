@@ -222,4 +222,8 @@ public class CharacterStage extends Stage {
         return super.keyDown(keyCode);
     }
 
+    @Override
+    public OrthographicCamera getCamera() {
+        return camera;
+    }
 }

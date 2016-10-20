@@ -31,14 +31,16 @@ import tiled.util.BasicTileCutter;
 public class TmxWorldMap extends TmxMap {
     public static final int TILE_SIZE_WIDTH = 256;
     public static final int TILE_SIZE_HEIGHT = 256;
+    private MapEditor mapEditor;
     public TmxWorldMap(int width, int height) {
         super(width, height);
         name = "save/world.tmx";
+        mapEditor = new MapEditor(MapEditor.SEED);
         initWorld();
     }
 
     private int[][] getMapArray() {
-        WorldMapModel mapModel = new MapEditor().create();
+        WorldMapModel mapModel = new MapEditor(MapEditor.SEED).create();
         int[][] worldArray = mapModel.getArr();
         return worldArray;
     }

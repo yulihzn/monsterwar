@@ -26,9 +26,7 @@ public class CharacterFactory {
     private OrthographicCamera camera;
     public CharacterFactory(Stage stage) {
         this.stage = stage;
-        dungeonMap = ((MapStage)stage).getDungeonMap();
         camera = ((MapStage)stage).getCamera();
-
     }
 
     public Player getPlayer(){
@@ -38,7 +36,7 @@ public class CharacterFactory {
         manActor.setPosition(-100,-100);
         player.setActor(manActor);
         stage.addActor(manActor);
-        manActor.setZIndex(3);
+        manActor.setZIndex(300);
         player.getActor().setFocus(true);
         return player;
     }

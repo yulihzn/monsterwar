@@ -70,7 +70,7 @@ public class TmxAreaMap extends TmxMap {
         }
     }
     private int[][] getMapArray() {
-        WorldMapModel mapModel = new MapEditor().create();
+        WorldMapModel mapModel = new MapEditor(MapEditor.SEED).create();
         int[][] worldArray = mapModel.getArr();
         return worldArray;
     }

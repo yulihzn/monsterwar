@@ -3,32 +3,17 @@ package com.mw.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.TimeUtils;
 import com.mw.base.BaseScreen;
 import com.mw.game.MainGame;
-import com.mw.map.DungeonMap;
 import com.mw.stage.CharacterStage;
 import com.mw.stage.MapStage;
 import com.mw.stage.UiStage;
-import com.mw.utils.CameraController;
 import com.mw.utils.GameInputMultiplexer;
 
 public class MainScreen extends BaseScreen implements Screen{
 	private MapStage mapStage;
 	private UiStage uiStage;
 	private CharacterStage characterStage;
-
-	private OrthographicCamera cam;
-	CameraController controller;
-	GestureDetector gestureDetector;
-	private long startTime = TimeUtils.nanoTime();
-
-	private float worldWidth = DungeonMap.TILE_SIZE_WIDTH*32;
-	private float worldHeight = DungeonMap.TILE_SIZE_HEIGHT*32;
-	private float camSize = DungeonMap.TILE_SIZE_WIDTH*32;
 
 	private GameInputMultiplexer inputMultiplexer;
 
@@ -45,20 +30,6 @@ public class MainScreen extends BaseScreen implements Screen{
 	public MainScreen(MainGame mainGame) {
 		super(mainGame);
 		this.mainGame = mainGame;
-		float w = MainGame.worldWidth;
-		float h = MainGame.worldHeight;
-		cam = new OrthographicCamera(camSize, camSize*(h/w));
-		cam.position.set(worldWidth / 2f, worldHeight / 2f, 0);
-		cam.zoom = 1.5f;
-		cam.update();
-		controller = new CameraController(cam);
-		gestureDetector = new GestureDetector(controller);
-		controller.setOnTouchListener(new CameraController.OnTouchListener() {
-			@Override
-			public void onTap(float x, float y) {
-				elementTouch("man",x,y);
-			}
-		});
 		inputMultiplexer = new GameInputMultiplexer();
 	}
 
@@ -67,9 +38,9 @@ public class MainScreen extends BaseScreen implements Screen{
 
 		uiStage = new UiStage(this);
 		characterStage = new CharacterStage(this);
-		mapStage = new MapStage(cam,this);
+		mapStage = new MapStage(this);
 		mapStage.setDebugUnderMouse(true);
-		showCharacterStage();
+		hideCharacterStage();
 
 	}
 	public void showCharacterStage(){
@@ -81,37 +52,16 @@ public class MainScreen extends BaseScreen implements Screen{
 	public void hideCharacterStage(){
 		inputMultiplexer.clear();
 		inputMultiplexer.addProcessor(uiStage);
-		inputMultiplexer.addProcessor(gestureDetector);
+		inputMultiplexer.addProcessor(mapStage.getGestureDetector());
 		inputMultiplexer.addProcessor(mapStage);
 		Gdx.input.setInputProcessor(inputMultiplexer);
 		characterStage.setVisible(false);
 	}
-	private void elementTouch(String name,float x, float y) {
-	}
-
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 //		Gdx.gl.glEnable(GL20.GL_BLEND);
 //		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-
-		if (TimeUtils.nanoTime() - startTime >= 1000000000) {
-//			Gdx.app.log("TileTest", "fps: " + Gdx.graphics.getFramesPerSecond());
-			startTime = TimeUtils.nanoTime();
-		}
-
-		cam.zoom = MathUtils.clamp(cam.zoom, 0.1f, worldWidth/cam.viewportWidth*2);
-//		float effectiveViewportWidth = cam.viewportWidth * cam.zoom;
-//		float effectiveViewportHeight = cam.viewportHeight * cam.zoom;
-//		cam.position.x = MathUtils.clamp(cam.position.x, effectiveViewportWidth / 2f, worldWidth - effectiveViewportWidth / 2f);
-//		cam.position.y = MathUtils.clamp(cam.position.y, effectiveViewportHeight / 2f, worldtHeight - effectiveViewportHeight / 2f);
-		cam.position.x = MathUtils.clamp(cam.position.x, 0, worldWidth);
-		cam.position.y = MathUtils.clamp(cam.position.y, 0, worldHeight);
-		float w = MainGame.worldWidth;
-		float h = MainGame.worldHeight;
-		cam.viewportWidth = camSize;
-		cam.viewportHeight = camSize*(h/w);
-		cam.update();
 
 		mapStage.act(Gdx.graphics.getDeltaTime());
 		mapStage.draw();
@@ -127,16 +77,9 @@ public class MainScreen extends BaseScreen implements Screen{
 
 	@Override
 	public void resize(int width, int height) {
-		int ratio = height;
-		if(width > height){
-			ratio = width;
-		}
-//		cam.viewportWidth = camSize;
-//		cam.viewportHeight = camSize * height/width;
 
-		cam.update();
 		characterStage.getViewport().update(width,height,true);
-		mapStage.getViewport().update(width,height,true);
+		mapStage.getViewport().update(width,height,false);
 		uiStage.getViewport().update(width,height,true);
 	}
 

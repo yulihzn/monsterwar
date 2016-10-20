@@ -27,7 +27,6 @@ public class ItemFactory {
     private OrthographicCamera camera;
     public ItemFactory(Stage stage) {
         this.stage = stage;
-        dungeonMap = ((MapStage)stage).getDungeonMap();
         camera = ((MapStage)stage).getCamera();
 
     }
