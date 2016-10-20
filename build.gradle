@@ -1,9 +1,9 @@
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1+'
+        classpath 'com.android.tools.build:gradle:2.2.2'
     }
 }
 
@@ -39,7 +39,6 @@ project(":desktop") {
         compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
-        compile "com.alibaba:fastjson:1.2+"
     }
 }
 
