@@ -20,6 +20,7 @@ import com.mw.logic.Logic;
 import com.mw.logic.characters.base.Monster;
 import com.mw.logic.characters.base.Player;
 import com.mw.map.DungeonMap;
+import com.mw.map.MapEditor;
 import com.mw.map.MapGenerator;
 import com.mw.map.TmxAreaMap;
 import com.mw.map.TmxMap;
@@ -107,7 +108,7 @@ public class  MapStage extends Stage{
 		x0+=camera.position.x-8;
 		y0+=camera.position.y-6;
 		Gdx.app.log("x0y0","x0="+x0+",y0="+y0);
-		tmxAreaMap.changeTile(TmxMap.LAYER_SHADOW,24,x0,y0);
+		tmxAreaMap.changeTile(TmxMap.LAYER_SHADOW, MapEditor.TRANS,x0,y0);
 	}
 
 	public TmxWorldMap getTmxAreaMap() {

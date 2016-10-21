@@ -14,15 +14,15 @@ public class Castle extends Area{
     private GridPoint2[] exits = new GridPoint2[4];//4个门,0,1,2,3,上下左右
 
     public Castle() {
-    }
-
-    public Castle(int x0, int y0, Random random) {
-        super(x0, y0, random);
         this.type = MapEditor.CASTLE;
-        init();
     }
 
-    private void init() {
+    public Castle(int x0, int y0) {
+        super(x0, y0);
+        this.type = MapEditor.CASTLE;
+    }
+
+    public Castle init() {
         //4-11的位置选择中心点
         cx = 4+random.nextInt(8);
         cy = 4+random.nextInt(8);
@@ -65,6 +65,7 @@ public class Castle extends Area{
                 arr[i][j]= type;
             }
         }
+        return this;
     }
 
     public GridPoint2[] getExits() {

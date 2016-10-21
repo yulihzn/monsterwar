@@ -16,13 +16,13 @@ public class Village extends Area{
     public Village() {
     }
 
-    public Village(int x0, int y0, Random random) {
-        super(x0, y0, random);
+    public Village(int x0, int y0) {
+        super(x0, y0);
         this.type = MapEditor.VILLAGE;
         init();
     }
 
-    private void init() {
+    public Village init() {
         //4-11的位置选择中心点
         cx = 4+random.nextInt(8);
         cy = 4+random.nextInt(8);
@@ -52,6 +52,7 @@ public class Village extends Area{
                 arr[i][j]= type;
             }
         }
+        return this;
     }
 
     public GridPoint2[] getExits() {

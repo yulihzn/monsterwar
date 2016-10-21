@@ -1,7 +1,5 @@
 package com.mw.model;
 
-import com.badlogic.gdx.math.GridPoint2;
-
 import java.util.HashMap;
 
 /**
@@ -9,7 +7,7 @@ import java.util.HashMap;
  */
 
 public class WorldMapModel {
-    private int[][]arr;
+    private int[][]arr = new int[256][256];
     private HashMap<String,Area> areas = new HashMap<String, Area>();
 
     public WorldMapModel() {

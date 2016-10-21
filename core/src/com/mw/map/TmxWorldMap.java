@@ -1,28 +1,18 @@
 package com.mw.map;
 
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
-import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.math.MathUtils;
-import com.mw.model.MapInfo;
-import com.mw.model.MapInfoModel;
+import com.mw.model.Area;
 import com.mw.model.WorldMapModel;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Properties;
+import java.util.Map;
 
-import tiled.core.Map;
-import tiled.core.MapLayer;
 import tiled.core.Tile;
 import tiled.core.TileLayer;
-import tiled.core.TileSet;
 import tiled.io.TMXMapWriter;
-import tiled.util.BasicTileCutter;
 
 /**
  * Created by BanditCat on 2016/10/14.
@@ -31,24 +21,27 @@ import tiled.util.BasicTileCutter;
 public class TmxWorldMap extends TmxMap {
     public static final int TILE_SIZE_WIDTH = 256;
     public static final int TILE_SIZE_HEIGHT = 256;
-    private MapEditor mapEditor;
+    private WorldMapModel mapModel = new WorldMapModel();
     public TmxWorldMap(int width, int height) {
         super(width, height);
         name = "save/world.tmx";
-        mapEditor = new MapEditor(MapEditor.SEED);
         initWorld();
     }
 
-    private int[][] getMapArray() {
-        WorldMapModel mapModel = new MapEditor(MapEditor.SEED).create();
-        int[][] worldArray = mapModel.getArr();
-        return worldArray;
-    }
 
     @Override
     protected void initWorld() {
-        super.initWorld();
-        int[][]arr = getMapArray();
+        try {
+            tileMap = new TmxMapLoader().load(name);
+        }catch (Exception e){
+            Gdx.app.log("error","no find the file.");
+        }
+        if(null != tileMap){
+            initMapModel();
+            return;
+        }
+        mapModel = new MapEditor(MapEditor.SEED).create();
+        int[][]arr = mapModel.getArr();
         if(arr == null){
             return;
         }
@@ -57,16 +50,22 @@ public class TmxWorldMap extends TmxMap {
                 Tile floor = getTileSets().get(0).getTile(MapEditor.DIRT);
                 Tile block = getTileSets().get(0).getTile(arr[i][j]);
                 Tile decorate = getTileSets().get(0).getTile(arr[i][j]);
-                Tile shadow = getTileSets().get(0).getTile(13);
+                Tile shadow = getTileSets().get(0).getTile(MapEditor.SHADOW);
                 floor.getProperties().setProperty("element",""+arr[i][j]);
                 block.getProperties().setProperty("element",""+arr[i][j]);
-                shadow.getProperties().setProperty("visible","0");
                 ((TileLayer)floorLayer).setTileAt(i,j,floor);
                 ((TileLayer)blockLayer).setTileAt(i,j,block);
                 ((TileLayer)decorateLayer).setTileAt(i,j,decorate);
                 ((TileLayer)shadowLayer).setTileAt(i,j,shadow);
             }
         }
+        HashMap<String,Area> map = mapModel.getAreas();
+        Iterator iter = map.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry<String,Area> entry = (Map.Entry<String,Area> )iter.next();
+            Area area = entry.getValue();
+            getProperties().setProperty(area.getName()+"type",""+area.getType());
+            }
         try {
             TMXMapWriter mapWriter = new TMXMapWriter();
             mapWriter.writeMap(this,name);
@@ -74,5 +73,35 @@ public class TmxWorldMap extends TmxMap {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void initMapModel() {
+
+        HashMap<String,Area> map = mapModel.getAreas();
+        map.clear();
+        for (int i = 0; i < 256; i++) {
+            for (int j = 0; j < 256; j++) {
+                if(i%16==0&&j%16==0){
+                    Area area = new Area(i,j);
+                    map.put(area.getName(),area);
+                }
+                mapModel.getArr()[i][j]=getTileId(LAYER_BLOCK,i,j);
+            }
+        }
+        Iterator iter = map.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry<String,Area> entry = (Map.Entry<String,Area> )iter.next();
+            Area area = entry.getValue();
+            int x0 = area.getX0();
+            int y0 = area.getY0();
+            int type = Integer.parseInt(String.valueOf(tileMap.getProperties().get(area.getName()+"type")));
+            area.setType(type);
+            for (int i = 0; i < 16; i++) {
+                for (int j = 0; j < 16; j++) {
+                    area.getArr()[i][j] = mapModel.getArr()[x0+i][y0+j];
+                }
+            }
+        }
+
     }
 }

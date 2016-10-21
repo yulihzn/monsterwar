@@ -1,5 +1,6 @@
 package com.mw.model;
 
+import com.mw.map.MapEditor;
 import com.mw.model.MapInfo;
 import java.util.Random;
 
@@ -14,10 +15,10 @@ public class Area {
     protected String name;
     protected int type;
 
-    public Area(int x0, int y0, Random random) {
+    public Area(int x0, int y0) {
         this.x0 = x0;
         this.y0 = y0;
-        this.random = random;
+        this.random = new Random(MapEditor.SEED);
         this.name = "area"+x0+"_"+y0;
     }
 

@@ -13,7 +13,7 @@ public class Wild extends Area {
     }
 
     public Wild(int x0, int y0, Random random) {
-        super(x0, y0, random);
+        super(x0, y0);
         this.type = MapEditor.WILD;
     }
 }

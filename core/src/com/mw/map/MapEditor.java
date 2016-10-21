@@ -54,18 +54,20 @@ public class MapEditor {
 	public static final int VILLAGE = 101;
 	public static final int WILD = 102;
 
-	public static final int WALL = 0;
-	public static final int ROAD = 1;
-	public static final int BUILDING2 = 6;
-	public static final int BUILDING = 7;
-	public static final int BUILDING1 = 8;
-	public static final int DIRT = 9;
-	public static final int DOOR = 10;
-	public static final int GUARD_WATER = 12;
-	public static final int GRASS = 18;
-	public static final int STONE = 23;
-	public static final int TREE = 25;
-	public static final int WATER = 27;
+	public static final int SHADOW = 0;
+	public static final int TRANS = 1;
+	public static final int DIRT = 2;
+	public static final int WATER = 5;
+	public static final int GRASS = 7;
+	public static final int TREE = 8;
+	public static final int GUARD_WATER = 9;
+	public static final int ROAD = 11;
+	public static final int WALL = 13;
+	public static final int STONE = 14;
+	public static final int DOOR = 15;
+	public static final int BUILDING2 = 16;
+	public static final int BUILDING = 17;
+	public static final int BUILDING1 = 18;
 	public static final int block = 256;
 	private int[][] arr = new int[block][block];
 	private Random random;
@@ -234,7 +236,7 @@ public class MapEditor {
 	}
 
 	private void buildCastle(int x0,int y0) {
-		com.mw.model.Castle castle = new Castle(x0,y0,random);
+		com.mw.model.Castle castle = new Castle(x0,y0).init();
 		int[][] a = castle.getArr();
 		for (int i = 0; i < a.length; i++) {
 			for (int j = 0; j < a[0].length; j++) {
@@ -245,7 +247,7 @@ public class MapEditor {
 
 	}
 	private void buildVillage(int x0,int y0){
-		com.mw.model.Village village = new com.mw.model.Village(x0,y0,random);
+		Village village = new Village(x0,y0).init();
 		int[][] a = village.getArr();
 		for (int i = 0; i < a.length; i++) {
 			for (int j = 0; j < a[0].length; j++) {

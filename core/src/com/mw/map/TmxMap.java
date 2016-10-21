@@ -35,6 +35,7 @@ public class TmxMap extends Map {
     public static String LAYER_DECORATE = "LAYER_DECORATE";
     public static String LAYER_SHADOW = "LAYER_SHADOW";
     protected TiledMap tileMap;
+    private String[]packNames = {"building","cover","decorate","floor","item","player","wall"};
     public TmxMap(int width, int height) {
         super(width, height);
         initMap();
@@ -67,9 +68,9 @@ public class TmxMap extends Map {
         getLayers().add(shadowLayer);
 
         TileSet tileSet = new TileSet();
-        tileSet.setTilesetImageFilename("tiles.png");
+        tileSet.setTilesetImageFilename("images/tile/world.png");
         try {
-            tileSet.importTileBitmap("tiles.png",new BasicTileCutter(32,32,0,0));
+            tileSet.importTileBitmap("images/tile/world.png",new BasicTileCutter(32,32,0,0));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -105,7 +106,7 @@ public class TmxMap extends Map {
         }
     }
     private Tile TiledMapTile2Tile(TiledMapTile tiledMapTile){
-        //tilemap的id比tile的id多1
+        //tileset的下标是从1开始的tilemap的id比tile的id多1
         Tile tile = getTileSets().get(0).getTile(tiledMapTile.getId()-1);
         Iterator<String> iterator = tiledMapTile.getProperties().getKeys();
         while (iterator.hasNext()){
@@ -122,8 +123,16 @@ public class TmxMap extends Map {
         TiledMapTile tile = new StaticTiledMapTile(cell.getTile().getTextureRegion());
         tile.setId(type);
         tile.getProperties().putAll(cell.getTile().getProperties());
-        tile.setTextureRegion(tileMap.getTileSets().getTile(type).getTextureRegion());
+        //tileset的下标是从1开始的
+        tile.setTextureRegion(tileMap.getTileSets().getTile(type+1).getTextureRegion());
         cell.setTile(tile);
+    }
+    public int getTileId(String layer,int x,int y){
+        if(x<0||x>=256||y<0||y>=256){
+            return -1;
+        }
+        TiledMapTileLayer.Cell cell = ((TiledMapTileLayer)(tileMap.getLayers().get(layer))).getCell(x,y);
+        return cell.getTile().getId();
     }
 
 
