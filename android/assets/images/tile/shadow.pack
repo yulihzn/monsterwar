@@ -1,25 +1,18 @@
 
-wall.png
+shadow.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-w0
+s0000
   rotate: false
   xy: 0, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-w1
+s00001
   rotate: false
   xy: 32, 0
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-w2
-  rotate: false
-  xy: 64, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

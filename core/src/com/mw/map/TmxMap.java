@@ -35,7 +35,7 @@ public class TmxMap extends Map {
     public static String LAYER_DECORATE = "LAYER_DECORATE";
     public static String LAYER_SHADOW = "LAYER_SHADOW";
     protected TiledMap tileMap;
-    private String[]packNames = {"building","cover","decorate","floor","item","player","wall"};
+    private String[]packNames = {"world","floor","block","decorate","shadow"};
     public TmxMap(int width, int height) {
         super(width, height);
         initMap();
@@ -67,14 +67,19 @@ public class TmxMap extends Map {
         getLayers().add(decorateLayer);
         getLayers().add(shadowLayer);
 
+        for (int i = 0; i < packNames.length; i++) {
+            addTileset(getTileSet("images/tile/"+packNames[i]+".png"));
+        }
+    }
+    private TileSet getTileSet(String fileName){
         TileSet tileSet = new TileSet();
-        tileSet.setTilesetImageFilename("images/tile/world.png");
+        tileSet.setTilesetImageFilename(fileName);
         try {
-            tileSet.importTileBitmap("images/tile/world.png",new BasicTileCutter(32,32,0,0));
+            tileSet.importTileBitmap(fileName,new BasicTileCutter(32,32,0,0));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        addTileset(tileSet);
+        return tileSet;
     }
     public void saveTiledMap(){
         if(tileMap == null){

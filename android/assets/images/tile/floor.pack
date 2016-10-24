@@ -3,44 +3,58 @@ floor.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-f0
+f0000
   rotate: false
   xy: 0, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-f1
+f0001
   rotate: false
   xy: 32, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-f2
+f0002
   rotate: false
   xy: 64, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-f3
+f0003
   rotate: false
   xy: 96, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-f4
+f0004
   rotate: false
   xy: 128, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-f5
+f0005
   rotate: false
   xy: 160, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+f0006
+  rotate: false
+  xy: 192, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+f0007
+  rotate: false
+  xy: 224, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

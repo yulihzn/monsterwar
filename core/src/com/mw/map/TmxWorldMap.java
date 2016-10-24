@@ -60,9 +60,9 @@ public class TmxWorldMap extends TmxMap {
             }
         }
         HashMap<String,Area> map = mapModel.getAreas();
-        Iterator iter = map.entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry<String,Area> entry = (Map.Entry<String,Area> )iter.next();
+        Iterator iterator = map.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String,Area> entry = (Map.Entry<String,Area> )iterator.next();
             Area area = entry.getValue();
             getProperties().setProperty(area.getName()+"type",""+area.getType());
             }
@@ -79,6 +79,7 @@ public class TmxWorldMap extends TmxMap {
 
         HashMap<String,Area> map = mapModel.getAreas();
         map.clear();
+        //新建256个空的Area并放入map，把tilemap里的数组赋值
         for (int i = 0; i < 256; i++) {
             for (int j = 0; j < 256; j++) {
                 if(i%16==0&&j%16==0){
@@ -88,9 +89,10 @@ public class TmxWorldMap extends TmxMap {
                 mapModel.getArr()[i][j]=getTileId(LAYER_BLOCK,i,j);
             }
         }
-        Iterator iter = map.entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry<String,Area> entry = (Map.Entry<String,Area> )iter.next();
+        //遍历256个area并赋值
+        Iterator iterator = map.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String,Area> entry = (Map.Entry<String,Area> )iterator.next();
             Area area = entry.getValue();
             int x0 = area.getX0();
             int y0 = area.getY0();
@@ -103,5 +105,9 @@ public class TmxWorldMap extends TmxMap {
             }
         }
 
+    }
+
+    public WorldMapModel getMapModel() {
+        return mapModel;
     }
 }

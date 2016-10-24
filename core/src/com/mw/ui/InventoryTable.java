@@ -61,7 +61,7 @@ public class InventoryTable extends Table {
     }
     private void addItem(){
         final Table table = ((Table)scrollPane.getWidget());
-        final Image image = new Image(AssetManagerHelper.getInstance().findRegion("i1"));
+        final Image image = new Image(AssetManagerHelper.getInstance().findRegion("i0001"));
         image.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {

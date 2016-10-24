@@ -8,6 +8,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -17,19 +18,17 @@ import com.mw.actor.TiledMapActor;
 import com.mw.factory.ItemFactory;
 import com.mw.game.MainGame;
 import com.mw.logic.Logic;
-import com.mw.logic.characters.base.Monster;
 import com.mw.logic.characters.base.Player;
-import com.mw.map.DungeonMap;
+import com.mw.map.AreaTile;
 import com.mw.map.MapEditor;
-import com.mw.map.MapGenerator;
 import com.mw.map.TmxAreaMap;
 import com.mw.map.TmxMap;
 import com.mw.map.TmxWorldMap;
+import com.mw.model.Area;
 import com.mw.screen.MainScreen;
 import com.mw.utils.CameraController;
 import com.mw.utils.Dungeon;
 import com.mw.profiles.GameFileHelper;
-import com.mw.utils.KeyBoardController;
 import com.mw.factory.CharacterFactory;
 import com.mw.utils.LogicEventListener;
 
@@ -42,7 +41,8 @@ public class  MapStage extends Stage{
 	public static final long roundSecond = 100000000;
 
 	private TiledMap tiledMap;
-	private TmxWorldMap tmxAreaMap;
+	private TmxWorldMap tmxWorldMap;
+	private TmxAreaMap tmxAreaMap;
 	private TiledMapRenderer renderer;
 
 	private Player man;
@@ -68,29 +68,48 @@ public class  MapStage extends Stage{
 		setViewport(new FitViewport(MainGame.worldWidth,MainGame.worldHeight,camera));
 		controller = new CameraController(camera);
 		gestureDetector = new GestureDetector(controller);
-		controller.setOnTouchListener(new CameraController.OnTouchListener() {
-			@Override
-			public void onTap(float x, float y) {
-				elementTouch("man",x,y);
-			}
-		});
 		//初始化地图
 		level = GameFileHelper.getInstance().getCurrentLevel();
-		tmxAreaMap = new TmxWorldMap(256,256);
+		tmxWorldMap = new TmxWorldMap(256,256);
+		Area area = tmxWorldMap.getMapModel().getAreas().get("area0_0");
+		tmxAreaMap = new TmxAreaMap(area);
 		tiledMap = tmxAreaMap.getTileMap();
 		//获取渲染
 		renderer = new OrthogonalTiledMapRenderer(tiledMap,1f/32f);
 		characterFactory = new CharacterFactory(this);
 		itemFactory = new ItemFactory(this);
+		controller.setOnTouchListener(new CameraController.OnTouchListener() {
+			@Override
+			public void onTap(float x, float y) {
+				elementTouch("",x,y);
+			}
+		});
 		//添加角色
 //		man = characterFactory.getPlayer();
 //		Logic.getInstance().setPlayer(man);
 //		man.setPlayerActionListener(playerActionListener);
 //		Logic.getInstance().addGameEventListener(logicEventListener);
 //		MapGenerator.getInstance();
-		camera.position.set(0,0,0);
-//		man.getActor().setPosition(400,300);
+//		man.getActor().setPosition(16,14);
 
+	}
+
+	@Override
+	public boolean scrolled(int amount) {
+		Gdx.app.log("scrolled",""+amount);
+		if(amount == -1){
+			camera.zoom += 0.1f;
+		}else if(amount == 1){
+			camera.zoom -= 0.1f;
+		}
+		if(camera.zoom < 0.1f){
+			camera.zoom = 0.1f;
+		}
+		if(camera.zoom > 16.0f){
+			camera.zoom = 16.0f;
+		}
+		Gdx.app.log("zoom",""+camera.zoom);
+		return super.scrolled(amount);
 	}
 
 	public GestureDetector getGestureDetector() {
@@ -98,21 +117,13 @@ public class  MapStage extends Stage{
 	}
 
 	private void elementTouch(String name, float x, float y) {
-		Gdx.app.log("camera","x="+camera.position.x+",y="+camera.position.y);
-		//自然坐标系,x-right,y-up
-		//800/16=50 600/12=50
-		//原点8,6 对应0,0
-		//缩小到16x12的窗口
-		float h = MainGame.worldHeight;
-		int x0=((int)x)/50,y0=((int)(h-y))/50;
-		x0+=camera.position.x-8;
-		y0+=camera.position.y-6;
-		Gdx.app.log("x0y0","x0="+x0+",y0="+y0);
-		tmxAreaMap.changeTile(TmxMap.LAYER_SHADOW, MapEditor.TRANS,x0,y0);
-	}
-
-	public TmxWorldMap getTmxAreaMap() {
-		return tmxAreaMap;
+		Vector3 vector3 = new Vector3(x,y,0);
+		//转换屏幕坐标到camera坐标
+		getViewport().unproject(vector3);
+		int x0 = (int)vector3.x;
+		int y0 = (int)vector3.y;
+		Gdx.app.log("touchDownx0y0","x0="+x0+",y0="+y0);
+		tmxAreaMap.changeTile(TmxMap.LAYER_SHADOW, AreaTile.S_TRANS,x0,y0);
 	}
 
 	private LogicEventListener logicEventListener = new LogicEventListener() {
@@ -270,7 +281,7 @@ public class  MapStage extends Stage{
 		float h = MainGame.worldHeight;
 		camera.viewportWidth = 16;
 		camera.viewportHeight = 16*(h/w);
-		camera.zoom = MathUtils.clamp(camera.zoom, 1f, 1f);
+		camera.zoom = MathUtils.clamp(camera.zoom, 0.1f, 16f);
 		camera.position.x = MathUtils.clamp(camera.position.x, camera.viewportWidth/2, 256-camera.viewportWidth/2);
 		camera.position.y = MathUtils.clamp(camera.position.y, camera.viewportHeight/2, 256-camera.viewportHeight/2);
 		camera.update();

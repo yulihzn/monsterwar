@@ -29,7 +29,7 @@ public class MagicBottle extends Table {
     private TextureAtlas textureAtlas;
     private int type = -1;
     private Color[]colors={Color.GREEN,Color.RED,Color.YELLOW,Color.GOLD};
-    private String[]names = {"i0","i1","i2","i3","i4"};
+    private String[]names = {"i0000","i0001","i0002","i0003","i0004"};
     private int maxNum = 100;
     private int curNum = 0;
     private Image image;

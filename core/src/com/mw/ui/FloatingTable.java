@@ -41,7 +41,7 @@ public class FloatingTable extends Table {
         setPosition(0,0);
         setWidth(w);
         setHeight(h);
-        Image image = new Image(AssetManagerHelper.getInstance().findRegion("i1"));
+        Image image = new Image(AssetManagerHelper.getInstance().findRegion("i0001"));
         label = new GameInfoLabel("test",new Label.LabelStyle(bitmapFont,Color.BLACK));
         add(image).center();
         row();

@@ -54,8 +54,8 @@ public class MapEditor {
 	public static final int VILLAGE = 101;
 	public static final int WILD = 102;
 
-	public static final int SHADOW = 0;
-	public static final int TRANS = 1;
+	public static final int SHADOW = 1;
+	public static final int TRANS = 0;
 	public static final int DIRT = 2;
 	public static final int WATER = 5;
 	public static final int GRASS = 7;

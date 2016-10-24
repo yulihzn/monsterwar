@@ -3,56 +3,56 @@ item.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-i0
+i0000
   rotate: false
   xy: 0, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-i1
+i0001
   rotate: false
   xy: 32, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-i2
+i0002
   rotate: false
   xy: 64, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-i3
+i0003
   rotate: false
   xy: 96, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-i4
+i0004
   rotate: false
   xy: 128, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-i5
+i0005
   rotate: false
   xy: 160, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-i6
+i0006
   rotate: false
   xy: 192, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-i7
+i0007
   rotate: false
   xy: 224, 0
   size: 32, 32

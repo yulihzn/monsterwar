@@ -3,9 +3,23 @@ decorate.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-d0
+d0000
   rotate: false
   xy: 0, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+d0001
+  rotate: false
+  xy: 32, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+d0002
+  rotate: false
+  xy: 64, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

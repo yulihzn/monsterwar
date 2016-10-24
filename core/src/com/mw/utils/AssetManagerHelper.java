@@ -22,7 +22,7 @@ public class AssetManagerHelper {
     }
 
     private AssetManager assetManager;
-    private String[]packNames = {"building","cover","decorate","floor","item","player","wall"};
+    private String[]packNames = {"block","shadow","decorate","floor","item","player","world"};
 
     public AssetManager getAssetManager() {
         return assetManager;

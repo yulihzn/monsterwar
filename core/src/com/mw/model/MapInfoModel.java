@@ -14,6 +14,9 @@ public class MapInfoModel {
     private int element;//元素0,1,2,3,4
     private GridPoint2 pos;
 
+    public MapInfoModel() {
+    }
+
     public int getElement() {
         return element;
     }
