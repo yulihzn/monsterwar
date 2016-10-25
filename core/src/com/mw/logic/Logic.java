@@ -114,9 +114,7 @@ public class Logic {
         //传入左上角坐标得到数组
         int[][] stars = MapGenerator.getInstance().getAStarArray(x0,y0,length);
         player.upDateAStarArray(x0,y0,stars);
-        int endx = x-x0;
-        int endy = y-y0;
-        player.findWay(endx,endy);
+        player.findWay(x,y);
         //判断是否有第一格，没有不执行移动
         if(player.getPath().size() == 0){
             return false;
@@ -125,12 +123,10 @@ public class Logic {
         int firsty = player.getPath().get(0).getY()+y0;
         GridPoint2 firstPos = new GridPoint2(firstx,firsty);
         player.walk();
-        //如果没有到目的地继续。这里要放入玩家移动逻辑里
-        if(player.getActor().getTilePosIndex().x != x && player.getActor().getTilePosIndex().y != y){
-            playerWalk(x,y);
-        }
+
         return true;
     }
+
 
     //每回合检查玩家的视野是否到了边界,如果到了边界，相应的边界的一组数据替换成新的数据，边界的对立面
     public void reachTheEdge(int dir){

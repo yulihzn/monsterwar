@@ -37,6 +37,8 @@ public abstract class Character implements Telegraph {
     protected int pathIndex = 0;
     protected int x0 = 0;//astar原点
     protected int y0 = 0;//astar原点
+    protected int mapx = 0;// 地图点击的点
+    protected int mapy = 0;//地图点击的点
     protected boolean keepMoving = false;//是否继续移动
 
     public Character() {
@@ -77,6 +79,7 @@ public abstract class Character implements Telegraph {
     public void walk(){
 //        if(!moveLogic(pathIndex)){return;}
         isMoving = true;
+        characterActor.setFocus(true);
         final int x = path.get(pathIndex).getX()+x0;
         final int y = path.get(pathIndex).getY()+y0;
         final boolean isStayAround = getActor().getTilePosIndex().x == x&&getActor().getTilePosIndex().y==y;
@@ -102,11 +105,28 @@ public abstract class Character implements Telegraph {
 
     }
     protected void findWay(int x,int y){
+        this.mapx =x;
+        this.mapy = y;
+        int endx = x-x0;
+        int endy = y-y0;
+        if(endx <0){
+            endx = 0;
+        }
+        if(endy <0){
+            endy = 0;
+        }
+        if(endx >15){
+            endx = 15;
+        }
+        if(endy >15){
+            endy = 15;
+        }
+
         pathIndex = 0;
 //        aStarMap.setSource(new AStarNode(characterActor.getTilePosIndex().x,characterActor.getTilePosIndex().y));
         //16x16 player为中心
         aStarMap.setSource(new AStarNode(8,8));
-        aStarMap.setTarget(new AStarNode(x,y));
+        aStarMap.setTarget(new AStarNode(endx,endy));
         synchronized (path){
             path = aStarMap.find();
         }

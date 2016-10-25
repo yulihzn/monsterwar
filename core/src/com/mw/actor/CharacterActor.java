@@ -42,6 +42,7 @@ public class CharacterActor extends GameMapTile {
         //镜头延迟跟随（待修改）
         if(isFocus){
             isFocus = false;
+            camera.position.set(getTilePosIndex().x,getTilePosIndex().y,0);
         }
     }
 
