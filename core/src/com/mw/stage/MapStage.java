@@ -20,11 +20,9 @@ import com.mw.game.MainGame;
 import com.mw.logic.Logic;
 import com.mw.logic.characters.base.Player;
 import com.mw.map.AreaTile;
-import com.mw.map.MapEditor;
+import com.mw.map.MapGenerator;
 import com.mw.map.TmxAreaMap;
 import com.mw.map.TmxMap;
-import com.mw.map.TmxWorldMap;
-import com.mw.model.Area;
 import com.mw.screen.MainScreen;
 import com.mw.utils.CameraController;
 import com.mw.utils.Dungeon;
@@ -41,7 +39,6 @@ public class  MapStage extends Stage{
 	public static final long roundSecond = 100000000;
 
 	private TiledMap tiledMap;
-	private TmxWorldMap tmxWorldMap;
 	private TmxAreaMap tmxAreaMap;
 	private TiledMapRenderer renderer;
 
@@ -62,7 +59,7 @@ public class  MapStage extends Stage{
 		float w = MainGame.worldWidth;
 		float h = MainGame.worldHeight;
 		camera = new OrthographicCamera(camSize, camSize*(h/w));
-		camera.position.set(worldWidth / 2f, worldHeight / 2f, 0);
+		camera.position.set(0f, 0f, 0);
 		camera.zoom = 1f;
 		camera.update();
 		setViewport(new FitViewport(MainGame.worldWidth,MainGame.worldHeight,camera));
@@ -70,10 +67,9 @@ public class  MapStage extends Stage{
 		gestureDetector = new GestureDetector(controller);
 		//初始化地图
 		level = GameFileHelper.getInstance().getCurrentLevel();
-		tmxWorldMap = new TmxWorldMap(256,256);
-		Area area = tmxWorldMap.getMapModel().getAreas().get("area0_0");
-		tmxAreaMap = new TmxAreaMap(area);
+		tmxAreaMap = MapGenerator.getInstance().getTmxAreaMap("area0_0");
 		tiledMap = tmxAreaMap.getTileMap();
+		tiledMap.getLayers().get(TmxMap.LAYER_SHADOW).setVisible(false);
 		//获取渲染
 		renderer = new OrthogonalTiledMapRenderer(tiledMap,1f/32f);
 		characterFactory = new CharacterFactory(this);
@@ -85,7 +81,7 @@ public class  MapStage extends Stage{
 			}
 		});
 		//添加角色
-//		man = characterFactory.getPlayer();
+		man = characterFactory.getPlayer();
 //		Logic.getInstance().setPlayer(man);
 //		man.setPlayerActionListener(playerActionListener);
 //		Logic.getInstance().addGameEventListener(logicEventListener);
@@ -123,7 +119,13 @@ public class  MapStage extends Stage{
 		int x0 = (int)vector3.x;
 		int y0 = (int)vector3.y;
 		Gdx.app.log("touchDownx0y0","x0="+x0+",y0="+y0);
-		tmxAreaMap.changeTile(TmxMap.LAYER_SHADOW, AreaTile.S_TRANS,x0,y0);
+		for (int i = -1; i < 2; i++) {
+			for (int j = -1; j < 2; j++) {
+				tmxAreaMap.changeTile(TmxMap.LAYER_SHADOW, AreaTile.S_TRANS,x0+i,y0+j);
+			}
+		}
+		Logic.getInstance().beginRound(x0,y0);
+
 	}
 
 	private LogicEventListener logicEventListener = new LogicEventListener() {

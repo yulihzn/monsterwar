@@ -17,8 +17,8 @@ import com.mw.profiles.GameFileHelper;
 public class Player extends Character {
     public static final int ACTION_DOWN = 1;
     public static final int ACTION_UP = 0;
-    public Player(DungeonMap dungeonMap) {
-        super(dungeonMap);
+    public Player() {
+        super();
     }
 
     @Override
@@ -57,13 +57,13 @@ public class Player extends Character {
     protected void stayAround(int x, int y) {
         super.stayAround(x, y);
         if(playerActionListener != null){
-            if(dungeonMap.getMapInfo().getMapArray()[x][y].getBlock() == Dungeon.tileUpStairs){
-                playerActionListener.move(ACTION_UP,x,y);
-                Logic.getInstance().sendLogMessage("你费力地爬了上来", LogMessageTable.TYPE_NORMAL);
-            }else if(dungeonMap.getMapInfo().getMapArray()[x][y].getBlock() == Dungeon.tileDownStairs){
-                playerActionListener.move(ACTION_DOWN,x,y);
-                Logic.getInstance().sendLogMessage("不知道这底下是什么", LogMessageTable.TYPE_NORMAL);
-            }
+//            if(dungeonMap.getMapInfo().getMapArray()[x][y].getBlock() == Dungeon.tileUpStairs){
+//                playerActionListener.move(ACTION_UP,x,y);
+//                Logic.getInstance().sendLogMessage("你费力地爬了上来", LogMessageTable.TYPE_NORMAL);
+//            }else if(dungeonMap.getMapInfo().getMapArray()[x][y].getBlock() == Dungeon.tileDownStairs){
+//                playerActionListener.move(ACTION_DOWN,x,y);
+//                Logic.getInstance().sendLogMessage("不知道这底下是什么", LogMessageTable.TYPE_NORMAL);
+//            }
         }
     }
 
@@ -116,9 +116,8 @@ public class Player extends Character {
     public void stopMoving() {
         super.stopMoving();
         if(path.size()-1 <= pathIndex){
-            GameFileHelper.getInstance().saveGameMap(dungeonMap.getMapInfo(), GameFileHelper.getInstance().getCurrentLevel());
         }else{
-            Logic.getInstance().beginRound(path.get(path.size()-1).getX(),path.get(path.size()-1).getY());
+//            Logic.getInstance().beginRound(path.get(path.size()-1).getX(),path.get(path.size()-1).getY());
         }
     }
 

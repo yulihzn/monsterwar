@@ -94,4 +94,8 @@ public class TmxAreaMap extends TmxMap {
         model.setShadow(shadow);
         return model;
     }
+
+    public AreaMapModel getMapModel() {
+        return mapModel;
+    }
 }

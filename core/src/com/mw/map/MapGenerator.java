@@ -47,11 +47,51 @@ public class MapGenerator {
     private MapGenerator(){
         init();
     }
-
-    private MapEditor mapEditor = new MapEditor(0);
+    private TmxAreaMap tmxAreaMap;
+    private TmxWorldMap tmxWorldMap;
 
     private void init() {
-
+        tmxWorldMap = new TmxWorldMap(256,256);
+    }
+    public  TmxWorldMap getTmxWorldMap(){
+        return tmxWorldMap;
+    }
+    public TmxAreaMap getTmxAreaMap(String name){
+        Area area = tmxWorldMap.getMapModel().getAreas().get(name);
+        tmxAreaMap = new TmxAreaMap(area);
+        return tmxAreaMap;
     }
 
+    public TmxAreaMap getTmxAreaMap() {
+        return tmxAreaMap;
+    }
+
+    /**
+     * 传入左上角坐标和数组长度获取对应astar
+     * @param x0
+     * @param y0
+     * @param length
+     * @return
+     */
+    public int[][] getAStarArray(int x0,int y0,int length){
+        int[][] arr = new int[length][length];
+        for (int i = 0; i < length; i++) {
+            for (int j = 0; j < length; j++) {
+                int block;
+                if(x0+i>=0&&x0+i<256&&y0+j>=0&&y0+j<256){
+                    block = tmxAreaMap.getMapModel().getArr()[x0+i][y0+j].getBlock();
+                    if(block == AreaTile.B_WALL_01
+                            ||block==AreaTile.B_WALL_02
+                            ||block==AreaTile.B_STONE_01){
+                        arr[i][j]=1;
+                    }else{
+                        arr[i][j]=0;
+                    }
+                }else {
+                    arr[i][j]=1;
+                }
+            }
+        }
+        return arr;
+    }
 }

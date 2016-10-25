@@ -10,8 +10,8 @@ import com.mw.stage.MapStage;
  * Created by BanditCat on 2016/7/25.
  */
 public class Ghost extends Monster {
-    public Ghost(DungeonMap dungeonMap) {
-        super(dungeonMap);
+    public Ghost() {
+        super();
     }
 
     @Override

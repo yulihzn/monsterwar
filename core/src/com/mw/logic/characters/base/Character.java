@@ -16,10 +16,7 @@ import com.mw.logic.characters.info.PlayerInfo;
 import com.mw.logic.item.base.Item;
 import com.mw.map.AStarMap;
 import com.mw.map.AStarNode;
-import com.mw.map.DungeonMap;
-import com.mw.model.MapInfoModel;
 import com.mw.ui.LogMessageTable;
-import com.mw.utils.Dungeon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,16 +32,16 @@ public abstract class Character implements Telegraph {
     protected List<AStarNode> path = new ArrayList<AStarNode>();//路径
     protected boolean isMoving = false;//是否移动
     protected boolean isAttack = false;//是否攻击
-    protected DungeonMap dungeonMap;
     protected SequenceAction walkSequenceAction;
     protected boolean isFocus = false;//是否镜头跟随
     protected int pathIndex = 0;
+    protected int x0 = 0;//astar原点
+    protected int y0 = 0;//astar原点
+    protected boolean keepMoving = false;//是否继续移动
 
-    public Character(DungeonMap dungeonMap) {
-        this.dungeonMap = dungeonMap;
+    public Character() {
         this.stateMachine = new DefaultStateMachine<Character, CharacterState>(this, CharacterState.IDLE, CharacterState.GLOBAL_STATE);
         walkSequenceAction = Actions.sequence();//行走序列动画
-        initAStarArray(dungeonMap.getMapInfo().getMapArray());
     }
 
     public CharacterInfo getInfo() {
@@ -78,13 +75,13 @@ public abstract class Character implements Telegraph {
     protected void attack(Character character){
     }
     public void walk(){
-        if(!moveLogic(pathIndex)){return;}
+//        if(!moveLogic(pathIndex)){return;}
         isMoving = true;
-        final int x = path.get(pathIndex).getX();
-        final int y = path.get(pathIndex).getY();
+        final int x = path.get(pathIndex).getX()+x0;
+        final int y = path.get(pathIndex).getY()+y0;
         final boolean isStayAround = getActor().getTilePosIndex().x == x&&getActor().getTilePosIndex().y==y;
         characterActor.setTilePosIndexOnly(new GridPoint2(x,y));
-        MoveToAction action = Actions.moveTo(x<<5,y<<5,0.05f);
+        MoveToAction action = Actions.moveTo(x,y,0.05f);
         //添加移动动画
         walkSequenceAction.addAction(action);
         //添加动画完成事件
@@ -106,7 +103,9 @@ public abstract class Character implements Telegraph {
     }
     protected void findWay(int x,int y){
         pathIndex = 0;
-        aStarMap.setSource(new AStarNode(characterActor.getTilePosIndex().x,characterActor.getTilePosIndex().y));
+//        aStarMap.setSource(new AStarNode(characterActor.getTilePosIndex().x,characterActor.getTilePosIndex().y));
+        //16x16 player为中心
+        aStarMap.setSource(new AStarNode(8,8));
         aStarMap.setTarget(new AStarNode(x,y));
         synchronized (path){
             path = aStarMap.find();
@@ -122,7 +121,9 @@ public abstract class Character implements Telegraph {
      * 初始化AStar数组，元素只有0,1,0代表可以通过1代表障碍
      * @param array
      */
-    private void initAStarArray(MapInfoModel[][] array){
+    public void upDateAStarArray(int x0,int y0,int[][] array){
+        this.x0 = x0;
+        this.y0 = y0;
         int x = 0,y = 0;
         if(array != null && array.length>0){
             x = array.length;
@@ -133,23 +134,10 @@ public abstract class Character implements Telegraph {
         int[][] aStarData = new int[y][x];
         for (int i = 0; i < y; i++) {
             for (int j = 0; j < x; j++) {
-                int block = array[j][i].getBlock();
-                if(block == Dungeon.tileStoneWall
-                        ||block== Dungeon.tileDirtWall
-                        ||block== Dungeon.tileUnused
-                        ||block== Dungeon.tileNothing){
-                    aStarData[i][j] = 1;
-                }else{
-                    aStarData[i][j] = 0;
-                }
+                aStarData[i][j] = array[j][i];
             }
         }
         aStarMap.loadData(aStarData,1,0);
-    }
-
-    public void upDateAStarArray(DungeonMap dungeonMap){
-        this.dungeonMap = dungeonMap;
-        initAStarArray(dungeonMap.getMapInfo().getMapArray());
     }
 
     //移动的逻辑,返回是否可以移动以及其它逻辑
@@ -200,13 +188,13 @@ public abstract class Character implements Telegraph {
     protected boolean hasObstacle(int x,int y){
         //当下一个点是门的话
         //碰到门停下来，改变门的状态，再次穿过打开
-        if(dungeonMap.getMapInfo().getMapArray()[x][y].getBlock() == Dungeon.tileDoor){
-            dungeonMap.changeTileType(Dungeon.tileDoorOpen,x,y);
-            return true;
-        }
+//        if(dungeonMap.getMapInfo().getMapArray()[x][y].getBlock() == Dungeon.tileDoor){
+//            dungeonMap.changeTileType(Dungeon.tileDoorOpen,x,y);
+//            return true;
+//        }
+        //判断地图是不是障碍物
         return false;
     }
-
     protected void getItem(Item item){
     }
     protected boolean hasEnemy(int x,int y){
@@ -251,8 +239,8 @@ public abstract class Character implements Telegraph {
         final int y = characterActor.getTilePosIndex().y;
         final int nx = path.get(curPos).getX();
         final int ny = path.get(curPos).getY();
-        MoveByAction action = Actions.moveBy((nx-x)*16,(ny-y)*16,0.05f);
-        MoveToAction action1 = Actions.moveTo(x<<5,y<<5,0.05f);
+        MoveByAction action = Actions.moveBy((nx-x)*0.5f,(ny-y)*0.5f,0.05f);
+        MoveToAction action1 = Actions.moveTo(x,y,0.05f);
         SequenceAction attackSeq = Actions.sequence(action,action1);
         attackSeq.addAction(Actions.run(new Runnable() {
             @Override
@@ -283,4 +271,7 @@ public abstract class Character implements Telegraph {
 
     }
 
+    public List<AStarNode> getPath() {
+        return path;
+    }
 }

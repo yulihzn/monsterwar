@@ -1,5 +1,6 @@
 package com.mw.logic;
 
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
 import com.mw.logic.characters.base.Character;
 import com.mw.logic.characters.base.Monster;
@@ -9,6 +10,7 @@ import com.mw.logic.characters.npc.Ghost;
 import com.mw.logic.item.base.Food;
 import com.mw.logic.item.base.Item;
 import com.mw.logic.item.info.FoodInfo;
+import com.mw.map.MapGenerator;
 import com.mw.profiles.GameFileHelper;
 import com.mw.ui.LogMessageTable;
 
@@ -84,21 +86,52 @@ public class Logic {
          * ，其余生物各自走一格，回合结束，继续监听有没有下一个回合，如果玩家没有到指定的地点，
          * 也没有遇到让目的中止情况，继续走下一个回合。。然后循环下去
          */
-        player.findWay(x,y);
-        player.walk();
-        checkOthers();
-        for (int i = 0; i < Logic.getInstance().getMonsterArray().size; i++) {
-            Monster monster = Logic.getInstance().getMonsterArray().get(i);
-            if(monster.getInfo().getName().equals(GhostInfo.NAME)){
-                Ghost ghost = (Ghost) monster;
-                ghost.findWay(player.getActor().getTilePosIndex().x,player.getActor().getTilePosIndex().y);
-                ghost.walk();
-            }
-        }
+
+        playerWalk(x,y);
+
+//        checkOthers();
+//        for (int i = 0; i < Logic.getInstance().getMonsterArray().size; i++) {
+//            Monster monster = Logic.getInstance().getMonsterArray().get(i);
+//            if(monster.getInfo().getName().equals(GhostInfo.NAME)){
+//                Ghost ghost = (Ghost) monster;
+//                ghost.findWay(player.getActor().getTilePosIndex().x,player.getActor().getTilePosIndex().y);
+//                ghost.walk();
+//            }
+//        }
         checkPlayer();
         endRound();
 
     }
+    /**
+     * 点击地图位置，通知L，L让player寻路并规划好要移动的第一格，获取map关于这一格的信息（判断是移动，停止，和该格子互动，或者和该格子的player互动）
+     * 执行这些操作，结束player这一回合，执行其他npc的ai
+     */
+    public boolean playerWalk(int x,int y) {
+        //获取玩家为中心的16x16的数组
+        int length = 16;
+        int x0 = player.getActor().getTilePosIndex().x-length/2;
+        int y0 = player.getActor().getTilePosIndex().y-length/2;
+        //传入左上角坐标得到数组
+        int[][] stars = MapGenerator.getInstance().getAStarArray(x0,y0,length);
+        player.upDateAStarArray(x0,y0,stars);
+        int endx = x-x0;
+        int endy = y-y0;
+        player.findWay(endx,endy);
+        //判断是否有第一格，没有不执行移动
+        if(player.getPath().size() == 0){
+            return false;
+        }
+        int firstx = player.getPath().get(0).getX()+x0;
+        int firsty = player.getPath().get(0).getY()+y0;
+        GridPoint2 firstPos = new GridPoint2(firstx,firsty);
+        player.walk();
+        //如果没有到目的地继续。这里要放入玩家移动逻辑里
+        if(player.getActor().getTilePosIndex().x != x && player.getActor().getTilePosIndex().y != y){
+            playerWalk(x,y);
+        }
+        return true;
+    }
+
     //每回合检查玩家的视野是否到了边界,如果到了边界，相应的边界的一组数据替换成新的数据，边界的对立面
     public void reachTheEdge(int dir){
         for (GameEventListener gameEventListener:gameEventListeners) {

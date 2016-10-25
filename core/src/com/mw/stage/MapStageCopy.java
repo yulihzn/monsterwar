@@ -131,7 +131,7 @@ public class MapStageCopy extends Stage{
 	private void updateMap(int dir){
 		//生成下一关或者上一关
 		dungeonMap.upDateDungeon(dir);
-		man.upDateAStarArray(dungeonMap);
+//		man.upDateAStarArray(dungeonMap);
 //      ghost.getActor().upDateAStarArray(dungeonMap);
 		//阴影重置
 		mapShadow.reSet(dungeonMap);
@@ -220,7 +220,7 @@ public class MapStageCopy extends Stage{
 		}
 		//生成下一关或者上一关
 		dungeonMap.initDungeon(nextLevel);
-		man.upDateAStarArray(dungeonMap);
+//		man.upDateAStarArray(dungeonMap);
 //      ghost.getActor().upDateAStarArray(dungeonMap);
 		level = nextLevel;
 		//调整玩家位置

@@ -25,7 +25,8 @@ public class GameMapTile extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         batch.setProjectionMatrix(cam.combined);
-        batch.draw(AssetManagerHelper.getInstance().findRegion(regionName), getX(), getY());
+        //镜头是1/32所以region的宽高是1x1而不是32x32
+        batch.draw(AssetManagerHelper.getInstance().findRegion(regionName), getX(), getY(),1,1);
         super.draw(batch, parentAlpha);
     }
 
@@ -40,7 +41,7 @@ public class GameMapTile extends Actor {
 
     public void setTilePosIndex(GridPoint2 tilePosIndex) {
         this.tilePosIndex = tilePosIndex;//设置下标
-        setPosition(tilePosIndex.x<<5,tilePosIndex.y<<5);//设置actor位置
+        setPosition(tilePosIndex.x,tilePosIndex.y);//设置actor位置
         GameFileHelper.getInstance().setCharacterPos(regionName,tilePosIndex.x,tilePosIndex.y);
     }
     public void setTilePosIndexOnly(GridPoint2 tilePosIndex) {
@@ -62,6 +63,5 @@ public class GameMapTile extends Actor {
     public void setRegionName(String regionName) {
         this.regionName = regionName;
     }
-
 
 }

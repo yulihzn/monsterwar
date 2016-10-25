@@ -42,15 +42,6 @@ public class CharacterActor extends GameMapTile {
         //镜头延迟跟随（待修改）
         if(isFocus){
             isFocus = false;
-            camera.position.set(getX(),getY(), 0);
-            final float disX = getX() - camera.position.x;
-            final float disY = getY() - camera.position.y;
-            Timer.schedule(new Timer.Task() {
-                @Override
-                public void run() {
-                    camera.translate(disX/10,disY/10);
-                }
-            },2f,0.01f,10).run();
         }
     }
 
