@@ -60,6 +60,10 @@ public class TmxAreaMap extends TmxMap {
                 Tile block = getTileSets().get(2).getTile(model.getBlock());
                 Tile decorate = getTileSets().get(3).getTile(model.getDecorate());
                 Tile shadow = getTileSets().get(4).getTile(model.getShadow());
+                floor.getProperties().setProperty("value",""+floor.getId());
+                block.getProperties().setProperty("value",""+block.getId());
+                decorate.getProperties().setProperty("value",""+decorate.getId());
+                shadow.getProperties().setProperty("value",""+shadow.getId());
                 floor.getProperties().setProperty("element",""+model.getFloor());
                 block.getProperties().setProperty("element",""+model.getBlock());
                 ((TileLayer)floorLayer).setTileAt(i,j,floor);

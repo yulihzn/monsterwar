@@ -119,11 +119,9 @@ public class Player extends Character {
         }else{
 //            Logic.getInstance().beginRound(path.get(path.size()-1).getX(),path.get(path.size()-1).getY());
         }
-        getActor().setFocus(false);
-        //如果没有到目的地继续。这里要放入玩家移动逻辑里
-        if(getActor().getTilePosIndex().x != mapx || getActor().getTilePosIndex().y != mapy){
-            Logic.getInstance().beginRound(mapx,mapy);
-        }
+        getActor().setFocus(true);
+        //继续移动
+        Logic.getInstance().continueWalk();
     }
 
     @Override

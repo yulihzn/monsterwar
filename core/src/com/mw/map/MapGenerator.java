@@ -1,5 +1,6 @@
 package com.mw.map;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.MathUtils;
 import com.mw.model.Area;
@@ -75,6 +76,8 @@ public class MapGenerator {
      */
     public int[][] getAStarArray(int x0,int y0,int length){
         int[][] arr = new int[length][length];
+//        String str = "\n";
+//        String origin = "\n";
         for (int i = 0; i < length; i++) {
             for (int j = 0; j < length; j++) {
                 int block;
@@ -87,11 +90,17 @@ public class MapGenerator {
                     }else{
                         arr[i][j]=0;
                     }
+//                    origin+=""+block;
                 }else {
                     arr[i][j]=1;
                 }
+//                str+=""+arr[i][j];
             }
+//            str+="\n";
+//            origin+="\n";
         }
+//        Gdx.app.log("origin",origin);
+//        Gdx.app.log("map",str);
         return arr;
     }
 }

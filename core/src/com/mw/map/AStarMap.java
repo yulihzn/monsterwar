@@ -1,5 +1,7 @@
 package com.mw.map;
 
+import com.badlogic.gdx.Gdx;
+
 import java.util.ArrayList;
 import java.util.HashMap; 
 import java.util.List;
@@ -320,14 +322,27 @@ public class AStarMap {
 				|| astarData[0].length != data[0].length)
 			throw new RuntimeException(
 					"new data should be as large as the old astar map data");
+//		String str = "\n";
 		for (int i = 0; i < astarData.length; i++) {
 			for (int j = 0; j < astarData[i].length; j++) {
 				if (data[i][j] == barrierVal)
 					astarData[i][j] = STATE_BARRIER;
 				else if (data[i][j] == clearVal)
 					astarData[i][j] = 0;
+//				str+="["+i+","+j+"]("+astarData[i][j]+")";
+//				if(i==8&&j==8){
+//					if(astarData[i][j]==0){
+//						str+="@";
+//					}else {
+//						str+= "&";
+//					}
+//				}else {
+//					str+=""+astarData[i][j];
+//				}
 			}
+//			str+="\n";
 		}
+//		Gdx.app.log("astar",str);
 	}
 
 	public void setTarget(AStarNode target) {

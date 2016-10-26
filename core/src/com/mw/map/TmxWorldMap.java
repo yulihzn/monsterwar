@@ -51,6 +51,10 @@ public class TmxWorldMap extends TmxMap {
                 Tile block = getTileSets().get(0).getTile(arr[i][j]);
                 Tile decorate = getTileSets().get(0).getTile(arr[i][j]);
                 Tile shadow = getTileSets().get(0).getTile(MapEditor.SHADOW);
+                floor.getProperties().setProperty("value",""+floor.getId());
+                block.getProperties().setProperty("value",""+block.getId());
+                decorate.getProperties().setProperty("value",""+decorate.getId());
+                shadow.getProperties().setProperty("value",""+shadow.getId());
                 floor.getProperties().setProperty("element",""+arr[i][j]);
                 block.getProperties().setProperty("element",""+arr[i][j]);
                 ((TileLayer)floorLayer).setTileAt(i,j,floor);

@@ -268,15 +268,19 @@ public class  MapStage extends Stage{
 //			}
 			roundTime = TimeUtils.nanoTime();
 			if(Gdx.input.isKeyPressed(Input.Keys.UP)){
+				Logic.getInstance().beginRound(man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y+1);
 				camera.translate(0,1);
 			}else if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
+				Logic.getInstance().beginRound(man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y-1);
 				camera.translate(0,-1);
 			}else if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+				Logic.getInstance().beginRound(man.getActor().getTilePosIndex().x-1,man.getActor().getTilePosIndex().y);
 				camera.translate(-1,0);
 			}else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+				Logic.getInstance().beginRound(man.getActor().getTilePosIndex().x+1,man.getActor().getTilePosIndex().y);
 				camera.translate(1,0);
 			}else if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
-				camera.position.set(0,0,0);
+				camera.position.set(man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y,0);
 			}
 		}
 		float w = MainGame.worldWidth;
@@ -284,8 +288,10 @@ public class  MapStage extends Stage{
 		camera.viewportWidth = 16;
 		camera.viewportHeight = 16*(h/w);
 		camera.zoom = MathUtils.clamp(camera.zoom, 0.1f, 16f);
-		camera.position.x = MathUtils.clamp(camera.position.x, camera.viewportWidth/2, 256-camera.viewportWidth/2);
-		camera.position.y = MathUtils.clamp(camera.position.y, camera.viewportHeight/2, 256-camera.viewportHeight/2);
+//		camera.position.x = MathUtils.clamp(camera.position.x, camera.viewportWidth/2, 256-camera.viewportWidth/2);
+//		camera.position.y = MathUtils.clamp(camera.position.y, camera.viewportHeight/2, 256-camera.viewportHeight/2);
+		camera.position.x = MathUtils.clamp(camera.position.x, 0, 256);
+		camera.position.y = MathUtils.clamp(camera.position.y, 0, 256);
 		camera.update();
 		//同步摄像头
 		this.getViewport().setCamera(camera);

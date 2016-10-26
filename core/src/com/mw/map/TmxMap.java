@@ -137,7 +137,7 @@ public class TmxMap extends Map {
             return -1;
         }
         TiledMapTileLayer.Cell cell = ((TiledMapTileLayer)(tileMap.getLayers().get(layer))).getCell(x,y);
-        return cell.getTile().getId();
+        return Integer.valueOf(String.valueOf(cell.getTile().getProperties().get("value")));
     }
 
 

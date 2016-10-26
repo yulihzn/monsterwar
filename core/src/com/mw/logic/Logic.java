@@ -49,6 +49,8 @@ public class Logic {
     public static final int DIR_BOTTOMLEFT = 7;
     public static final int DIR_BOTTOMRIGHT = 8;
 
+    private int clickX,clickY;
+
     private Array<Monster> monsterArray = new Array<Monster>();
 
     public Array<Monster> getMonsterArray() {
@@ -86,6 +88,8 @@ public class Logic {
          * ，其余生物各自走一格，回合结束，继续监听有没有下一个回合，如果玩家没有到指定的地点，
          * 也没有遇到让目的中止情况，继续走下一个回合。。然后循环下去
          */
+        this.clickX =x;
+        this.clickY =y;
 
         playerWalk(x,y);
 
@@ -125,6 +129,14 @@ public class Logic {
         player.walk();
 
         return true;
+    }
+    public void continueWalk(){
+        //如果没有到目的地继续。
+        if(player.getActor().getTilePosIndex().x != clickX || player.getActor().getTilePosIndex().y != clickY){
+            beginRound(clickX,clickY);
+        }else {
+            player.getActor().setFocus(true);
+        }
     }
 
 
