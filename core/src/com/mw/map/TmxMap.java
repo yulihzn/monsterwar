@@ -126,6 +126,7 @@ public class TmxMap extends Map {
         TiledMapTile tile = new StaticTiledMapTile(cell.getTile().getTextureRegion());
         tile.setId(type);
         tile.getProperties().putAll(cell.getTile().getProperties());
+        tile.getProperties().put("value",""+type);
         //tileset的下标是从1开始的
         tile.setTextureRegion(tileMap.getTileSets().getTile(type+1).getTextureRegion());
         cell.setTile(tile);

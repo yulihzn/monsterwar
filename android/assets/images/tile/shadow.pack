@@ -17,3 +17,10 @@ s00001
   orig: 32, 32
   offset: 0, 0
   index: -1
+s00002
+  rotate: false
+  xy: 64, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1

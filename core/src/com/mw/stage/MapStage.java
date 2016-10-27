@@ -14,6 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.mw.actor.AreaShadow;
+import com.mw.actor.MapShadow;
 import com.mw.actor.TiledMapActor;
 import com.mw.factory.ItemFactory;
 import com.mw.game.MainGame;
@@ -54,6 +56,7 @@ public class  MapStage extends Stage{
 	private float worldWidth = 256;
 	private float worldHeight = 256;
 	private float camSize = 16;
+	private AreaShadow areaShadow;
 
 	public MapStage(MainScreen mainScreen){
 		float w = MainGame.worldWidth;
@@ -80,6 +83,7 @@ public class  MapStage extends Stage{
 				elementTouch("",x,y);
 			}
 		});
+
 		//添加角色
 		man = characterFactory.getPlayer();
 //		Logic.getInstance().setPlayer(man);
@@ -87,6 +91,10 @@ public class  MapStage extends Stage{
 //		Logic.getInstance().addGameEventListener(logicEventListener);
 //		MapGenerator.getInstance();
 //		man.getActor().setPosition(16,14);
+
+		areaShadow = new AreaShadow(camera);
+		areaShadow.setZIndex(299);
+		addActor(areaShadow);
 
 	}
 
@@ -119,12 +127,9 @@ public class  MapStage extends Stage{
 		int x0 = (int)vector3.x;
 		int y0 = (int)vector3.y;
 		Gdx.app.log("touchDownx0y0","x0="+x0+",y0="+y0);
-		for (int i = -1; i < 2; i++) {
-			for (int j = -1; j < 2; j++) {
-				tmxAreaMap.changeTile(TmxMap.LAYER_SHADOW, AreaTile.S_TRANS,x0+i,y0+j);
-			}
+		if(tmxAreaMap.getTileId(TmxMap.LAYER_SHADOW,x0,y0)!=AreaTile.S_SHADOW){
+			Logic.getInstance().beginRound(x0,y0);
 		}
-		Logic.getInstance().beginRound(x0,y0);
 
 	}
 
@@ -243,11 +248,11 @@ public class  MapStage extends Stage{
 	@Override
 	public void draw() {
 		//地图绘制
-		renderer.render();
-//		renderer.render(new int[]{0,1,2});
+//		renderer.render();
+		renderer.render(new int[]{0,1,2});
 		//余下actor绘制
 		super.draw();
-//		renderer.render(new int[]{3});
+		renderer.render(new int[]{3});
 	}
 
 	@Override
@@ -282,6 +287,17 @@ public class  MapStage extends Stage{
 			}else if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
 				camera.position.set(man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y,0);
 			}
+			int x = man.getActor().getTilePosIndex().x;
+			int y = man.getActor().getTilePosIndex().y;
+			int size = 5;
+			for (int i = -size; i < size; i++) {
+				for (int j = -size; j < size; j++) {
+					if(tmxAreaMap.getTileId(TmxMap.LAYER_SHADOW,x+i,y+j)!=AreaTile.S_TRANS){
+						tmxAreaMap.changeTile(TmxMap.LAYER_SHADOW, AreaTile.S_TRANS,x+i,y+j);
+					}
+				}
+			}
+
 		}
 		float w = MainGame.worldWidth;
 		float h = MainGame.worldHeight;

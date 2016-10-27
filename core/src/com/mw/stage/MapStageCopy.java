@@ -93,7 +93,7 @@ public class MapStageCopy extends Stage{
 		generateMonsters();
 		generateItems();
 
-		mapShadow = new MapShadow(camera,DungeonMap.TILE_SIZE_WIDTH<<5,DungeonMap.TILE_SIZE_HEIGHT<<5,dungeonMap);
+//		mapShadow = new MapShadow(camera,DungeonMap.TILE_SIZE_WIDTH<<5,DungeonMap.TILE_SIZE_HEIGHT<<5,dungeonMap);
 		mapShadow.setPosition(0,0);
 		addActor(mapShadow);
 		mapShadow.setZIndex(300);
@@ -134,7 +134,7 @@ public class MapStageCopy extends Stage{
 //		man.upDateAStarArray(dungeonMap);
 //      ghost.getActor().upDateAStarArray(dungeonMap);
 		//阴影重置
-		mapShadow.reSet(dungeonMap);
+//		mapShadow.reSet(dungeonMap);
 		mapShadow.getSightPosIndex().y = man.getActor().getTilePosIndex().y;
 		mapShadow.getSightPosIndex().x = man.getActor().getTilePosIndex().x;
 		mapShadow.updateLines();
@@ -227,7 +227,7 @@ public class MapStageCopy extends Stage{
 		adjustPlayerPos(action);
 		man.getActor().setFocus(true);
 		//阴影重置
-		mapShadow.reSet(dungeonMap);
+//		mapShadow.reSet(dungeonMap);
 		mapShadow.getSightPosIndex().y = man.getActor().getTilePosIndex().y;
 		mapShadow.getSightPosIndex().x = man.getActor().getTilePosIndex().x;
 		mapShadow.updateLines();

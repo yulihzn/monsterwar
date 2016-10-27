@@ -32,6 +32,7 @@ public class AreaTile {
 
     public static final int S_TRANS = 0;
     public static final int S_SHADOW = 1;
+    public static final int S_SHADOW_HALF = 2;
 
     private static int getRandomTile(int rangeInclusive){
         return MathUtils.random(rangeInclusive);
