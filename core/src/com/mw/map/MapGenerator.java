@@ -1,28 +1,6 @@
 package com.mw.map;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.math.MathUtils;
 import com.mw.model.Area;
-import com.mw.model.AreaModel;
-import com.mw.model.MapInfo;
-import com.mw.model.MapInfoModel;
-import com.mw.model.WorldMapModel;
-import com.mw.profiles.GameFileHelper;
-import com.mw.utils.Dungeon;
-import com.mw.utils.WildDungeon;
-
-import java.awt.Rectangle;
-import java.io.IOException;
-import java.util.Properties;
-
-import tiled.core.Map;
-import tiled.core.MapLayer;
-import tiled.core.Tile;
-import tiled.core.TileLayer;
-import tiled.core.TileSet;
-import tiled.io.TMXMapWriter;
-import tiled.util.BasicTileCutter;
 
 /**
  * Created by BanditCat on 2016/9/27.

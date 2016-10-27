@@ -29,11 +29,12 @@
  */
 package tiled.core;
 
-import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+
+import tiled.awt.Rectangle;
 
 /**
  * The Map class is the focal point of the <code>tiled.core</code> package.
@@ -132,8 +133,8 @@ public class Map implements Iterable<MapLayer> {
     /**
      * <p>addLayer.</p>
      *
-     * @param layer a {@link tiled.core.MapLayer} object.
-     * @return a {@link tiled.core.MapLayer} object.
+     * @param layer a {@link MapLayer} object.
+     * @return a {@link MapLayer} object.
      */
     public MapLayer addLayer(MapLayer layer) {
         layer.setMap(this);
@@ -145,7 +146,7 @@ public class Map implements Iterable<MapLayer> {
      * <p>setLayer.</p>
      *
      * @param index a int.
-     * @param layer a {@link tiled.core.MapLayer} object.
+     * @param layer a {@link MapLayer} object.
      */
     public void setLayer(int index, MapLayer layer) {
         layer.setMap(this);
@@ -156,7 +157,7 @@ public class Map implements Iterable<MapLayer> {
      * <p>insertLayer.</p>
      *
      * @param index a int.
-     * @param layer a {@link tiled.core.MapLayer} object.
+     * @param layer a {@link MapLayer} object.
      */
     public void insertLayer(int index, MapLayer layer) {
         layer.setMap(this);
@@ -221,7 +222,7 @@ public class Map implements Iterable<MapLayer> {
      * bounds of the map are resized, any other layers are moved by the given
      * shift.
      *
-     * @see tiled.core.MapLayer#resize
+     * @see MapLayer#resize
      * @param width The new width of the map.
      * @param height The new height of the map.
      * @param dx The shift in x direction in tiles.
@@ -288,7 +289,7 @@ public class Map implements Iterable<MapLayer> {
     }
 
     /**
-     * Removes a {@link tiled.core.TileSet} from the map, and removes any tiles
+     * Removes a {@link TileSet} from the map, and removes any tiles
      * in the set from the map layers.
      *
      * @param tileset TileSet to remove

@@ -1,29 +1,15 @@
 package com.mw.map;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
-import com.badlogic.gdx.math.MathUtils;
 import com.mw.model.Area;
 import com.mw.model.AreaMapModel;
-import com.mw.model.MapInfo;
 import com.mw.model.MapInfoModel;
-import com.mw.model.WorldMapModel;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-
-import tiled.core.Map;
-import tiled.core.MapLayer;
 import tiled.core.Tile;
 import tiled.core.TileLayer;
-import tiled.core.TileSet;
 import tiled.io.TMXMapWriter;
-import tiled.util.BasicTileCutter;
 
 /**
  * Created by BanditCat on 2016/10/14.

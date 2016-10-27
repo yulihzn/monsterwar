@@ -29,11 +29,13 @@
  */
 package tiled.core;
 
-import java.awt.Image;
-import java.awt.Rectangle;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import tiled.awt.Rectangle;
 
 /**
  * <p>Sprite class.</p>
@@ -167,20 +169,20 @@ public class Sprite {
     /**
      * <p>Constructor for Sprite.</p>
      *
-     * @param image a {@link Image} object.
+     * @param image a {@link TextureRegion} object.
      * @param fpl a int.
      * @param border a int.
      * @param totalFrames a int.
      */
-    public Sprite(Image image, int fpl, int border, int totalFrames) {
+    public Sprite(TextureRegion image, int fpl, int border, int totalFrames) {
         Tile[] frames = null;
         this.fpl = fpl;
         borderWidth = border;
 
         //TODO: break up the image into tiles
         //given this information, extrapolate the rest...
-        frameSize.width = image.getWidth(null) / (fpl + borderWidth * fpl);
-        frameSize.height = (int) (image.getHeight(null) / (Math.ceil(totalFrames / fpl) + Math.ceil(totalFrames / fpl) * borderWidth));
+        frameSize.width = image.getRegionWidth() / (fpl + borderWidth * fpl);
+        frameSize.height = (int) (image.getRegionHeight() / (Math.ceil(totalFrames / fpl) + Math.ceil(totalFrames / fpl) * borderWidth));
         createKey("", frames, KeyFrame.KEY_LOOP);
     }
 

@@ -29,9 +29,8 @@
  */
 package tiled.util;
 
-import java.awt.Dimension;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import tiled.awt.Dimension;
 
 /**
  * A generic interface to a class that implements tile cutting behaviour.
@@ -47,7 +46,7 @@ public interface TileCutter {
      *
      * @param image the image that this cutter should cut
      */
-    public void setImage(BufferedImage image);
+    public void setImage(TextureRegion image);
 
     /**
      * Retrieves the next tile image.
@@ -55,7 +54,7 @@ public interface TileCutter {
      * @return the next tile image, or <code>null</code> when no more tile
      * images are available
      */
-    public Image getNextTile();
+    public TextureRegion getNextTile();
 
     /**
      * Resets the tile cutter so that the next call to <code>getNextTile</code>

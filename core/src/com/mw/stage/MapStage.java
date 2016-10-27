@@ -69,7 +69,7 @@ public class  MapStage extends Stage{
 		level = GameFileHelper.getInstance().getCurrentLevel();
 		tmxAreaMap = MapGenerator.getInstance().getTmxAreaMap("area0_0");
 		tiledMap = tmxAreaMap.getTileMap();
-		tiledMap.getLayers().get(TmxMap.LAYER_SHADOW).setVisible(false);
+//		tiledMap.getLayers().get(TmxMap.LAYER_SHADOW).setVisible(false);
 		//获取渲染
 		renderer = new OrthogonalTiledMapRenderer(tiledMap,1f/32f);
 		characterFactory = new CharacterFactory(this);

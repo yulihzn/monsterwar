@@ -29,11 +29,12 @@
  */
 package tiled.core;
 
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.geom.Area;
 import java.util.HashMap;
 import java.util.Properties;
+
+import tiled.awt.Point;
+import tiled.awt.Rectangle;
 
 /**
  * A TileLayer is a specialized MapLayer, used for tracking two dimensional tile
@@ -377,25 +378,25 @@ public class TileLayer extends MapLayer {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * Like mergeOnto, but will only copy the area specified.
-     * @see TileLayer#mergeOnto(MapLayer)
-     */
-    @Override
-    public void maskedMergeOnto(MapLayer other, Area mask) {
-        Rectangle boundBox = mask.getBounds();
-
-        for (int y = boundBox.y; y < boundBox.y + boundBox.height; y++) {
-            for (int x = boundBox.x; x < boundBox.x + boundBox.width; x++) {
-                Tile tile = ((TileLayer) other).getTileAt(x, y);
-                if (mask.contains(x, y) && tile != null) {
-                    setTileAt(x, y, tile);
-                }
-            }
-        }
-    }
+//    /**
+//     * {@inheritDoc}
+//     *
+//     * Like mergeOnto, but will only copy the area specified.
+//     * @see TileLayer#mergeOnto(MapLayer)
+//     */
+//    @Override
+//    public void maskedMergeOnto(MapLayer other, Area mask) {
+//        Rectangle boundBox = mask.getBounds();
+//
+//        for (int y = boundBox.y; y < boundBox.y + boundBox.height; y++) {
+//            for (int x = boundBox.x; x < boundBox.x + boundBox.width; x++) {
+//                Tile tile = ((TileLayer) other).getTileAt(x, y);
+//                if (mask.contains(x, y) && tile != null) {
+//                    setTileAt(x, y, tile);
+//                }
+//            }
+//        }
+//    }
 
     /**
      * {@inheritDoc}
@@ -413,24 +414,24 @@ public class TileLayer extends MapLayer {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * Like copyFrom, but will only copy the area specified.
-     * @see TileLayer#copyFrom(MapLayer)
-     */
-    @Override
-    public void maskedCopyFrom(MapLayer other, Area mask) {
-        Rectangle boundBox = mask.getBounds();
-
-        for (int y = boundBox.y; y < boundBox.y + boundBox.height; y++) {
-            for (int x = boundBox.x; x < boundBox.x + boundBox.width; x++) {
-                if (mask.contains(x, y)) {
-                    setTileAt(x, y, ((TileLayer) other).getTileAt(x, y));
-                }
-            }
-        }
-    }
+//    /**
+//     * {@inheritDoc}
+//     *
+//     * Like copyFrom, but will only copy the area specified.
+//     * @see TileLayer#copyFrom(MapLayer)
+//     */
+//    @Override
+//    public void maskedCopyFrom(MapLayer other, Area mask) {
+//        Rectangle boundBox = mask.getBounds();
+//
+//        for (int y = boundBox.y; y < boundBox.y + boundBox.height; y++) {
+//            for (int x = boundBox.x; x < boundBox.x + boundBox.width; x++) {
+//                if (mask.contains(x, y)) {
+//                    setTileAt(x, y, ((TileLayer) other).getTileAt(x, y));
+//                }
+//            }
+//        }
+//    }
 
     /**
      * {@inheritDoc}

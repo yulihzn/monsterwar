@@ -29,9 +29,9 @@
  */
 package tiled.core;
 
-import java.awt.Rectangle;
-import java.awt.geom.Area;
 import java.util.Properties;
+
+import tiled.awt.Rectangle;
 
 /**
  * A layer of a map.
@@ -301,13 +301,13 @@ public abstract class MapLayer implements Cloneable {
      */
     public abstract void mergeOnto(MapLayer other);
 
-    /**
-     * <p>maskedMergeOnto.</p>
-     *
-     * @param other a {@link MapLayer} object.
-     * @param mask a {@link Area} object.
-     */
-    public abstract void maskedMergeOnto(MapLayer other, Area mask);
+//    /**
+//     * <p>maskedMergeOnto.</p>
+//     *
+//     * @param other a {@link MapLayer} object.
+//     * @param mask a {@link Area} object.
+//     */
+//    public abstract void maskedMergeOnto(MapLayer other, Area mask);
 
     /**
      * <p>copyFrom.</p>
@@ -316,13 +316,13 @@ public abstract class MapLayer implements Cloneable {
      */
     public abstract void copyFrom(MapLayer other);
 
-    /**
-     * <p>maskedCopyFrom.</p>
-     *
-     * @param other a {@link MapLayer} object.
-     * @param mask a {@link Area} object.
-     */
-    public abstract void maskedCopyFrom(MapLayer other, Area mask);
+//    /**
+//     * <p>maskedCopyFrom.</p>
+//     *
+//     * @param other a {@link MapLayer} object.
+//     * @param mask a {@link Area} object.
+//     */
+//    public abstract void maskedCopyFrom(MapLayer other, Area mask);
 
     /**
      * <p>createDiff.</p>

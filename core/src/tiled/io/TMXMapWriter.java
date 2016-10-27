@@ -29,8 +29,8 @@
  */
 package tiled.io;
 
-import java.awt.Color;
-import java.awt.Rectangle;
+import com.badlogic.gdx.graphics.Color;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -48,6 +48,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPOutputStream;
+
+import tiled.awt.Rectangle;
 import tiled.core.AnimatedTile;
 
 import tiled.core.Map;
@@ -307,7 +309,7 @@ public class TMXMapWriter {
             Color trans = set.getTransparentColor();
             if (trans != null) {
                 w.writeAttribute("trans", Integer.toHexString(
-                        trans.getRGB()).substring(2));
+                        trans.toIntBits()).substring(2));
             }
             w.endElement();
 

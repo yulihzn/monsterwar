@@ -29,22 +29,20 @@
  */
 package tiled.core;
 
-import java.awt.Color;
-import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
-import java.awt.image.FilteredImageSource;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.imageio.ImageIO;
 
+import tiled.awt.Rectangle;
 import tiled.util.TileCutter;
-import tiled.util.TransparentImageFilter;
 import tiled.util.BasicTileCutter;
 
 /**
@@ -77,7 +75,7 @@ public class TileSet implements Iterable<Tile> {
     private File tilebmpFile;
     private String name;
     private Color transparentColor;
-    private Image tileSetImage;
+    private TextureRegion tileSetImage;
 
     /**
      * Default constructor
@@ -92,33 +90,25 @@ public class TileSet implements Iterable<Tile> {
      * @param imgFilename a {@link String} object.
      * @param cutter a {@link tiled.util.TileCutter} object.
      * @throws IOException if any.
-     * @see TileSet#importTileBitmap(BufferedImage, TileCutter)
+     * @see TileSet#importTileBitmap(TextureRegion, TileCutter)
      */
     public void importTileBitmap(String imgFilename, TileCutter cutter)
             throws IOException {
         setTilesetImageFilename(imgFilename);
 
-        Image image = ImageIO.read(new File(imgFilename));
+        TextureRegion image = new TextureRegion(new Texture(Gdx.files.internal(imgFilename)));
         if (image == null) {
             throw new IOException("Failed to load " + tilebmpFile);
         }
 
-        Toolkit tk = Toolkit.getDefaultToolkit();
 
         if (transparentColor != null) {
-            int rgb = transparentColor.getRGB();
-            image = tk.createImage(
-                    new FilteredImageSource(image.getSource(),
-                            new TransparentImageFilter(rgb)));
+//            int rgb = transparentColor.getRGB();
+            //设置透明度
+            //TODO
         }
 
-        BufferedImage buffered = new BufferedImage(
-                image.getWidth(null),
-                image.getHeight(null),
-                BufferedImage.TYPE_INT_ARGB);
-        buffered.getGraphics().drawImage(image, 0, 0, null);
-
-        importTileBitmap(buffered, cutter);
+        importTileBitmap(image, cutter);
     }
 
     /**
@@ -128,7 +118,7 @@ public class TileSet implements Iterable<Tile> {
      * @param tileBitmap the image to be used, must not be null
      * @param cutter the tile cutter, must not be null
      */
-    private void importTileBitmap(BufferedImage tileBitmap, TileCutter cutter) {
+    private void importTileBitmap(TextureRegion tileBitmap, TileCutter cutter) {
         assert tileBitmap != null;
         assert cutter != null;
 
@@ -145,7 +135,7 @@ public class TileSet implements Iterable<Tile> {
             tilesPerRow = basicTileCutter.getTilesPerRow();
         }
 
-        Image tileImage = cutter.getNextTile();
+        TextureRegion tileImage = cutter.getNextTile();
         while (tileImage != null) {
             Tile tile = new Tile();
             tile.setImage(tileImage);
@@ -158,33 +148,25 @@ public class TileSet implements Iterable<Tile> {
      * Refreshes a tileset from a tileset image file.
      *
      * @throws IOException
-     * @see TileSet#importTileBitmap(BufferedImage,TileCutter)
+     * @see TileSet#importTileBitmap(TextureRegion,TileCutter)
      */
     private void refreshImportedTileBitmap()
             throws IOException {
         String imgFilename = tilebmpFile.getPath();
 
-        Image image = ImageIO.read(new File(imgFilename));
+        TextureRegion image = new TextureRegion(new Texture(Gdx.files.internal(imgFilename)));
         if (image == null) {
             throw new IOException("Failed to load " + tilebmpFile);
         }
 
-        Toolkit tk = Toolkit.getDefaultToolkit();
 
         if (transparentColor != null) {
-            int rgb = transparentColor.getRGB();
-            image = tk.createImage(
-                    new FilteredImageSource(image.getSource(),
-                            new TransparentImageFilter(rgb)));
+//            int rgb = transparentColor.getRGB();
+            //设置透明度
+            //TODO
         }
 
-        BufferedImage buffered = new BufferedImage(
-                image.getWidth(null),
-                image.getHeight(null),
-                BufferedImage.TYPE_INT_ARGB);
-        buffered.getGraphics().drawImage(image, 0, 0, null);
-
-        refreshImportedTileBitmap(buffered);
+        refreshImportedTileBitmap(image);
     }
 
     /**
@@ -193,7 +175,7 @@ public class TileSet implements Iterable<Tile> {
      *
      * @param tileBitmap the image to be used, must not be null
      */
-    private void refreshImportedTileBitmap(BufferedImage tileBitmap) {
+    private void refreshImportedTileBitmap(TextureRegion tileBitmap) {
         assert tileBitmap != null;
 
         tileCutter.reset();
@@ -203,7 +185,7 @@ public class TileSet implements Iterable<Tile> {
         tileDimensions = new Rectangle(tileCutter.getTileDimensions());
 
         int id = 0;
-        Image tileImage = tileCutter.getNextTile();
+        TextureRegion tileImage = tileCutter.getNextTile();
         while (tileImage != null) {
             Tile tile = getTile(id);
             tile.setImage(tileImage);

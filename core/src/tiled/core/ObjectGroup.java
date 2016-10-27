@@ -29,14 +29,14 @@
  */
 package tiled.core;
 
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.geom.Area;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 import java.util.Iterator;
 import java.util.List;
+
+import tiled.awt.Rectangle;
+import tiled.awt.Rectangle2D;
+import tiled.awt.Ellipse2D;
+import tiled.awt.Shape;
 
 /**
  * A layer containing {@link MapObject map objects}.
@@ -142,11 +142,11 @@ public class ObjectGroup extends MapLayer implements Iterable<MapObject> {
         // TODO: Implement merging with another object group
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public void maskedMergeOnto(MapLayer other, Area mask) {
-        // TODO: Figure out what object group should do with this method
-    }
+//    /** {@inheritDoc} */
+//    @Override
+//    public void maskedMergeOnto(MapLayer other, Area mask) {
+//        // TODO: Figure out what object group should do with this method
+//    }
 
     /** {@inheritDoc} */
     @Override
@@ -154,11 +154,11 @@ public class ObjectGroup extends MapLayer implements Iterable<MapObject> {
         // TODO: Implement copying from another object group (same as merging)
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public void maskedCopyFrom(MapLayer other, Area mask) {
-        // TODO: Figure out what object group should do with this method
-    }
+//    /** {@inheritDoc} */
+//    @Override
+//    public void maskedCopyFrom(MapLayer other, Area mask) {
+//        // TODO: Figure out what object group should do with this method
+//    }
 
     /** {@inheritDoc} */
     @Override

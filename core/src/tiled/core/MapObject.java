@@ -40,7 +40,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 /**
- * An object occupying an {@link tiled.core.ObjectGroup}.
+ * An object occupying an {@link ObjectGroup}.
  *
  * @author Thorbjørn Lindeijer
  * @author Adam Turk

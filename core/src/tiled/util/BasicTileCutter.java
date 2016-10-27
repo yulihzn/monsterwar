@@ -7,13 +7,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -29,10 +29,8 @@
  */
 package tiled.util;
 
-import java.awt.Dimension;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import tiled.awt.Dimension;
 /**
  * Cuts tiles from a tileset image according to a regular rectangular pattern.
  * Supports a variable spacing between tiles and a margin around them.
@@ -44,7 +42,7 @@ import java.awt.image.BufferedImage;
 public class BasicTileCutter implements TileCutter {
 
     private int nextX, nextY;
-    private BufferedImage image;
+    private TextureRegion image;
     private final int tileWidth;
     private final int tileHeight;
     private final int tileSpacing;
@@ -59,7 +57,7 @@ public class BasicTileCutter implements TileCutter {
      * @param tileMargin a int.
      */
     public BasicTileCutter(int tileWidth, int tileHeight, int tileSpacing,
-            int tileMargin) {
+                           int tileMargin) {
         this.tileWidth = tileWidth;
         this.tileHeight = tileHeight;
         this.tileSpacing = tileSpacing;
@@ -76,19 +74,18 @@ public class BasicTileCutter implements TileCutter {
 
     /** {@inheritDoc} */
     @Override
-    public void setImage(BufferedImage image) {
+    public void setImage(TextureRegion image) {
         this.image = image;
     }
 
     /** {@inheritDoc} */
     @Override
-    public Image getNextTile() {
-        if (nextY + tileHeight + tileMargin <= image.getHeight()) {
-            BufferedImage tile
-                    = image.getSubimage(nextX, nextY, tileWidth, tileHeight);
+    public TextureRegion getNextTile() {
+        if (nextY + tileHeight + tileMargin <= image.getRegionHeight()) {
+            TextureRegion tile = new TextureRegion(image,nextX,nextY,tileWidth,tileHeight);
             nextX += tileWidth + tileSpacing;
 
-            if (nextX + tileWidth + tileMargin > image.getWidth()) {
+            if (nextX + tileWidth + tileMargin > image.getRegionWidth()) {
                 nextX = tileMargin;
                 nextY += tileHeight + tileSpacing;
             }
@@ -136,7 +133,7 @@ public class BasicTileCutter implements TileCutter {
      * @return the number of tiles per row in the tileset image.
      */
     public int getTilesPerRow() {
-        return (image.getWidth() - 2 * tileMargin + tileSpacing)
+        return (image.getRegionWidth() - 2 * tileMargin + tileSpacing)
                 / (tileWidth + tileSpacing);
     }
 }
