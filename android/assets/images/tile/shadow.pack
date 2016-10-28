@@ -10,16 +10,37 @@ s0000
   orig: 32, 32
   offset: 0, 0
   index: -1
-s00001
+s0001
   rotate: false
   xy: 32, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-s00002
+s0002
   rotate: false
   xy: 64, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+s0003
+  rotate: false
+  xy: 96, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+s0004
+  rotate: false
+  xy: 128, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+s0005
+  rotate: false
+  xy: 160, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

@@ -11,11 +11,11 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.mw.actor.AreaShadow;
-import com.mw.actor.MapShadow;
+import com.mw.actor.ShadowImage;
 import com.mw.actor.TiledMapActor;
 import com.mw.factory.ItemFactory;
 import com.mw.game.MainGame;
@@ -23,9 +23,11 @@ import com.mw.logic.Logic;
 import com.mw.logic.characters.base.Player;
 import com.mw.map.AreaTile;
 import com.mw.map.MapGenerator;
+import com.mw.map.MapShadow;
 import com.mw.map.TmxAreaMap;
 import com.mw.map.TmxMap;
 import com.mw.screen.MainScreen;
+import com.mw.utils.AssetManagerHelper;
 import com.mw.utils.CameraController;
 import com.mw.utils.Dungeon;
 import com.mw.profiles.GameFileHelper;
@@ -56,7 +58,7 @@ public class  MapStage extends Stage{
 	private float worldWidth = 256;
 	private float worldHeight = 256;
 	private float camSize = 16;
-	private AreaShadow areaShadow;
+	private MapShadow mapShadow;
 
 	public MapStage(MainScreen mainScreen){
 		float w = MainGame.worldWidth;
@@ -91,10 +93,9 @@ public class  MapStage extends Stage{
 //		Logic.getInstance().addGameEventListener(logicEventListener);
 //		MapGenerator.getInstance();
 //		man.getActor().setPosition(16,14);
+		mapShadow = new MapShadow(camera);
+//		addActor(mapShadow);
 
-		areaShadow = new AreaShadow(camera);
-		areaShadow.setZIndex(299);
-		addActor(areaShadow);
 
 	}
 
@@ -106,12 +107,7 @@ public class  MapStage extends Stage{
 		}else if(amount == 1){
 			camera.zoom -= 0.1f;
 		}
-		if(camera.zoom < 0.1f){
-			camera.zoom = 0.1f;
-		}
-		if(camera.zoom > 16.0f){
-			camera.zoom = 16.0f;
-		}
+
 		Gdx.app.log("zoom",""+camera.zoom);
 		return super.scrolled(amount);
 	}
@@ -130,7 +126,20 @@ public class  MapStage extends Stage{
 		if(tmxAreaMap.getTileId(TmxMap.LAYER_SHADOW,x0,y0)!=AreaTile.S_SHADOW){
 			Logic.getInstance().beginRound(x0,y0);
 		}
+	}
 
+	public void updateCam(float delta,float Xtaget, float Ytarget) {
+
+		//Creating a vector 3 which represents the target location myplayer)
+		Vector3 target = new Vector3(Xtaget,Ytarget,0);
+		//Change speed to your need
+		final float speed=delta,ispeed=1.0f-speed;
+		//The result is roughly: old_position*0.9 + target * 0.1
+		Vector3 cameraPosition = camera.position;
+		cameraPosition.scl(ispeed);
+		target.scl(speed);
+		cameraPosition.add(target);
+		camera.position.set(cameraPosition);
 	}
 
 	private LogicEventListener logicEventListener = new LogicEventListener() {
@@ -252,12 +261,13 @@ public class  MapStage extends Stage{
 		renderer.render(new int[]{0,1,2});
 		//余下actor绘制
 		super.draw();
-		renderer.render(new int[]{3});
+//		renderer.render(new int[]{3});
 	}
 
 	@Override
 	public void dispose() {
 		super.dispose();
+		mapShadow.dispose();
 	}
 
 	@Override
@@ -273,23 +283,26 @@ public class  MapStage extends Stage{
 //			}
 			roundTime = TimeUtils.nanoTime();
 			if(Gdx.input.isKeyPressed(Input.Keys.UP)){
-				Logic.getInstance().beginRound(man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y+1);
-				camera.translate(0,1);
+				if(!man.isMoving()){
+					Logic.getInstance().beginRound(man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y+1);
+				}
 			}else if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
-				Logic.getInstance().beginRound(man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y-1);
-				camera.translate(0,-1);
+				if(!man.isMoving()){
+					Logic.getInstance().beginRound(man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y-1);
+				}
 			}else if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
-				Logic.getInstance().beginRound(man.getActor().getTilePosIndex().x-1,man.getActor().getTilePosIndex().y);
-				camera.translate(-1,0);
+				if(!man.isMoving()){
+					Logic.getInstance().beginRound(man.getActor().getTilePosIndex().x-1,man.getActor().getTilePosIndex().y);
+				}
 			}else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
-				Logic.getInstance().beginRound(man.getActor().getTilePosIndex().x+1,man.getActor().getTilePosIndex().y);
-				camera.translate(1,0);
+				if(!man.isMoving()){
+					Logic.getInstance().beginRound(man.getActor().getTilePosIndex().x+1,man.getActor().getTilePosIndex().y);
+				}
 			}else if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
-				camera.position.set(man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y,0);
 			}
 			int x = man.getActor().getTilePosIndex().x;
 			int y = man.getActor().getTilePosIndex().y;
-			int size = 5;
+			int size = 7;
 			for (int i = -size; i < size; i++) {
 				for (int j = -size; j < size; j++) {
 					if(tmxAreaMap.getTileId(TmxMap.LAYER_SHADOW,x+i,y+j)!=AreaTile.S_TRANS){
@@ -297,17 +310,18 @@ public class  MapStage extends Stage{
 					}
 				}
 			}
-
+			mapShadow.setSightPosition(man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y);
 		}
+		updateCam(0.3f,man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y);
 		float w = MainGame.worldWidth;
 		float h = MainGame.worldHeight;
 		camera.viewportWidth = 16;
 		camera.viewportHeight = 16*(h/w);
 		camera.zoom = MathUtils.clamp(camera.zoom, 0.1f, 16f);
-//		camera.position.x = MathUtils.clamp(camera.position.x, camera.viewportWidth/2, 256-camera.viewportWidth/2);
-//		camera.position.y = MathUtils.clamp(camera.position.y, camera.viewportHeight/2, 256-camera.viewportHeight/2);
-		camera.position.x = MathUtils.clamp(camera.position.x, 0, 256);
-		camera.position.y = MathUtils.clamp(camera.position.y, 0, 256);
+		camera.position.x = MathUtils.clamp(camera.position.x, camera.viewportWidth/2, 256-camera.viewportWidth/2);
+		camera.position.y = MathUtils.clamp(camera.position.y, camera.viewportHeight/2, 256-camera.viewportHeight/2);
+//		camera.position.x = MathUtils.clamp(camera.position.x, 0, 256);
+//		camera.position.y = MathUtils.clamp(camera.position.y, 0, 256);
 		camera.update();
 		//同步摄像头
 		this.getViewport().setCamera(camera);

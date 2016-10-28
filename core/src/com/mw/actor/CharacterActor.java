@@ -35,7 +35,7 @@ public class CharacterActor extends GameMapTile {
     public void setFocus(boolean focus) {
         isFocus = focus;
         if(isFocus){
-            camera.position.set(getTilePosIndex().x,getTilePosIndex().y,0);
+//            camera.position.set(getTilePosIndex().x,getTilePosIndex().y,0);
         }
     }
 

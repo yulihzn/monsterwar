@@ -3,6 +3,7 @@ package com.mw.actor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.mw.profiles.GameFileHelper;
@@ -16,17 +17,20 @@ public class GameMapTile extends Actor {
     private int tileIndex = 0;
     private GridPoint2 tilePosIndex = new GridPoint2(0,0);
     private OrthographicCamera cam;
+    private TextureRegion textureRegion;
 
     public GameMapTile(String regionName,OrthographicCamera cam) {
         this.regionName = regionName;
         this.cam = cam;
+        textureRegion = AssetManagerHelper.getInstance().findRegion(regionName);
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
         batch.setProjectionMatrix(cam.combined);
         //镜头是1/32所以region的宽高是1x1而不是32x32
-        batch.draw(AssetManagerHelper.getInstance().findRegion(regionName), getX(), getY(),1,1);
+
+        batch.draw(textureRegion, getX(), getY(),1,1);
         super.draw(batch, parentAlpha);
     }
 
@@ -62,6 +66,7 @@ public class GameMapTile extends Actor {
 
     public void setRegionName(String regionName) {
         this.regionName = regionName;
+        textureRegion = AssetManagerHelper.getInstance().findRegion(regionName);
     }
 
 }
