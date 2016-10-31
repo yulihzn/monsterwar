@@ -11,11 +11,10 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.mw.actor.ShadowImage;
+import com.mw.actor.ShadowActor;
 import com.mw.actor.TiledMapActor;
 import com.mw.factory.ItemFactory;
 import com.mw.game.MainGame;
@@ -27,7 +26,6 @@ import com.mw.map.MapShadow;
 import com.mw.map.TmxAreaMap;
 import com.mw.map.TmxMap;
 import com.mw.screen.MainScreen;
-import com.mw.utils.AssetManagerHelper;
 import com.mw.utils.CameraController;
 import com.mw.utils.Dungeon;
 import com.mw.profiles.GameFileHelper;
@@ -59,6 +57,9 @@ public class  MapStage extends Stage{
 	private float worldHeight = 256;
 	private float camSize = 16;
 	private MapShadow mapShadow;
+	private ShadowActor shadowActor;
+	private int amount = 0;
+	private boolean isTranslating = false;
 
 	public MapStage(MainScreen mainScreen){
 		float w = MainGame.worldWidth;
@@ -90,23 +91,26 @@ public class  MapStage extends Stage{
 		man = characterFactory.getPlayer();
 //		Logic.getInstance().setPlayer(man);
 //		man.setPlayerActionListener(playerActionListener);
-//		Logic.getInstance().addGameEventListener(logicEventListener);
+		Logic.getInstance().addGameEventListener(logicEventListener);
 //		MapGenerator.getInstance();
 //		man.getActor().setPosition(16,14);
 		mapShadow = new MapShadow(camera);
-//		addActor(mapShadow);
-
+		addActor(mapShadow);
+		shadowActor = new ShadowActor(camera);
+		addActor(shadowActor);
+		shadowActor.drawShadow(man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y);
 
 	}
 
 	@Override
 	public boolean scrolled(int amount) {
 		Gdx.app.log("scrolled",""+amount);
-		if(amount == -1){
-			camera.zoom += 0.1f;
-		}else if(amount == 1){
-			camera.zoom -= 0.1f;
-		}
+		this.amount = amount;
+//		if(amount == -1){
+//			camera.zoom += 0.1f;
+//		}else if(amount == 1){
+//			camera.zoom -= 0.1f;
+//		}
 
 		Gdx.app.log("zoom",""+camera.zoom);
 		return super.scrolled(amount);
@@ -123,13 +127,15 @@ public class  MapStage extends Stage{
 		int x0 = (int)vector3.x;
 		int y0 = (int)vector3.y;
 		Gdx.app.log("touchDownx0y0","x0="+x0+",y0="+y0);
-		if(tmxAreaMap.getTileId(TmxMap.LAYER_SHADOW,x0,y0)!=AreaTile.S_SHADOW){
-			Logic.getInstance().beginRound(x0,y0);
-		}
+//		if(tmxAreaMap.getTileId(TmxMap.LAYER_SHADOW,x0,y0)!=AreaTile.S_SHADOW){
+//		}
+		Logic.getInstance().beginRound(x0,y0);
 	}
 
-	public void updateCam(float delta,float Xtaget, float Ytarget) {
-
+	public void translateCamera(float delta,float Xtaget, float Ytarget) {
+		if(!isTranslating){
+			return;
+		}
 		//Creating a vector 3 which represents the target location myplayer)
 		Vector3 target = new Vector3(Xtaget,Ytarget,0);
 		//Change speed to your need
@@ -140,6 +146,25 @@ public class  MapStage extends Stage{
 		target.scl(speed);
 		cameraPosition.add(target);
 		camera.position.set(cameraPosition);
+		if(Xtaget == camera.position.x && Ytarget == camera.position.y){
+			isTranslating = false;
+		}
+	}
+
+	public void zoomCamera(float delta,float tagetScale) {
+		if(tagetScale == camera.zoom){
+			return;
+		}
+		//Creating a vector 3 which represents the target location myplayer)
+		Vector3 target = new Vector3(0,0,tagetScale);
+		//Change speed to your need
+		final float speed=delta,ispeed=1.0f-speed;
+		//The result is roughly: old_position*0.9 + target * 0.1
+		Vector3 cameraZoom = new Vector3(0,0,camera.zoom);
+		cameraZoom.scl(ispeed);
+		target.scl(speed);
+		cameraZoom.add(target);
+		camera.zoom = cameraZoom.z;
 	}
 
 	private LogicEventListener logicEventListener = new LogicEventListener() {
@@ -156,6 +181,11 @@ public class  MapStage extends Stage{
 		public void reachTheEdge(int dir) {
 			Logic.getInstance().sendLogMessage("地图到了边界加载新的地形");
 			updateMap(dir);
+		}
+
+		@Override
+		public void cameraTranslate() {
+			isTranslating = true;
 		}
 	};
 	private void updateMap(int dir){
@@ -302,7 +332,7 @@ public class  MapStage extends Stage{
 			}
 			int x = man.getActor().getTilePosIndex().x;
 			int y = man.getActor().getTilePosIndex().y;
-			int size = 7;
+			int size = 8;
 			for (int i = -size; i < size; i++) {
 				for (int j = -size; j < size; j++) {
 					if(tmxAreaMap.getTileId(TmxMap.LAYER_SHADOW,x+i,y+j)!=AreaTile.S_TRANS){
@@ -310,9 +340,15 @@ public class  MapStage extends Stage{
 					}
 				}
 			}
+			shadowActor.drawShadow(man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y);
 			mapShadow.setSightPosition(man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y);
 		}
-		updateCam(0.3f,man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y);
+		translateCamera(0.3f,man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y);
+		if(amount == -1){
+			zoomCamera(0.1f,16);
+		}else if(amount == 1){
+			zoomCamera(0.1f,1);
+		}
 		float w = MainGame.worldWidth;
 		float h = MainGame.worldHeight;
 		camera.viewportWidth = 16;

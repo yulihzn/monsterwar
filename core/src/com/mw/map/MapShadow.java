@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.mw.actor.ShadowActor;
 import com.mw.actor.ShadowImage;
 import com.mw.utils.AssetManagerHelper;
 
@@ -20,32 +21,31 @@ public class MapShadow extends Group {
 
     public MapShadow(OrthographicCamera camera) {
         this.camera = camera;
-        sight = new ShadowImage(AssetManagerHelper.getInstance().findRegion("shadow","s0004"));
+        sight = new ShadowImage(AssetManagerHelper.getInstance().findRegion("shadow","s0003"));
         cover = new ShadowImage(AssetManagerHelper.getInstance().findRegion("shadow","s0005"));
-        sight.setZIndex(298);
-        addActor(sight);
+        sight.setZIndex(299);
+        sight.setScale(2f);
+//        addActor(sight);
         cover.setScale(8);
-        cover.setZIndex(299);
-        addActor(cover);
-        cover.addAction(Actions.forever(Actions.sequence(Actions.fadeIn(5),Actions.fadeOut(5))));
+        cover.setZIndex(298);
+//        addActor(cover);
+//        sight.addAction(Actions.forever(Actions.sequence(Actions.fadeIn(5),Actions.fadeOut(5))));
+//        cover.addAction(Actions.forever(Actions.sequence(Actions.fadeIn(5),Actions.fadeOut(5))));
         //32个像素扩大了8倍到256，左下角为原点，右上移动128个单位再减去本身宽度的一半16
         cover.setPosition(128-16,128-16);
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        Gdx.gl.glEnable(GL20.GL_BLEND);
-        Gdx.gl.glBlendFunc(GL20.GL_ONE,GL20.GL_ZERO);
         batch.setProjectionMatrix(camera.combined);
         super.draw(batch, parentAlpha);
-        Gdx.gl.glDisable(GL20.GL_BLEND);
     }
     public void dispose(){
         sight.dispose();
         cover.dispose();
     }
     public void setSightPosition(float x,float y){
-        sight.setPosition(x-16,y-16);
+        sight.setPosition(x-32,y-32);
     }
 
     @Override

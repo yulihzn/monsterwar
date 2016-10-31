@@ -154,6 +154,11 @@ public class Logic {
             }
         }
     }
+    public void cameraTranslate() {
+        for (GameEventListener gameEventListener:gameEventListeners) {
+            gameEventListener.cameraTranslate();
+        }
+    }
 
     private void checkOthers() {
         for (int i = 0; i < Logic.getInstance().getMonsterArray().size; i++) {
@@ -195,6 +200,7 @@ public class Logic {
     public interface GameEventListener{
         void GameOver();
         void reachTheEdge(int dir);
+        void cameraTranslate();
     }
 
     public void sendLogMessage(String msg,int type){

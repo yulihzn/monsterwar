@@ -16,4 +16,9 @@ public class LogicEventListener implements Logic.GameEventListener {
     public void reachTheEdge(int dir) {
 
     }
+
+    @Override
+    public void cameraTranslate() {
+
+    }
 }

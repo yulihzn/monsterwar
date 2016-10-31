@@ -77,6 +77,7 @@ public abstract class Character implements Telegraph {
     public void walk(){
 //        if(!moveLogic(pathIndex)){return;}
         isMoving = true;
+        Logic.getInstance().cameraTranslate();
         final int x = path.get(pathIndex).getX()+x0;
         final int y = path.get(pathIndex).getY()+y0;
         final boolean isStayAround = getActor().getTilePosIndex().x == x&&getActor().getTilePosIndex().y==y;
@@ -115,6 +116,25 @@ public abstract class Character implements Telegraph {
         }
         if(endy >15){
             endy = 15;
+        }
+        if(aStarMap.getAStarData()[endx][endy] == aStarMap.STATE_BARRIER){
+            int tempx =endx,tempy = endy;
+             boolean isBarrier = true;
+               for (int i = -1; i < 1; i++) {
+                if(!isBarrier){
+                    break;
+                }
+                for (int j = -1; j < 1; j++) {
+                    tempx=endx+i;
+                    tempy=endy+j;
+                    if(aStarMap.getAStarData()[tempx][tempy] == aStarMap.STATE_BARRIER){
+                        isBarrier = false;
+                        break;
+                    }
+                }
+            }
+            endx =tempx;
+            endy = tempy;
         }
 
         pathIndex = 0;

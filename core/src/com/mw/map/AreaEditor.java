@@ -29,6 +29,9 @@ public class AreaEditor {
                 MapInfoModel model = getNewMapInfoModel(AreaTile.F_DIRT_01,AreaTile.B_TRANS,AreaTile.D_TRANS,AreaTile.S_SHADOW);
                 model.setPos(new GridPoint2(i,j));
                 model.setBlock(random.nextDouble()<0.3?AreaTile.B_WALL_01:AreaTile.B_TRANS);
+                if(i==1&&j==1){
+                    model.setBlock(AreaTile.B_DOWNSTAIRS_01);
+                }
                 arr[i][j] = model;
             }
         }
