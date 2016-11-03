@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.ColorAction;
 
 /**
@@ -21,8 +20,10 @@ public class ShadowActor extends Actor{
     private Texture texture;
     private int width = 256;
     private int height = 256;
-    private Color sightColor = new Color(0,0,0,1f);
-    private int shadowRange = 0;
+    private Color sightColor = new Color(0,0,0,0.5f);
+    private Color fadeColor = new Color(0,0,0,0f);
+    private int x0=-1,y0=-1;
+    private int shadowRange = 7;
 
     public ShadowActor(OrthographicCamera camera) {
         this.camera = camera;
@@ -38,7 +39,7 @@ public class ShadowActor extends Actor{
         ColorAction colorAction = new ColorAction();
         colorAction.setColor(sightColor);
         colorAction.setEndColor(new Color(0,0,0,0));
-        colorAction.setDuration(2);
+        colorAction.setDuration(1);
         addAction(colorAction);
     }
 
@@ -56,8 +57,13 @@ public class ShadowActor extends Actor{
         Pixmap.setBlending(Pixmap.Blending.None);
         pixmap.setColor(new Color(0,0,0,0.95f));
         pixmap.fill();
+        if(x0 !=-1||y0!=-1){
+            pixmap.setColor(fadeColor);
+            pixmap.fillCircle(x0,height-y0,shadowRange);
+        }
         pixmap.setColor(sightColor);
         pixmap.fillCircle(x,height-y,shadowRange);
         texture.draw(pixmap,0,0);
+        x0=x;y0=y;
     }
 }

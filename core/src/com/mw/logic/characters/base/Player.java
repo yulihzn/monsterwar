@@ -117,11 +117,11 @@ public class Player extends Character {
         super.stopMoving();
         if(path.size()-1 <= pathIndex){
         }else{
-//            Logic.getInstance().beginRound(path.get(path.size()-1).getX(),path.get(path.size()-1).getY());
+            Logic.getInstance().beginRound(path.get(path.size()-1).getX(),path.get(path.size()-1).getY());
         }
         getActor().setFocus(true);
         //继续移动
-        Logic.getInstance().continueWalk();
+//        Logic.getInstance().continueWalk();
     }
 
     @Override

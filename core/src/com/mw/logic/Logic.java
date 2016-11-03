@@ -112,20 +112,20 @@ public class Logic {
      */
     public boolean playerWalk(int x,int y) {
         //获取玩家为中心的16x16的数组
-        int length = 16;
-        int x0 = player.getActor().getTilePosIndex().x-length/2;
-        int y0 = player.getActor().getTilePosIndex().y-length/2;
-        //传入左上角坐标得到数组
-        int[][] stars = MapGenerator.getInstance().getAStarArray(x0,y0,length);
-        player.upDateAStarArray(x0,y0,stars);
+//        int length = 16;
+//        int x0 = player.getActor().getTilePosIndex().x-length/2;
+//        int y0 = player.getActor().getTilePosIndex().y-length/2;
+//        //传入左上角坐标得到数组
+//        int[][] stars = MapGenerator.getInstance().getAStarArray(x0,y0,length);
+//        player.upDateAStarArray(x0,y0,stars);
+        if(MapGenerator.getInstance().isBlock(x,y)){
+            return false;
+        }
         player.findWay(x,y);
         //判断是否有第一格，没有不执行移动
         if(player.getPath().size() == 0){
             return false;
         }
-        int firstx = player.getPath().get(0).getX()+x0;
-        int firsty = player.getPath().get(0).getY()+y0;
-        GridPoint2 firstPos = new GridPoint2(firstx,firsty);
         player.walk();
 
         return true;

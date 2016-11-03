@@ -35,9 +35,6 @@ public abstract class Character implements Telegraph {
     protected SequenceAction walkSequenceAction;
     protected boolean isFocus = false;//是否镜头跟随
     protected int pathIndex = 0;
-    protected int x0 = 0;//astar原点
-    protected int y0 = 0;//astar原点
-    protected boolean keepMoving = false;//是否继续移动
 
     public Character() {
         this.stateMachine = new DefaultStateMachine<Character, CharacterState>(this, CharacterState.IDLE, CharacterState.GLOBAL_STATE);
@@ -78,11 +75,11 @@ public abstract class Character implements Telegraph {
 //        if(!moveLogic(pathIndex)){return;}
         isMoving = true;
         Logic.getInstance().cameraTranslate();
-        final int x = path.get(pathIndex).getX()+x0;
-        final int y = path.get(pathIndex).getY()+y0;
+        final int x = path.get(pathIndex).getX();
+        final int y = path.get(pathIndex).getY();
         final boolean isStayAround = getActor().getTilePosIndex().x == x&&getActor().getTilePosIndex().y==y;
         characterActor.setTilePosIndexOnly(new GridPoint2(x,y));
-        MoveToAction action = Actions.moveTo(x,y,0.1f);
+        MoveToAction action = Actions.moveTo(x,y,0.3f);
         //添加移动动画
         walkSequenceAction.addAction(action);
         //添加动画完成事件
@@ -103,48 +100,13 @@ public abstract class Character implements Telegraph {
 
     }
     protected void findWay(int x,int y){
-        int endx = x-x0;
-        int endy = y-y0;
-        if(endx <0){
-            endx = 0;
-        }
-        if(endy <0){
-            endy = 0;
-        }
-        if(endx >15){
-            endx = 15;
-        }
-        if(endy >15){
-            endy = 15;
-        }
-        if(aStarMap.getAStarData()[endx][endy] == aStarMap.STATE_BARRIER){
-            int tempx =endx,tempy = endy;
-             boolean isBarrier = true;
-               for (int i = -1; i < 1; i++) {
-                if(!isBarrier){
-                    break;
-                }
-                for (int j = -1; j < 1; j++) {
-                    tempx=endx+i;
-                    tempy=endy+j;
-                    if(aStarMap.getAStarData()[tempx][tempy] == aStarMap.STATE_BARRIER){
-                        isBarrier = false;
-                        break;
-                    }
-                }
-            }
-            endx =tempx;
-            endy = tempy;
-        }
-
         pathIndex = 0;
-//        aStarMap.setSource(new AStarNode(characterActor.getTilePosIndex().x,characterActor.getTilePosIndex().y));
-        //16x16 player为中心
-        aStarMap.setSource(new AStarNode(8,8));
-        aStarMap.setTarget(new AStarNode(endx,endy));
+        aStarMap.setSource(new AStarNode(getActor().getTilePosIndex().x,getActor().getTilePosIndex().y));
+        aStarMap.setTarget(new AStarNode(x,y));
         synchronized (path){
             path = aStarMap.find();
         }
+        //当路径不为0去掉source
         if(path.size()!=0){
             if(x!=getActor().getTilePosIndex().x||y!=getActor().getTilePosIndex().y){
                 path.remove(0);
@@ -156,9 +118,7 @@ public abstract class Character implements Telegraph {
      * 初始化AStar数组，元素只有0,1,0代表可以通过1代表障碍
      * @param array
      */
-    public void upDateAStarArray(int x0,int y0,int[][] array){
-        this.x0 = x0;
-        this.y0 = y0;
+    public void upDateAStarArray(int[][] array){
         int x = 0,y = 0;
         if(array != null && array.length>0){
             x = array.length;

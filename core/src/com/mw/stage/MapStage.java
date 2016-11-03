@@ -59,7 +59,6 @@ public class  MapStage extends Stage{
 	private MapShadow mapShadow;
 	private ShadowActor shadowActor;
 	private int amount = 0;
-	private boolean isTranslating = false;
 
 	public MapStage(MainScreen mainScreen){
 		float w = MainGame.worldWidth;
@@ -133,21 +132,17 @@ public class  MapStage extends Stage{
 	}
 
 	public void translateCamera(float delta,float Xtaget, float Ytarget) {
-		if(!isTranslating){
-			return;
-		}
-		//Creating a vector 3 which represents the target location myplayer)
-		Vector3 target = new Vector3(Xtaget,Ytarget,0);
-		//Change speed to your need
-		final float speed=delta,ispeed=1.0f-speed;
-		//The result is roughly: old_position*0.9 + target * 0.1
-		Vector3 cameraPosition = camera.position;
-		cameraPosition.scl(ispeed);
-		target.scl(speed);
-		cameraPosition.add(target);
-		camera.position.set(cameraPosition);
-		if(Xtaget == camera.position.x && Ytarget == camera.position.y){
-			isTranslating = false;
+		if(Xtaget != camera.position.x || Ytarget != camera.position.y){
+			//Creating a vector 3 which represents the target location myplayer)
+			Vector3 target = new Vector3(Xtaget,Ytarget,0);
+			//Change speed to your need
+			final float speed=delta,ispeed=1.0f-speed;
+			//The result is roughly: old_position*0.9 + target * 0.1
+			Vector3 cameraPosition = camera.position;
+			cameraPosition.scl(ispeed);
+			target.scl(speed);
+			cameraPosition.add(target);
+			camera.position.set(cameraPosition);
 		}
 	}
 
@@ -185,7 +180,6 @@ public class  MapStage extends Stage{
 
 		@Override
 		public void cameraTranslate() {
-			isTranslating = true;
 		}
 	};
 	private void updateMap(int dir){
@@ -340,12 +334,14 @@ public class  MapStage extends Stage{
 					}
 				}
 			}
-			shadowActor.drawShadow(man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y);
 			mapShadow.setSightPosition(man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y);
+			shadowActor.drawShadow(man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y);
 		}
-		translateCamera(0.3f,man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y);
+		if(man.isMoving()){
+			translateCamera(0.5f,man.getActor().getX(),man.getActor().getY());
+		}
 		if(amount == -1){
-			zoomCamera(0.1f,16);
+			zoomCamera(0.1f,4);
 		}else if(amount == 1){
 			zoomCamera(0.1f,1);
 		}
@@ -353,7 +349,7 @@ public class  MapStage extends Stage{
 		float h = MainGame.worldHeight;
 		camera.viewportWidth = 16;
 		camera.viewportHeight = 16*(h/w);
-		camera.zoom = MathUtils.clamp(camera.zoom, 0.1f, 16f);
+		camera.zoom = MathUtils.clamp(camera.zoom, 0.1f, 2f);
 		camera.position.x = MathUtils.clamp(camera.position.x, camera.viewportWidth/2, 256-camera.viewportWidth/2);
 		camera.position.y = MathUtils.clamp(camera.position.y, camera.viewportHeight/2, 256-camera.viewportHeight/2);
 //		camera.position.x = MathUtils.clamp(camera.position.x, 0, 256);

@@ -47,20 +47,18 @@ public class MapGenerator {
 
     /**
      * 传入左上角坐标和数组长度获取对应astar
-     * @param x0
-     * @param y0
-     * @param length
      * @return
      */
-    public int[][] getAStarArray(int x0,int y0,int length){
+    public int[][] getAStarArray(){
+        int length = tmxAreaMap.getMapModel().getArr().length;
         int[][] arr = new int[length][length];
 //        String str = "\n";
 //        String origin = "\n";
         for (int i = 0; i < length; i++) {
             for (int j = 0; j < length; j++) {
                 int block;
-                if(x0+i>=0&&x0+i<256&&y0+j>=0&&y0+j<256){
-                    block = tmxAreaMap.getMapModel().getArr()[x0+i][y0+j].getBlock();
+                if(i>=0&&i<length&&j>=0&&j<length){
+                    block = tmxAreaMap.getMapModel().getArr()[i][j].getBlock();
                     if(block == AreaTile.B_WALL_01
                             ||block==AreaTile.B_WALL_02
                             ||block==AreaTile.B_STONE_01){
@@ -80,5 +78,15 @@ public class MapGenerator {
 //        Gdx.app.log("origin",origin);
 //        Gdx.app.log("map",str);
         return arr;
+    }
+    public boolean isBlock(int x,int y){
+        int block = tmxAreaMap.getMapModel().getArr()[x][y].getBlock();
+        if(block == AreaTile.B_WALL_01
+                ||block==AreaTile.B_WALL_02
+                ||block==AreaTile.B_STONE_01){
+            return true;
+        }else{
+            return false;
+        }
     }
 }
