@@ -19,6 +19,7 @@ import com.mw.actor.TiledMapActor;
 import com.mw.factory.ItemFactory;
 import com.mw.game.MainGame;
 import com.mw.logic.Logic;
+import com.mw.logic.characters.base.Monster;
 import com.mw.logic.characters.base.Player;
 import com.mw.map.AreaTile;
 import com.mw.map.MapGenerator;
@@ -98,6 +99,7 @@ public class  MapStage extends Stage{
 		shadowActor = new ShadowActor(camera);
 		addActor(shadowActor);
 		shadowActor.drawShadow(man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y);
+		camera.position.set(man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y,0);
 
 	}
 
@@ -160,6 +162,23 @@ public class  MapStage extends Stage{
 		target.scl(speed);
 		cameraZoom.add(target);
 		camera.zoom = cameraZoom.z;
+	}
+	//平滑float
+	public float smoothFloat(float delta,float sourceF,float targetF) {
+		if(targetF == sourceF){
+			return sourceF;
+		}
+		//Creating a vector 3 which represents the target location myplayer)
+		Vector3 target = new Vector3(0,0,targetF);
+		//Change speed to your need
+		final float speed=delta,ispeed=1.0f-speed;
+		//The result is roughly: old_position*0.9 + target * 0.1
+		Vector3 source = new Vector3(0,0,sourceF);
+		source.scl(ispeed);
+		target.scl(speed);
+		source.add(target);
+		sourceF = source.z;
+		return sourceF;
 	}
 
 	private LogicEventListener logicEventListener = new LogicEventListener() {
@@ -282,9 +301,13 @@ public class  MapStage extends Stage{
 	public void draw() {
 		//地图绘制
 //		renderer.render();
-		renderer.render(new int[]{0,1,2});
+		renderer.render(new int[]{0,1});
 		//余下actor绘制
 		super.draw();
+		renderer.render(new int[]{2});
+		getBatch().begin();
+		shadowActor.draw(getBatch(),1);
+		getBatch().end();
 //		renderer.render(new int[]{3});
 	}
 
@@ -301,10 +324,10 @@ public class  MapStage extends Stage{
 			roundTime = TimeUtils.nanoTime();
 //			if(man.isMoving()){
 //			}
-//			man.update(delta);
-//			for (Monster monster : Logic.getInstance().getMonsterArray()){
-//				monster.update(delta);
-//			}
+			man.update(delta);
+			for (Monster monster : Logic.getInstance().getMonsterArray()){
+				monster.update(delta);
+			}
 			roundTime = TimeUtils.nanoTime();
 			if(Gdx.input.isKeyPressed(Input.Keys.UP)){
 				if(!man.isMoving()){
@@ -336,6 +359,7 @@ public class  MapStage extends Stage{
 			}
 			mapShadow.setSightPosition(man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y);
 			shadowActor.drawShadow(man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y);
+			tmxAreaMap.changeTileAlpha(TmxMap.LAYER_DECORATE,x,y);
 		}
 		if(man.isMoving()){
 			translateCamera(0.5f,man.getActor().getX(),man.getActor().getY());

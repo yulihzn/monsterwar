@@ -1,6 +1,7 @@
 package com.mw.map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.mw.model.Area;
 import com.mw.model.AreaMapModel;
@@ -87,5 +88,17 @@ public class TmxAreaMap extends TmxMap {
 
     public AreaMapModel getMapModel() {
         return mapModel;
+    }
+
+    public void changeTileAlpha(String layer,int x,int y){
+        if(x<0||x>=256||y<0||y>=256){
+            return;
+        }
+        int decorate = mapModel.getArr()[x][y].getDecorate();
+        if(decorate == AreaTile.D_WALL_01){
+            tileMap.getLayers().get(layer).setOpacity(0.5f);
+        }else{
+            tileMap.getLayers().get(layer).setOpacity(1f);
+        }
     }
 }

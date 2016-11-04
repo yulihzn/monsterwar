@@ -24,19 +24,19 @@ public class AreaEditor {
         random = new Random(MapEditor.SEED);
     }
     public AreaMapModel create(){
-        for (int i = 0; i < block; i++) {
-            for (int j = 0; j < block; j++) {
-                MapInfoModel model = getNewMapInfoModel(AreaTile.F_DIRT_01,AreaTile.B_TRANS,AreaTile.D_TRANS,AreaTile.S_SHADOW);
-                model.setPos(new GridPoint2(i,j));
-                model.setBlock(random.nextDouble()<0.3?AreaTile.B_WALL_01:AreaTile.B_TRANS);
-                if(i==1&&j==1){
-                    model.setBlock(AreaTile.B_DOWNSTAIRS_01);
-                }
-                arr[i][j] = model;
-            }
-        }
+//        for (int i = 0; i < block; i++) {
+//            for (int j = 0; j < block; j++) {
+//                MapInfoModel model = getNewMapInfoModel(AreaTile.F_DIRT_01,AreaTile.B_TRANS,AreaTile.D_TRANS,AreaTile.S_SHADOW);
+//                model.setPos(new GridPoint2(i,j));
+//                model.setBlock(random.nextDouble()<0.3?AreaTile.B_WALL_01:AreaTile.B_TRANS);
+//                if(i==1&&j==1){
+//                    model.setBlock(AreaTile.B_DOWNSTAIRS_01);
+//                }
+//                arr[i][j] = model;
+//            }
+//        }
         areaMapModel.setArea(area);
-        areaMapModel.setArr(arr);
+        areaMapModel.setArr(new CastleEditor().getMap());
         return areaMapModel;
     }
 

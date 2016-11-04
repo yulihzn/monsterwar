@@ -15,6 +15,7 @@ public class AreaTile {
     public static final int F_GRASS_02 = 5;
     public static final int F_WATER_01 = 6;
     public static final int F_DIRT_02 = 7;
+    public static final int F_ROAD_02 = 8;
 
     public static final int B_TRANS = 0;
     public static final int B_SHADOW = 1;
@@ -25,10 +26,13 @@ public class AreaTile {
     public static final int B_WALL_01 = 6;
     public static final int B_WALL_02 = 7;
     public static final int B_STONE_01 = 8;
+    public static final int B_WALL_03 = 9;
+    public static final int B_WALL_04 = 10;
 
     public static final int D_TRANS = 0;
     public static final int D_SHADOW = 1;
     public static final int D_GRASS_01 = 2;
+    public static final int D_WALL_01 = 3;
 
     public static final int S_TRANS = 0;
     public static final int S_SHADOW = 1;

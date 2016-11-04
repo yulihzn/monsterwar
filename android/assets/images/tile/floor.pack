@@ -59,3 +59,10 @@ f0007
   orig: 32, 32
   offset: 0, 0
   index: -1
+f0008
+  rotate: false
+  xy: 256, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1

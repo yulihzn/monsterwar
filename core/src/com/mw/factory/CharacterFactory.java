@@ -37,6 +37,7 @@ public class CharacterFactory {
         PlayerActor manActor = new PlayerActor(player,PlayerInfo.REGION_NAME,camera);
         manActor.setPosition(0,0);
         manActor.setScale(1f/32f);
+        manActor.setTilePosIndex(new GridPoint2(17,17));
         player.setActor(manActor);
         stage.addActor(manActor);
         manActor.setZIndex(300);

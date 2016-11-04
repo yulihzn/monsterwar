@@ -24,3 +24,10 @@ d0002
   orig: 32, 32
   offset: 0, 0
   index: -1
+d0003
+  rotate: false
+  xy: 96, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1

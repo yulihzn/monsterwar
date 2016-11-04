@@ -118,7 +118,7 @@ public class Logic {
 //        //传入左上角坐标得到数组
 //        int[][] stars = MapGenerator.getInstance().getAStarArray(x0,y0,length);
 //        player.upDateAStarArray(x0,y0,stars);
-        if(MapGenerator.getInstance().isBlock(x,y)){
+        if(MapGenerator.getInstance().isBlock(x,y)||MapGenerator.getInstance().isForbidden(x,y)){
             return false;
         }
         player.findWay(x,y);

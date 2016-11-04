@@ -58,12 +58,9 @@ public class MapGenerator {
             for (int j = 0; j < length; j++) {
                 int block;
                 if(i>=0&&i<length&&j>=0&&j<length){
-                    block = tmxAreaMap.getMapModel().getArr()[i][j].getBlock();
-                    if(block == AreaTile.B_WALL_01
-                            ||block==AreaTile.B_WALL_02
-                            ||block==AreaTile.B_STONE_01){
+                    if(isBlock(i,j)){
                         arr[i][j]=1;
-                    }else{
+                    }else {
                         arr[i][j]=0;
                     }
 //                    origin+=""+block;
@@ -81,12 +78,24 @@ public class MapGenerator {
     }
     public boolean isBlock(int x,int y){
         int block = tmxAreaMap.getMapModel().getArr()[x][y].getBlock();
-        if(block == AreaTile.B_WALL_01
-                ||block==AreaTile.B_WALL_02
-                ||block==AreaTile.B_STONE_01){
+        if(block != AreaTile.B_TRANS){
             return true;
         }else{
             return false;
+        }
+    }
+    //是否是不可去的位置
+    public boolean isForbidden(int x,int y){
+        int length = tmxAreaMap.getMapModel().getArr().length;
+        int floor = tmxAreaMap.getMapModel().getArr()[x][y].getFloor();
+        if(x>=0&&x<length&&y>=0&&y<length){
+            if(floor == AreaTile.F_WATER_01){
+                return true;
+            }else {
+                return false;
+            }
+        }else {
+            return true;
         }
     }
 }

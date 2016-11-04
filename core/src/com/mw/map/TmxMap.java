@@ -131,6 +131,7 @@ public class TmxMap extends Map {
         tile.setTextureRegion(tileMap.getTileSets().getTile(type+1).getTextureRegion());
         cell.setTile(tile);
     }
+
     public int getTileId(String layer,int x,int y){
         if(x<0||x>=256||y<0||y>=256){
             return -1;

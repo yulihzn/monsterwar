@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.ColorAction;
 
 /**
@@ -20,8 +21,8 @@ public class ShadowActor extends Actor{
     private Texture texture;
     private int width = 256;
     private int height = 256;
-    private Color sightColor = new Color(0,0,0,0.5f);
-    private Color fadeColor = new Color(0,0,0,0f);
+    private Color sightColor = new Color(0,0,0,1f);
+    private Color fadeColor = new Color(0,0,0,1f);
     private int x0=-1,y0=-1;
     private int shadowRange = 7;
 
@@ -37,10 +38,15 @@ public class ShadowActor extends Actor{
 //        pixmap.fillRectangle(0,0,1,1);
         texture.draw(pixmap, 0, 0);
         ColorAction colorAction = new ColorAction();
-        colorAction.setColor(sightColor);
-        colorAction.setEndColor(new Color(0,0,0,0));
+        colorAction.setColor(fadeColor);
+        colorAction.setEndColor(new Color(0,0,0,0.5f));
         colorAction.setDuration(1);
         addAction(colorAction);
+        ColorAction colorAction1 = new ColorAction();
+        colorAction1.setColor(sightColor);
+        colorAction1.setEndColor(new Color(0,0,0,0f));
+        colorAction1.setDuration(1);
+        addAction(colorAction1);
     }
 
     @Override
@@ -62,7 +68,7 @@ public class ShadowActor extends Actor{
             pixmap.fillCircle(x0,height-y0,shadowRange);
         }
         pixmap.setColor(sightColor);
-        pixmap.fillCircle(x,height-y,shadowRange);
+        pixmap.fillCircle(x,height-y,(int)(shadowRange*(1-sightColor.a)));
         texture.draw(pixmap,0,0);
         x0=x;y0=y;
     }

@@ -73,3 +73,10 @@ b0009
   orig: 32, 32
   offset: 0, 0
   index: -1
+b0010
+  rotate: false
+  xy: 320, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
