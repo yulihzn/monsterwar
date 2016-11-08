@@ -137,7 +137,18 @@ public class TmxMap extends Map {
             return -1;
         }
         TiledMapTileLayer.Cell cell = ((TiledMapTileLayer)(tileMap.getLayers().get(layer))).getCell(x,y);
-        return Integer.valueOf(String.valueOf(cell.getTile().getProperties().get("value")));
+        if(cell == null){
+            return 0;
+        }
+        Object o = cell.getTile().getProperties().get("value");
+        if(o==null){
+            return 0;
+        }
+        String s = String.valueOf(o);
+        if(s == null||s.equals("")||s.equals("null")){
+            return 0;
+        }
+        return Integer.valueOf(s);
     }
 
 

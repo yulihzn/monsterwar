@@ -365,7 +365,7 @@ public class  MapStage extends Stage{
 			translateCamera(0.5f,man.getActor().getX(),man.getActor().getY());
 		}
 		if(amount == -1){
-			zoomCamera(0.1f,4);
+			zoomCamera(0.1f,16);
 		}else if(amount == 1){
 			zoomCamera(0.1f,1);
 		}
@@ -373,7 +373,7 @@ public class  MapStage extends Stage{
 		float h = MainGame.worldHeight;
 		camera.viewportWidth = 16;
 		camera.viewportHeight = 16*(h/w);
-		camera.zoom = MathUtils.clamp(camera.zoom, 0.1f, 2f);
+		camera.zoom = MathUtils.clamp(camera.zoom, 0.1f, 16f);
 		camera.position.x = MathUtils.clamp(camera.position.x, camera.viewportWidth/2, 256-camera.viewportWidth/2);
 		camera.position.y = MathUtils.clamp(camera.position.y, camera.viewportHeight/2, 256-camera.viewportHeight/2);
 //		camera.position.x = MathUtils.clamp(camera.position.x, 0, 256);

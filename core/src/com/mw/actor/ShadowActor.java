@@ -61,7 +61,7 @@ public class ShadowActor extends Actor{
     }
     public void drawShadow(int x,int y){
         Pixmap.setBlending(Pixmap.Blending.None);
-        pixmap.setColor(new Color(0,0,0,0.95f));
+        pixmap.setColor(new Color(0,0,0,0.5f));
         pixmap.fill();
         if(x0 !=-1||y0!=-1){
             pixmap.setColor(fadeColor);
