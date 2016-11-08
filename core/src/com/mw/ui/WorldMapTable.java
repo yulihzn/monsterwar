@@ -147,7 +147,7 @@ public class WorldMapTable extends Table {
                 camera.position.set(128,128,0);
             }
         }
-        camera.zoom = MathUtils.clamp(camera.zoom,0.1f, 16f);
+        camera.zoom = MathUtils.clamp(camera.zoom,0.1f, 18f);
         camera.position.x = MathUtils.clamp(camera.position.x,0,256);
         camera.position.y = MathUtils.clamp(camera.position.y,0,256);
         float w = MainGame.worldWidth;

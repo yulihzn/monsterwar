@@ -1,6 +1,9 @@
 package com.mw.map;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.mw.model.MapInfoModel;
+
+import java.util.Random;
 
 /**
  * Created by BanditCat on 2016/11/4.
@@ -10,34 +13,61 @@ public class AreaSegmentCastleWall extends AreaSegment{
     public static final int DIR_LR = 0;//左右
     public static final int DIR_TB = 1;//上下
     private int dir = DIR_LR;
-    public AreaSegmentCastleWall(int x0, int y0,int dir) {
-        super(x0, y0);
+    private int floor = AreaTile.F_ROAD_01;
+    private int floor1 = AreaTile.F_ROAD_01;
+    private int floor2 = AreaTile.F_ROAD_01;
+    private int block = AreaTile.B_WALL_04;
+    private int decorate = AreaTile.D_WALL_01;
+    public AreaSegmentCastleWall(int x0, int y0,int dir,int style) {
+        super(x0, y0,style);
         this.dir = dir;
+        setStyle();
         build();
+    }
+    //设置城墙的类型
+    @Override
+    protected void setStyle() {
+        switch (style){
+            case 0:
+                this.floor = AreaTile.F_ROAD_01;
+                this.floor1 = AreaTile.F_ROAD_01;
+                this.floor2 = AreaTile.F_ROAD_01;
+                this.block = AreaTile.B_WALL_04;
+                this.decorate = AreaTile.D_WALL_01;
+                break;
+        }
+
     }
 
     @Override
     protected void build() {
-        width=16;
-        height=16;
-        map = new MapInfoModel[width][height];
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
+        for (int i = 0; i < WIDTH; i++) {
+            for (int j = 0; j < HEIGHT; j++) {
                 MapInfoModel model = new MapInfoModel();
-                model.setFloor(AreaTile.F_ROAD_01);
+                model.setFloor(floor);
+                Random r = new Random(MapEditor.SEED);
+                if(r.nextDouble()<0.2){
+                    model.setFloor(floor1);
+                }
+                if(r.nextDouble()<0.1){
+                    model.setFloor(floor2);
+                }
                 model.setBlock(AreaTile.B_TRANS);
                 model.setDecorate(AreaTile.D_TRANS);
                 model.setShadow(AreaTile.S_SHADOW);
                 if(dir == DIR_LR){
-                    if(j==0||j==height-1){
-                        model.setBlock(AreaTile.B_WALL_04);
+                    //左右方向，上下围墙
+                    if(j==0||j==HEIGHT-1){
+                        model.setBlock(block);
                     }
-                    if(j==height-2){
-                        model.setDecorate(AreaTile.D_WALL_01);
+                    //底部第二排装饰为墙
+                    if(j==HEIGHT-2){
+                        model.setDecorate(decorate);
                     }
                 }else {
-                    if(i==0||i==width-1){
-                        model.setBlock(AreaTile.B_WALL_04);
+                    //上下方向，左右围墙
+                    if(i==0||i==WIDTH-1){
+                        model.setBlock(block);
                     }
                 }
                 map[i][j] = model;

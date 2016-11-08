@@ -95,7 +95,7 @@ public class CharacterStage extends Stage {
         addAvatar();
         addInventory();
         camera = new OrthographicCamera(camSize,camSize*(h/w));
-        camera.zoom = 1.0f;
+        camera.zoom = 20.0f;
         camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
         camera.update();
         worldMapTable = new WorldMapTable(camera);
@@ -192,8 +192,8 @@ public class CharacterStage extends Stage {
         if(camera.zoom < 0.1f){
             camera.zoom = 0.1f;
         }
-        if(camera.zoom > 16.0f){
-            camera.zoom = 16.0f;
+        if(camera.zoom > 20.0f){
+            camera.zoom = 20.0f;
         }
         Gdx.app.log("zoom",""+camera.zoom);
         return super.scrolled(amount);

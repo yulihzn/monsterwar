@@ -7,18 +7,24 @@ import com.mw.model.MapInfoModel;
  */
 
 public class AreaSegmentCastleWater extends AreaSegment{
-    public AreaSegmentCastleWater(int x0, int y0) {
-        super(x0, y0);
+    public AreaSegmentCastleWater(int x0, int y0,int style) {
+        super(x0, y0,style);
+        setStyle();
         build();
     }
 
     @Override
+    protected void setStyle() {
+        switch (style){
+            case 0:break;
+        }
+    }
+
+    @Override
     protected void build() {
-        width=16;
-        height=16;
-        map = new MapInfoModel[width][height];
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
+        map = new MapInfoModel[WIDTH][HEIGHT];
+        for (int i = 0; i < WIDTH; i++) {
+            for (int j = 0; j < HEIGHT; j++) {
                 MapInfoModel model = new MapInfoModel();
                 model.setFloor(AreaTile.F_WATER_01);
                 model.setBlock(AreaTile.B_TRANS);
