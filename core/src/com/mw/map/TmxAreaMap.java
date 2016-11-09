@@ -23,6 +23,10 @@ public class TmxAreaMap extends TmxMap {
     public TmxAreaMap(Area area) {
         super(block, block);
         this.area = area;
+        String s = Gdx.files.getExternalStoragePath();
+        String s1 = Gdx.files.getLocalStoragePath();
+        Gdx.app.log("s",s);
+        Gdx.app.log("s1",s1);
         name = "save/area/"+area.getName()+".tmx";
         initWorld();
     }

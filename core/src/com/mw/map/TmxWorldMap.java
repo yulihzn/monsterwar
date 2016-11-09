@@ -1,6 +1,7 @@
 package com.mw.map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.mw.model.Area;
 import com.mw.model.WorldMapModel;
@@ -24,6 +25,11 @@ public class TmxWorldMap extends TmxMap {
     private WorldMapModel mapModel = new WorldMapModel();
     public TmxWorldMap(int width, int height) {
         super(width, height);
+        String s = Gdx.files.getExternalStoragePath();
+        String s1 = Gdx.files.getLocalStoragePath();
+        FileHandle file = Gdx.files.local("/save");
+        Gdx.app.log("s",s);
+        Gdx.app.log("s1",s1);
         name = "save/world.tmx";
         initWorld();
     }

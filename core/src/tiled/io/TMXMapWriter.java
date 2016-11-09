@@ -29,6 +29,8 @@
  */
 package tiled.io;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 
 import java.io.ByteArrayOutputStream;
@@ -98,7 +100,13 @@ public class TMXMapWriter {
      * @throws IOException if any.
      */
     public void writeMap(Map map, String filename) throws IOException {
-        OutputStream os = new FileOutputStream(filename);
+        String s = filename.substring(0,filename.lastIndexOf("/")+1);
+        File dir = new File(Gdx.files.getLocalStoragePath()+s);
+        dir.mkdirs();
+        String n = filename.substring(filename.lastIndexOf("/")+1,filename.length());
+        File file = new File(dir,n);
+        file.createNewFile();
+        OutputStream os = new FileOutputStream(file);
 
         if (filename.endsWith(".tmx.gz")) {
             os = new GZIPOutputStream(os);
