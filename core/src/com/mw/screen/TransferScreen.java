@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Timer;
 import com.mw.actor.LoadingImage;
 import com.mw.base.BaseScreen;
@@ -19,20 +20,15 @@ public class TransferScreen extends BaseScreen implements Screen {
 	private Stage stage;
 	private static final float DURATION = 0.1f;
 	private Timer timer = new Timer();
-	private BaseScreen baseScreen;
+	private int type = 0;
 
 	public TransferScreen(MainGame mainGame) {
 		super(mainGame);
 	}
 
-	public TransferScreen(MainGame mainGame, BaseScreen baseScreen) {
+	public TransferScreen(MainGame mainGame, int type) {
 		super(mainGame);
-		this.baseScreen = baseScreen;
-	}
-
-
-	@Override
-	public void show() {
+		this.type = type;
 		atlas = new TextureAtlas(
 				Gdx.files.internal("images/settingimages.pack"));
 		TextureRegion textureRegion = atlas.findRegion("loading");
@@ -40,9 +36,15 @@ public class TransferScreen extends BaseScreen implements Screen {
 		image_loading = new LoadingImage(textureRegion);
 		image_loading.initLoadingAction();
 		image_loading.setPosition(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
-		
+
 		stage = new Stage();
 		stage.addActor(image_loading);
+	}
+
+
+	@Override
+	public void show() {
+
 //		timer.scheduleTask(new Timer.Task() {
 //
 //			@Override
@@ -62,8 +64,16 @@ public class TransferScreen extends BaseScreen implements Screen {
 		stage.draw();
 		AssetManager assetManager = AssetManagerHelper.getInstance().getAssetManager();
 		if(assetManager.update()){
-			if(baseScreen != null){
-				mainGame.setScreen(baseScreen);
+			if(type == 1){
+				//这里停顿0.01s防止读取太快
+				stage.addAction(Actions.delay(0.01f,Actions.run(new Runnable() {
+					@Override
+					public void run() {
+						MainScreen mainScreen = new MainScreen(mainGame);
+						mainGame.setScreen(mainScreen);
+					}
+				})));
+
 			}
 		}
 	}

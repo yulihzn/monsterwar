@@ -66,7 +66,7 @@ public class UiStage extends Stage {
 
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                mainScreen.getMainGame().setScreen(new TransferScreen(mainScreen.getMainGame(), new StartScreen(mainScreen.getMainGame())));
+                mainScreen.getMainGame().setScreen(new TransferScreen(mainScreen.getMainGame(), 1));
                 super.clicked(event, x, y);
             }
 

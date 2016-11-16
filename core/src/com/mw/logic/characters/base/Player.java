@@ -17,6 +17,7 @@ import com.mw.profiles.GameFileHelper;
 public class Player extends Character {
     public static final int ACTION_DOWN = 1;
     public static final int ACTION_UP = 0;
+    public static final int ACTION_SELF = 2;
     public Player() {
         super();
     }
@@ -57,6 +58,8 @@ public class Player extends Character {
     protected void stayAround(int x, int y) {
         super.stayAround(x, y);
         if(playerActionListener != null){
+            playerActionListener.move(ACTION_SELF,x,y);
+            Logic.getInstance().sendLogMessage("进入下一个区域", LogMessageTable.TYPE_NORMAL);
 //            if(dungeonMap.getMapInfo().getMapArray()[x][y].getBlock() == Dungeon.tileUpStairs){
 //                playerActionListener.move(ACTION_UP,x,y);
 //                Logic.getInstance().sendLogMessage("你费力地爬了上来", LogMessageTable.TYPE_NORMAL);

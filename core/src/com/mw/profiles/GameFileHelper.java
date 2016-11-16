@@ -106,6 +106,16 @@ public class GameFileHelper {
         }
         return level;
     }
+    public void setCurrentAreaName(String name){
+        putSaveObject(GameFileStr.AREA,name);
+    }
+    public String getCurrentAreaName(){
+        String name = getSaveObject(GameFileStr.AREA,String.class);
+        if(null == name){
+            name = "area0_0";
+        }
+        return name;
+    }
 
     public void setCurrentStep(String name,int step){
         putSaveObject(GameFileStr.STEP+name,step);

@@ -1,14 +1,13 @@
-package com.mw.map;
+package com.mw.map.areasegment;
 
+import com.mw.map.*;
 import com.mw.model.MapInfoModel;
-
-import java.util.Random;
 
 /**
  * Created by BanditCat on 2016/11/4.
  */
 
-public class AreaSegmentCastleTower extends AreaSegment{
+public class AreaSegmentCastleTower extends AreaSegment {
     private int dir = 0;
     private int floor = AreaTile.F_ROAD_02;
     private int door = AreaTile.B_DOOR_03;

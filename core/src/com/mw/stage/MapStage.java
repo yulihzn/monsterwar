@@ -27,6 +27,7 @@ import com.mw.map.MapShadow;
 import com.mw.map.TmxAreaMap;
 import com.mw.map.TmxMap;
 import com.mw.screen.MainScreen;
+import com.mw.screen.TransferScreen;
 import com.mw.utils.CameraController;
 import com.mw.utils.Dungeon;
 import com.mw.profiles.GameFileHelper;
@@ -60,8 +61,10 @@ public class  MapStage extends Stage{
 	private MapShadow mapShadow;
 	private ShadowActor shadowActor;
 	private int amount = 0;
+	private MainScreen mainScreen;
 
 	public MapStage(MainScreen mainScreen){
+		this.mainScreen = mainScreen;
 		float w = MainGame.worldWidth;
 		float h = MainGame.worldHeight;
 		camera = new OrthographicCamera(camSize, camSize*(h/w));
@@ -73,7 +76,7 @@ public class  MapStage extends Stage{
 		gestureDetector = new GestureDetector(controller);
 		//初始化地图
 		level = GameFileHelper.getInstance().getCurrentLevel();
-		tmxAreaMap = MapGenerator.getInstance().getTmxAreaMap("area0_0");
+		tmxAreaMap = MapGenerator.getInstance().getTmxAreaMap(GameFileHelper.getInstance().getCurrentAreaName());
 		tiledMap = tmxAreaMap.getTileMap();
 //		tiledMap.getLayers().get(TmxMap.LAYER_SHADOW).setVisible(false);
 		//获取渲染
@@ -90,7 +93,7 @@ public class  MapStage extends Stage{
 		//添加角色
 		man = characterFactory.getPlayer();
 //		Logic.getInstance().setPlayer(man);
-//		man.setPlayerActionListener(playerActionListener);
+		man.setPlayerActionListener(playerActionListener);
 		Logic.getInstance().addGameEventListener(logicEventListener);
 //		MapGenerator.getInstance();
 //		man.getActor().setPosition(16,14);
@@ -220,6 +223,10 @@ public class  MapStage extends Stage{
 					break;
 				case Player.ACTION_UP:
 					generateNextStairs(level-1);
+					break;
+				case Player.ACTION_SELF:
+					GameFileHelper.getInstance().setCurrentAreaName("area"+MathUtils.random(15)*16+"_"+MathUtils.random(15)*16);
+					mainScreen.getMainGame().setScreen(new TransferScreen(mainScreen.getMainGame(), 1));
 					break;
 			}
 		}

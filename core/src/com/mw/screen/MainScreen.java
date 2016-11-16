@@ -31,15 +31,15 @@ public class MainScreen extends BaseScreen implements Screen{
 		super(mainGame);
 		this.mainGame = mainGame;
 		inputMultiplexer = new GameInputMultiplexer();
+		uiStage = new UiStage(this);
+		mapStage = new MapStage(this);
+		mapStage.setDebugUnderMouse(true);
+		characterStage = new CharacterStage(this);
 	}
 
 	@Override
 	public void show() {
 
-		uiStage = new UiStage(this);
-		characterStage = new CharacterStage(this);
-		mapStage = new MapStage(this);
-		mapStage.setDebugUnderMouse(true);
 		hideCharacterStage();
 
 	}

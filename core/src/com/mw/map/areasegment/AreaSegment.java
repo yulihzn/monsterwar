@@ -1,4 +1,4 @@
-package com.mw.map;
+package com.mw.map.areasegment;
 
 import com.mw.model.MapInfoModel;
 

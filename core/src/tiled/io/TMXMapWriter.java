@@ -100,13 +100,13 @@ public class TMXMapWriter {
      * @throws IOException if any.
      */
     public void writeMap(Map map, String filename) throws IOException {
-        String s = filename.substring(0,filename.lastIndexOf("/")+1);
-        File dir = new File(Gdx.files.getLocalStoragePath()+s);
-        dir.mkdirs();
-        String n = filename.substring(filename.lastIndexOf("/")+1,filename.length());
-        File file = new File(dir,n);
-        file.createNewFile();
-        OutputStream os = new FileOutputStream(file);
+//        String s = filename.substring(0,filename.lastIndexOf("/")+1);
+//        File dir = new File(s);
+//        dir.mkdirs();
+//        String n = filename.substring(filename.lastIndexOf("/")+1,filename.length());
+//        File file = new File(dir,n);
+//        file.createNewFile();
+        OutputStream os = new FileOutputStream(filename);
 
         if (filename.endsWith(".tmx.gz")) {
             os = new GZIPOutputStream(os);

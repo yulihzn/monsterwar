@@ -1,6 +1,6 @@
-package com.mw.map;
+package com.mw.map.areasegment;
 
-import com.badlogic.gdx.math.MathUtils;
+import com.mw.map.*;
 import com.mw.model.MapInfoModel;
 
 import java.util.Random;
@@ -9,7 +9,7 @@ import java.util.Random;
  * Created by BanditCat on 2016/11/4.
  */
 
-public class AreaSegmentCastleWall extends AreaSegment{
+public class AreaSegmentCastleWall extends AreaSegment {
     public static final int DIR_LR = 0;//左右
     public static final int DIR_TB = 1;//上下
     private int dir = DIR_LR;

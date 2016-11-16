@@ -52,7 +52,7 @@ public class StartScreen extends BaseScreen implements Screen{
 
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				mainGame.setScreen(new TransferScreen(mainGame,new MainScreen(mainGame)));
+				mainGame.setScreen(new TransferScreen(mainGame,1));
 				super.clicked(event, x, y);
 			}
 			
@@ -71,7 +71,7 @@ public class StartScreen extends BaseScreen implements Screen{
 		GameFileHelper.getInstance().loadProfile(GameFileHelper.DEFAULT_PROFILE);
 
 		//test
-		mainGame.setScreen(new TransferScreen(mainGame,new MainScreen(mainGame)));
+		mainGame.setScreen(new TransferScreen(mainGame,1));
 
 
 	}

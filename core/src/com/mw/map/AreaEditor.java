@@ -36,7 +36,12 @@ public class AreaEditor {
 //            }
 //        }
         areaMapModel.setArea(area);
-        areaMapModel.setArr(new CastleEditor().getMap());
+        switch (area.getType()){
+            case MapEditor.CASTLE:areaMapModel.setArr(new CastleEditor(area).getMap());break;
+            case MapEditor.WILD:areaMapModel.setArr(new WildEditor(area).getMap());break;
+            case MapEditor.VILLAGE:areaMapModel.setArr(new WildEditor(area).getMap());break;
+            default:areaMapModel.setArr(new EmptyEditor(area).getMap());break;
+        }
         return areaMapModel;
     }
 
