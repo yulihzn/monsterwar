@@ -6,17 +6,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.mw.screen.StartScreen;
 
 public class MainGame extends Game {
-	public static final int worldWidth = 800;
-	public static final int worldHeight = 600;
+	public static final int worldWidth = 1280;
+	public static final int worldHeight = 720;
 	public static String androidDir;
-
-	public String getAndroidDir() {
-		return androidDir;
-	}
-
-	public void setAndroidDir(String androidDir) {
-		this.androidDir = androidDir;
-	}
 
 	@Override
 	public void create() {
