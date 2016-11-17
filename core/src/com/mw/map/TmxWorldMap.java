@@ -1,11 +1,16 @@
 package com.mw.map;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.loaders.resolvers.AbsoluteFileHandleResolver;
+import com.badlogic.gdx.assets.loaders.resolvers.ExternalFileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.mw.game.MainGame;
 import com.mw.model.Area;
 import com.mw.model.WorldMapModel;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -25,12 +30,15 @@ public class TmxWorldMap extends TmxMap {
     private WorldMapModel mapModel = new WorldMapModel();
     public TmxWorldMap(int width, int height) {
         super(width, height);
-        String s = Gdx.files.getExternalStoragePath();
-        String s1 = Gdx.files.getLocalStoragePath();
-        FileHandle file = Gdx.files.local("/save");
-        Gdx.app.log("s",s);
-        Gdx.app.log("s1",s1);
-        name = "save/world.tmx";
+        String s = Gdx.files.getLocalStoragePath()+"save/";
+        if(Gdx.app.getType().equals(Application.ApplicationType.Android)){
+            s = MainGame.androidDir+"save/";
+//            s=s.substring(s.indexOf("Android"));
+            File dir = new File(s);
+            dir.mkdirs();
+        }
+        name = s+"world.tmx";
+        Gdx.app.log("namePath",name);
         initWorld();
     }
 
@@ -38,9 +46,9 @@ public class TmxWorldMap extends TmxMap {
     @Override
     protected void initWorld() {
         try {
-            tileMap = new TmxMapLoader().load(name);
+            tileMap = MapGenerator.getTmxLoader().load(name);
         }catch (Exception e){
-            Gdx.app.log("error","no find the file.");
+            Gdx.app.log("searching...","not find the file.");
         }
         if(null != tileMap){
             initMapModel();
@@ -79,7 +87,7 @@ public class TmxWorldMap extends TmxMap {
         try {
             TMXMapWriter mapWriter = new TMXMapWriter();
             mapWriter.writeMap(this,name);
-            tileMap = new TmxMapLoader().load(name);
+            tileMap = MapGenerator.getTmxLoader().load(name);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,11 +1,15 @@
 package com.mw.map;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.loaders.resolvers.AbsoluteFileHandleResolver;
+import com.badlogic.gdx.assets.loaders.resolvers.ExternalFileHandleResolver;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.mw.game.MainGame;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -41,7 +45,7 @@ public class TmxMap extends Map {
 
     protected void initWorld() {
         try {
-            tileMap = new TmxMapLoader().load(name);
+            tileMap = MapGenerator.getTmxLoader().load(name);
             return;
         }catch (Exception e){
             Gdx.app.log("error","no find the file.");
@@ -77,6 +81,10 @@ public class TmxMap extends Map {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        //如果是Android重新设置图片位置
+        if(Gdx.app.getType().equals(Application.ApplicationType.Android)){
+            tileSet.setTilesetImageFilename(MainGame.androidDir+fileName);
+        }
         return tileSet;
     }
     public void saveTiledMap(){
@@ -103,7 +111,7 @@ public class TmxMap extends Map {
         try {
             TMXMapWriter mapWriter = new TMXMapWriter();
             mapWriter.writeMap(this,name);
-            tileMap = new TmxMapLoader().load(name);
+            tileMap = MapGenerator.getTmxLoader().load(name);
         } catch (IOException e) {
             e.printStackTrace();
         }

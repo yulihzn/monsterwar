@@ -1,5 +1,10 @@
 package com.mw.map;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.loaders.resolvers.AbsoluteFileHandleResolver;
+import com.badlogic.gdx.assets.loaders.resolvers.ExternalFileHandleResolver;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.mw.model.Area;
 
 /**
@@ -97,5 +102,12 @@ public class MapGenerator {
         }else {
             return true;
         }
+    }
+    public static  TmxMapLoader getTmxLoader(){
+        //如果是Android读取绝对路径
+        if(Gdx.app.getType().equals(Application.ApplicationType.Android)){
+            return new TmxMapLoader(new AbsoluteFileHandleResolver());
+        }
+        return new TmxMapLoader();
     }
 }

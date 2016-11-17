@@ -1,5 +1,7 @@
 package com.mw.map;
 
+import com.badlogic.gdx.assets.loaders.resolvers.AbsoluteFileHandleResolver;
+import com.badlogic.gdx.assets.loaders.resolvers.ExternalFileHandleResolver;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.mw.model.WorldMapModel;
 import com.mw.utils.WildDungeon;
@@ -53,7 +55,7 @@ public class TmxDungeonMap extends TmxMap {
         try {
             TMXMapWriter mapWriter = new TMXMapWriter();
             mapWriter.writeMap(this,name);
-            tileMap = new TmxMapLoader().load(name);
+            tileMap = MapGenerator.getTmxLoader().load(name);
         } catch (IOException e) {
             e.printStackTrace();
         }

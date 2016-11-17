@@ -95,7 +95,6 @@ public class TileSet implements Iterable<Tile> {
     public void importTileBitmap(String imgFilename, TileCutter cutter)
             throws IOException {
         setTilesetImageFilename(imgFilename);
-
         TextureRegion image = new TextureRegion(new Texture(Gdx.files.internal(imgFilename)));
         if (image == null) {
             throw new IOException("Failed to load " + tilebmpFile);
