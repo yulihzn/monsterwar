@@ -2,10 +2,6 @@ package com.mw.map;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.loaders.resolvers.AbsoluteFileHandleResolver;
-import com.badlogic.gdx.assets.loaders.resolvers.ExternalFileHandleResolver;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.mw.game.MainGame;
 import com.mw.model.Area;
 import com.mw.model.AreaMapModel;
@@ -33,7 +29,6 @@ public class TmxAreaMap extends TmxMap {
             s = MainGame.androidDir+"save/area/";
             File dir = new File(s);
             dir.mkdirs();
-//            s=s.substring(s.indexOf("Android"));
         }
         name = s+area.getName()+".tmx";
         Gdx.app.log("namePath",name);

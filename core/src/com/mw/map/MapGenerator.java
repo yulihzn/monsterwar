@@ -6,6 +6,7 @@ import com.badlogic.gdx.assets.loaders.resolvers.AbsoluteFileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.ExternalFileHandleResolver;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.mw.model.Area;
+import com.mw.utils.Utils;
 
 /**
  * Created by BanditCat on 2016/9/27.
@@ -35,14 +36,24 @@ public class MapGenerator {
     private TmxWorldMap tmxWorldMap;
 
     private void init() {
+        long time =System.currentTimeMillis();
+        Gdx.app.log("world", Utils.getMins(time));
         tmxWorldMap = new TmxWorldMap(256,256);
+        long tt = System.currentTimeMillis();
+        Gdx.app.log("world", Utils.getMins(tt));
+        Gdx.app.log("sec", Utils.getMins(tt-time));
     }
     public  TmxWorldMap getTmxWorldMap(){
         return tmxWorldMap;
     }
     public TmxAreaMap getTmxAreaMap(String name){
         Area area = tmxWorldMap.getMapModel().getAreas().get(name);
+        long time =System.currentTimeMillis();
+        Gdx.app.log(name, Utils.getMins(time));
         tmxAreaMap = new TmxAreaMap(area);
+        long tt = System.currentTimeMillis();
+        Gdx.app.log(name, Utils.getMins(tt));
+        Gdx.app.log(name, Utils.getMins(tt-time));
         return tmxAreaMap;
     }
 

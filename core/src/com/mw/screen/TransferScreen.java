@@ -3,15 +3,22 @@ package com.mw.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Timer;
 import com.mw.actor.LoadingImage;
 import com.mw.base.BaseScreen;
 import com.mw.game.MainGame;
+import com.mw.map.MapGenerator;
+import com.mw.profiles.GameFileHelper;
+import com.mw.ui.GameInfoLabel;
+import com.mw.ui.LazyBitmapFont;
 import com.mw.utils.AssetManagerHelper;
 
 public class TransferScreen extends BaseScreen implements Screen {
@@ -22,6 +29,12 @@ public class TransferScreen extends BaseScreen implements Screen {
 	private Timer timer = new Timer();
 	private int type = 0;
 
+	private FreeTypeFontGenerator generator;
+	private LazyBitmapFont bitmapFont;
+	private GameInfoLabel infoLabel;
+	private String msg = "Why did you hide that Tarot Deck in your music room?";
+	private boolean isMapFinished = false;
+
 	public TransferScreen(MainGame mainGame) {
 		super(mainGame);
 	}
@@ -29,6 +42,10 @@ public class TransferScreen extends BaseScreen implements Screen {
 	public TransferScreen(MainGame mainGame, int type) {
 		super(mainGame);
 		this.type = type;
+
+		generator = new FreeTypeFontGenerator(Gdx.files.internal("data/font.ttf"));
+		bitmapFont = new LazyBitmapFont(generator,24);
+		infoLabel = new GameInfoLabel("",new Label.LabelStyle(bitmapFont, Color.WHITE));
 		atlas = new TextureAtlas(
 				Gdx.files.internal("images/settingimages.pack"));
 		TextureRegion textureRegion = atlas.findRegion("loading");
@@ -36,9 +53,18 @@ public class TransferScreen extends BaseScreen implements Screen {
 		image_loading = new LoadingImage(textureRegion);
 		image_loading.initLoadingAction();
 		image_loading.setPosition(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
-
 		stage = new Stage();
 		stage.addActor(image_loading);
+		stage.addActor(infoLabel);
+		isMapFinished = false;
+		//起线程去创建地图
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				MapGenerator.getInstance().getTmxAreaMap(GameFileHelper.getInstance().getCurrentAreaName());
+				isMapFinished = true;
+			}
+		}).start();
 	}
 
 
@@ -60,11 +86,13 @@ public class TransferScreen extends BaseScreen implements Screen {
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		infoLabel.setText(msg);
+		infoLabel.setPosition(Gdx.graphics.getWidth()/2-infoLabel.getGlyphLayout().width/2,Gdx.graphics.getHeight()/2-infoLabel.getGlyphLayout().height-50);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
 		AssetManager assetManager = AssetManagerHelper.getInstance().getAssetManager();
 		if(assetManager.update()){
-			if(type == 1){
+			if(type == 1&&isMapFinished){
 				//这里停顿0.01s防止读取太快
 				stage.addAction(Actions.delay(0.01f,Actions.run(new Runnable() {
 					@Override
@@ -103,6 +131,8 @@ public class TransferScreen extends BaseScreen implements Screen {
 	public void dispose() {
 		atlas.dispose();
 		stage.dispose();
+		generator.dispose();
+		bitmapFont.dispose();
 	}
 
 }

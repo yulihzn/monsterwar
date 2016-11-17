@@ -409,4 +409,11 @@ public class  MapStage extends Stage{
 		}
 	}
 
+	public TmxAreaMap getTmxAreaMap() {
+		return tmxAreaMap;
+	}
+
+	public void setTmxAreaMap(TmxAreaMap tmxAreaMap) {
+		this.tmxAreaMap = tmxAreaMap;
+	}
 }
