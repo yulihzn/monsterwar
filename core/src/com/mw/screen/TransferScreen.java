@@ -56,15 +56,15 @@ public class TransferScreen extends BaseScreen implements Screen {
 		stage = new Stage();
 		stage.addActor(image_loading);
 		stage.addActor(infoLabel);
-		isMapFinished = false;
-		//起线程去创建地图
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				MapGenerator.getInstance().getTmxAreaMap(GameFileHelper.getInstance().getCurrentAreaName());
-				isMapFinished = true;
-			}
-		}).start();
+		isMapFinished = true;
+		//起线程去创建地图//在pc端报错No OpenGL context found in the current thread.
+//		new Thread(new Runnable() {
+//			@Override
+//			public void run() {
+//				MapGenerator.getInstance().getTmxAreaMap(GameFileHelper.getInstance().getCurrentAreaName());
+//				isMapFinished = true;
+//			}
+//		}).start();
 	}
 
 

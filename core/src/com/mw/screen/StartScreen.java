@@ -71,7 +71,7 @@ public class StartScreen extends BaseScreen implements Screen{
 		GameFileHelper.getInstance().loadProfile(GameFileHelper.DEFAULT_PROFILE);
 
 		//test
-		mainGame.setScreen(new TransferScreen(mainGame,1));
+//		mainGame.setScreen(new TransferScreen(mainGame,1));
 
 
 	}
@@ -104,7 +104,7 @@ public class StartScreen extends BaseScreen implements Screen{
 
 	@Override
 	public void dispose() {
-
+		particleEffect.dispose();
 	}
 
 }

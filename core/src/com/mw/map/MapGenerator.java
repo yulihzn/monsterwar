@@ -38,7 +38,9 @@ public class MapGenerator {
     private void init() {
         long time =System.currentTimeMillis();
         Gdx.app.log("world", Utils.getMins(time));
+        sendBeginMsg("world generate begin");
         tmxWorldMap = new TmxWorldMap(256,256);
+        sendFinishMsg("world generate finish");
         long tt = System.currentTimeMillis();
         Gdx.app.log("world", Utils.getMins(tt));
         Gdx.app.log("sec", Utils.getMins(tt-time));
@@ -47,6 +49,7 @@ public class MapGenerator {
         return tmxWorldMap;
     }
     public TmxAreaMap getTmxAreaMap(String name){
+        sendBeginMsg(name+"generate begin");
         Area area = tmxWorldMap.getMapModel().getAreas().get(name);
         long time =System.currentTimeMillis();
         Gdx.app.log(name, Utils.getMins(time));
@@ -54,6 +57,7 @@ public class MapGenerator {
         long tt = System.currentTimeMillis();
         Gdx.app.log(name, Utils.getMins(tt));
         Gdx.app.log(name, Utils.getMins(tt-time));
+        sendBeginMsg(name+"generate finish");
         return tmxAreaMap;
     }
 
@@ -120,5 +124,30 @@ public class MapGenerator {
             return new TmxMapLoader(new AbsoluteFileHandleResolver());
         }
         return new TmxMapLoader();
+    }
+    public interface OnMapGeneratorListener{
+        void begin(String msg);
+        void generating(String msg);
+        void finish(String msg);
+    }
+    private OnMapGeneratorListener onMapGeneratorListener;
+
+    public void setOnMapGeneratorListener(OnMapGeneratorListener onMapGeneratorListener) {
+        this.onMapGeneratorListener = onMapGeneratorListener;
+    }
+    public void sendGenerateMsg(String msg){
+        if(onMapGeneratorListener != null){
+            onMapGeneratorListener.generating(msg);
+        }
+    }
+    private void sendBeginMsg(String msg){
+        if(onMapGeneratorListener != null){
+            onMapGeneratorListener.begin(msg);
+        }
+    }
+    private void sendFinishMsg(String msg){
+        if(onMapGeneratorListener != null){
+            onMapGeneratorListener.finish(msg);
+        }
     }
 }
