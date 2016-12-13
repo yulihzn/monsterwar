@@ -34,6 +34,7 @@ public class MapGenerator {
     }
     private TmxAreaMap tmxAreaMap;
     private TmxWorldMap tmxWorldMap;
+    private String currentAreaName="";
 
     private void init() {
         long time =System.currentTimeMillis();
@@ -49,15 +50,23 @@ public class MapGenerator {
         return tmxWorldMap;
     }
     public TmxAreaMap getTmxAreaMap(String name){
+        if(name.equals(currentAreaName)&&tmxAreaMap != null){
+//            return tmxAreaMap;//加载不了
+        }
         sendBeginMsg(name+"generate begin");
         Area area = tmxWorldMap.getMapModel().getAreas().get(name);
         long time =System.currentTimeMillis();
         Gdx.app.log(name, Utils.getMins(time));
+        if(tmxAreaMap != null && tmxAreaMap.getTileMap() != null){
+            tmxAreaMap.getTileMap().dispose();
+            tmxAreaMap = null;
+        }
         tmxAreaMap = new TmxAreaMap(area);
         long tt = System.currentTimeMillis();
         Gdx.app.log(name, Utils.getMins(tt));
         Gdx.app.log(name, Utils.getMins(tt-time));
         sendBeginMsg(name+"generate finish");
+        this.currentAreaName = name;
         return tmxAreaMap;
     }
 

@@ -39,7 +39,7 @@ public class MainScreen extends BaseScreen implements Screen{
 
 	@Override
 	public void show() {
-
+		mapStage.initMap();
 		hideCharacterStage();
 
 	}

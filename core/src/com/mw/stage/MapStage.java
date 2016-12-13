@@ -106,6 +106,12 @@ public class  MapStage extends Stage{
 
 	}
 
+	public void initMap(){
+//		tmxAreaMap = MapGenerator.getInstance().getTmxAreaMap(GameFileHelper.getInstance().getCurrentAreaName());
+//		tiledMap = tmxAreaMap.getTileMap();
+//		renderer = null;
+//		renderer = new OrthogonalTiledMapRenderer(tiledMap,1f/32f);
+	}
 	@Override
 	public boolean scrolled(int amount) {
 		Gdx.app.log("scrolled",""+amount);
