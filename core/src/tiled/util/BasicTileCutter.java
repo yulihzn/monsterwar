@@ -29,7 +29,6 @@
  */
 package tiled.util;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import tiled.awt.Dimension;
 /**
  * Cuts tiles from a tileset image according to a regular rectangular pattern.
@@ -42,7 +41,7 @@ import tiled.awt.Dimension;
 public class BasicTileCutter implements TileCutter {
 
     private int nextX, nextY;
-    private TextureRegion image;
+    private TileImage image;
     private final int tileWidth;
     private final int tileHeight;
     private final int tileSpacing;
@@ -74,15 +73,15 @@ public class BasicTileCutter implements TileCutter {
 
     /** {@inheritDoc} */
     @Override
-    public void setImage(TextureRegion image) {
+    public void setImage(TileImage image) {
         this.image = image;
     }
 
     /** {@inheritDoc} */
     @Override
-    public TextureRegion getNextTile() {
+    public TileImage getNextTile() {
         if (nextY + tileHeight + tileMargin <= image.getRegionHeight()) {
-            TextureRegion tile = new TextureRegion(image,nextX,nextY,tileWidth,tileHeight);
+            TileImage tile = new TileImage(image,nextX,nextY,tileWidth,tileHeight);
             nextX += tileWidth + tileSpacing;
 
             if (nextX + tileWidth + tileMargin > image.getRegionWidth()) {

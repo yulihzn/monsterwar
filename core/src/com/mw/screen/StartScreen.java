@@ -28,12 +28,8 @@ public class StartScreen extends BaseScreen implements Screen{
 	private ParticleEffectActor particleEffectActor;
 
 
-	public StartScreen(MainGame mainGame) {
+	public StartScreen(final MainGame mainGame) {
 		super(mainGame);
-	}
-
-	@Override
-	public void show() {
 		atlas = new TextureAtlas(Gdx.files.internal("images/buttons.pack"));
 		TextureRegionDrawable imageUp = new TextureRegionDrawable(atlas.findRegion("button_start_normal"));
 		TextureRegionDrawable imageDown = new TextureRegionDrawable(atlas.findRegion("button_start_pressed"));
@@ -52,10 +48,10 @@ public class StartScreen extends BaseScreen implements Screen{
 
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				mainGame.setScreen(new TransferScreen(mainGame,1));
+				mainGame.setScreen(mainGame.getTransferScreen());
 				super.clicked(event, x, y);
 			}
-			
+
 		});
 		stage.addActor(background);
 		stage.addActor(ib_start);
@@ -69,11 +65,11 @@ public class StartScreen extends BaseScreen implements Screen{
 		particleEffectActor.getEffect().scaleEffect(2.0f);
 		stage.addActor(particleEffectActor);
 		GameFileHelper.getInstance().loadProfile(GameFileHelper.DEFAULT_PROFILE);
+	}
 
-		//test
-//		mainGame.setScreen(new TransferScreen(mainGame,1));
-
-
+	@Override
+	public void show() {
+		Gdx.input.setInputProcessor(stage);
 	}
 
 	@Override
@@ -99,12 +95,13 @@ public class StartScreen extends BaseScreen implements Screen{
 
 	@Override
 	public void hide() {
-
+		Gdx.input.setInputProcessor(null);
 	}
 
 	@Override
 	public void dispose() {
 		particleEffect.dispose();
+		atlas.dispose();
 	}
 
 }

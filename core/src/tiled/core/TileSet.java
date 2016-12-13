@@ -31,8 +31,6 @@ package tiled.core;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,6 +42,8 @@ import java.util.List;
 import tiled.awt.Rectangle;
 import tiled.util.TileCutter;
 import tiled.util.BasicTileCutter;
+import tiled.util.TileImage;
+import tiled.util.TileTexture;
 
 /**
  * todo: Update documentation
@@ -75,7 +75,7 @@ public class TileSet implements Iterable<Tile> {
     private File tilebmpFile;
     private String name;
     private Color transparentColor;
-    private TextureRegion tileSetImage;
+    private TileImage tileSetImage;
 
     /**
      * Default constructor
@@ -90,12 +90,12 @@ public class TileSet implements Iterable<Tile> {
      * @param imgFilename a {@link String} object.
      * @param cutter a {@link tiled.util.TileCutter} object.
      * @throws IOException if any.
-     * @see TileSet#importTileBitmap(TextureRegion, TileCutter)
+     * @see TileSet#importTileBitmap(TileImage, TileCutter)
      */
     public void importTileBitmap(String imgFilename, TileCutter cutter)
             throws IOException {
-        setTilesetImageFilename(imgFilename);
-        TextureRegion image = new TextureRegion(new Texture(Gdx.files.internal(imgFilename)));
+        setTilesetImageFilename("images/tile/"+imgFilename+".png");
+        TileImage image = new TileImage(new TileTexture(imgFilename));
         if (image == null) {
             throw new IOException("Failed to load " + tilebmpFile);
         }
@@ -117,7 +117,7 @@ public class TileSet implements Iterable<Tile> {
      * @param tileBitmap the image to be used, must not be null
      * @param cutter the tile cutter, must not be null
      */
-    private void importTileBitmap(TextureRegion tileBitmap, TileCutter cutter) {
+    private void importTileBitmap(TileImage tileBitmap, TileCutter cutter) {
         assert tileBitmap != null;
         assert cutter != null;
 
@@ -134,7 +134,7 @@ public class TileSet implements Iterable<Tile> {
             tilesPerRow = basicTileCutter.getTilesPerRow();
         }
 
-        TextureRegion tileImage = cutter.getNextTile();
+        TileImage tileImage = cutter.getNextTile();
         while (tileImage != null) {
             Tile tile = new Tile();
             tile.setImage(tileImage);
@@ -147,13 +147,13 @@ public class TileSet implements Iterable<Tile> {
      * Refreshes a tileset from a tileset image file.
      *
      * @throws IOException
-     * @see TileSet#importTileBitmap(TextureRegion,TileCutter)
+     * @see TileSet#importTileBitmap(TileImage,TileCutter)
      */
     private void refreshImportedTileBitmap()
             throws IOException {
         String imgFilename = tilebmpFile.getPath();
 
-        TextureRegion image = new TextureRegion(new Texture(Gdx.files.internal(imgFilename)));
+        TileImage image = new TileImage(new TileTexture(imgFilename));
         if (image == null) {
             throw new IOException("Failed to load " + tilebmpFile);
         }
@@ -174,7 +174,7 @@ public class TileSet implements Iterable<Tile> {
      *
      * @param tileBitmap the image to be used, must not be null
      */
-    private void refreshImportedTileBitmap(TextureRegion tileBitmap) {
+    private void refreshImportedTileBitmap(TileImage tileBitmap) {
         assert tileBitmap != null;
 
         tileCutter.reset();
@@ -184,7 +184,7 @@ public class TileSet implements Iterable<Tile> {
         tileDimensions = new Rectangle(tileCutter.getTileDimensions());
 
         int id = 0;
-        TextureRegion tileImage = tileCutter.getNextTile();
+        TileImage tileImage = tileCutter.getNextTile();
         while (tileImage != null) {
             Tile tile = getTile(id);
             tile.setImage(tileImage);

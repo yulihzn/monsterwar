@@ -29,7 +29,6 @@
  */
 package tiled.util;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import tiled.awt.Dimension;
 
 /**
@@ -46,7 +45,7 @@ public interface TileCutter {
      *
      * @param image the image that this cutter should cut
      */
-    public void setImage(TextureRegion image);
+    public void setImage(TileImage image);
 
     /**
      * Retrieves the next tile image.
@@ -54,7 +53,7 @@ public interface TileCutter {
      * @return the next tile image, or <code>null</code> when no more tile
      * images are available
      */
-    public TextureRegion getNextTile();
+    public TileImage getNextTile();
 
     /**
      * Resets the tile cutter so that the next call to <code>getNextTile</code>

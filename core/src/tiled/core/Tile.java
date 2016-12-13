@@ -29,9 +29,10 @@
  */
 package tiled.core;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.Properties;
+
+import tiled.util.TileImage;
 
 /**
  * The core class for our tiles.
@@ -42,7 +43,7 @@ import java.util.Properties;
  */
 public class Tile {
 
-    private TextureRegion image;
+    private TileImage image;
     private String source;
     private int id = -1;
     private Properties properties;
@@ -91,7 +92,7 @@ public class Tile {
      *
      * @param i the new image of the tile
      */
-    public void setImage(TextureRegion i) {
+    public void setImage(TileImage i) {
         image = i;
     }
 
@@ -169,7 +170,7 @@ public class Tile {
      *
      * @return Image
      */
-    public TextureRegion getImage() {
+    public TileImage getImage() {
         return image;
     }
 

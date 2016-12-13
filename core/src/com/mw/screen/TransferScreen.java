@@ -34,6 +34,7 @@ public class TransferScreen extends BaseScreen implements Screen {
 	private GameInfoLabel infoLabel;
 	private String msg = "Why did you hide that Tarot Deck in your music room?";
 	private boolean isMapFinished = false;
+	private boolean isReadyToLoad = false;//当资源和地图创建完毕刷新界面再执行后续操作
 
 	public TransferScreen(MainGame mainGame) {
 		super(mainGame);
@@ -56,30 +57,22 @@ public class TransferScreen extends BaseScreen implements Screen {
 		stage = new Stage();
 		stage.addActor(image_loading);
 		stage.addActor(infoLabel);
-		isMapFinished = true;
-		//起线程去创建地图//在pc端报错No OpenGL context found in the current thread.
-//		new Thread(new Runnable() {
-//			@Override
-//			public void run() {
-//				MapGenerator.getInstance().getTmxAreaMap(GameFileHelper.getInstance().getCurrentAreaName());
-//				isMapFinished = true;
-//			}
-//		}).start();
+//		isMapFinished = true;
+
 	}
 
 
 	@Override
 	public void show() {
-
-//		timer.scheduleTask(new Timer.Task() {
-//
-//			@Override
-//			public void run() {
-//				if(baseScreen != null){
-//					mainGame.setScreen(baseScreen);
-//				}
-//			}
-//		}, DURATION);
+		isMapFinished = false;
+	//起线程去创建地图
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				MapGenerator.getInstance().getTmxAreaMap(GameFileHelper.getInstance().getCurrentAreaName());
+				isMapFinished = true;
+			}
+		}).start();
 
 	}
 
@@ -93,14 +86,19 @@ public class TransferScreen extends BaseScreen implements Screen {
 		AssetManager assetManager = AssetManagerHelper.getInstance().getAssetManager();
 		if(assetManager.update()){
 			if(type == 1&&isMapFinished){
-				//这里停顿0.01s防止读取太快
-				stage.addAction(Actions.delay(0.01f,Actions.run(new Runnable() {
-					@Override
-					public void run() {
-						MainScreen mainScreen = new MainScreen(mainGame);
-						mainGame.setScreen(mainScreen);
-					}
-				})));
+				if(isReadyToLoad){
+					//这里停顿0.01s防止读取太快
+					stage.addAction(Actions.delay(0.01f,Actions.run(new Runnable() {
+						@Override
+						public void run() {
+							if(mainGame.getMainScreen() == null){
+								mainGame.setMainScreen(new MainScreen(mainGame));
+							}
+							mainGame.setScreen(mainGame.getMainScreen());
+						}
+					})));
+				}
+				isReadyToLoad = true;
 
 			}
 		}

@@ -226,7 +226,7 @@ public class  MapStage extends Stage{
 					break;
 				case Player.ACTION_SELF:
 					GameFileHelper.getInstance().setCurrentAreaName("area"+MathUtils.random(15)*16+"_"+MathUtils.random(15)*16);
-					mainScreen.getMainGame().setScreen(new TransferScreen(mainScreen.getMainGame(), 1));
+					mainScreen.getMainGame().setScreen(mainScreen.getMainGame().getTransferScreen());
 					break;
 			}
 		}
@@ -322,6 +322,7 @@ public class  MapStage extends Stage{
 	public void dispose() {
 		super.dispose();
 		mapShadow.dispose();
+		tiledMap.dispose();
 	}
 
 	@Override

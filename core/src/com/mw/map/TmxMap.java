@@ -21,6 +21,7 @@ import tiled.core.TileLayer;
 import tiled.core.TileSet;
 import tiled.io.TMXMapWriter;
 import tiled.util.BasicTileCutter;
+import tiled.util.TileTexture;
 
 /**
  * Created by BanditCat on 2016/10/14.
@@ -37,7 +38,6 @@ public class TmxMap extends Map {
     public static String LAYER_DECORATE = "LAYER_DECORATE";
     public static String LAYER_SHADOW = "LAYER_SHADOW";
     protected TiledMap tileMap;
-    private String[]packNames = {"world","floor","block","decorate","shadow"};
     public TmxMap(int width, int height) {
         super(width, height);
         initMap();
@@ -69,21 +69,21 @@ public class TmxMap extends Map {
         getLayers().add(decorateLayer);
         getLayers().add(shadowLayer);
 
-        for (int i = 0; i < packNames.length; i++) {
-            addTileset(getTileSet("images/tile/"+packNames[i]+".png"));
+        for (int i = 0; i < TileTexture.packNames.length; i++) {
+            addTileset(getTileSet(TileTexture.packNames[i]));
         }
     }
     private TileSet getTileSet(String fileName){
         TileSet tileSet = new TileSet();
-        tileSet.setTilesetImageFilename(fileName);
         try {
             tileSet.importTileBitmap(fileName,new BasicTileCutter(32,32,0,0));
+            tileSet.setTilesetImageFilename("images/tile/"+fileName+".png");
         } catch (IOException e) {
             e.printStackTrace();
         }
         //如果是Android重新设置图片位置
         if(Gdx.app.getType().equals(Application.ApplicationType.Android)){
-            tileSet.setTilesetImageFilename(MainGame.androidDir+fileName);
+            tileSet.setTilesetImageFilename(MainGame.androidDir+"images/tile/"+fileName+".png");
         }
         return tileSet;
     }
