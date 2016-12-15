@@ -109,6 +109,7 @@ public class  MapStage extends Stage{
 	public void initMap(){
 		tmxAreaMap = MapGenerator.getInstance().getTmxAreaMap(GameFileHelper.getInstance().getCurrentAreaName());
 		tiledMap = tmxAreaMap.getTileMapReload();
+		renderer = new OrthogonalTiledMapRenderer(tiledMap,1f/32f);
 	}
 	@Override
 	public boolean scrolled(int amount) {
