@@ -34,7 +34,7 @@ public class TransferScreen extends BaseScreen implements Screen {
 	private GameInfoLabel infoLabel;
 	private String msg = "Why did you hide that Tarot Deck in your music room?";
 	private boolean isMapFinished = false;
-	private boolean isReadyToLoad = false;//当资源和地图创建完毕刷新界面再执行后续操作
+	private float time=0;
 
 	public TransferScreen(MainGame mainGame) {
 		super(mainGame);
@@ -64,6 +64,7 @@ public class TransferScreen extends BaseScreen implements Screen {
 
 	@Override
 	public void show() {
+		time = 0;
 		isMapFinished = false;
 	//起线程去创建地图
 		new Thread(new Runnable() {
@@ -83,22 +84,16 @@ public class TransferScreen extends BaseScreen implements Screen {
 		infoLabel.setPosition(Gdx.graphics.getWidth()/2-infoLabel.getGlyphLayout().width/2,Gdx.graphics.getHeight()/2-infoLabel.getGlyphLayout().height-50);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
+		time+=delta;
 		AssetManager assetManager = AssetManagerHelper.getInstance().getAssetManager();
 		if(assetManager.update()){
 			if(type == 1&&isMapFinished){
-				if(isReadyToLoad){
-					//这里停顿0.01s防止读取太快
-					stage.addAction(Actions.delay(0.01f,Actions.run(new Runnable() {
-						@Override
-						public void run() {
-							if(mainGame.getMainScreen() == null){
-								mainGame.setMainScreen(new MainScreen(mainGame));
-							}
-							mainGame.setScreen(mainGame.getMainScreen());
-						}
-					})));
+				if(time>1){
+					if(mainGame.getMainScreen() == null){
+						mainGame.setMainScreen(new MainScreen(mainGame));
+					}
+					mainGame.setScreen(mainGame.getMainScreen());
 				}
-				isReadyToLoad = true;
 
 			}
 		}

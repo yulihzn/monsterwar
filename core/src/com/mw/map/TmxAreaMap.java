@@ -104,7 +104,7 @@ public class TmxAreaMap extends TmxMap {
         }
         int decorate = mapModel.getArr()[x][y].getDecorate();
         if(decorate == AreaTile.D_WALL_01){
-            tileMap.getLayers().get(layer).setOpacity(0.1f);
+            tileMap.getLayers().get(layer).setOpacity(0.2f);
         }else{
             tileMap.getLayers().get(layer).setOpacity(1f);
         }

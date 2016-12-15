@@ -77,7 +77,7 @@ public class  MapStage extends Stage{
 		//初始化地图
 		level = GameFileHelper.getInstance().getCurrentLevel();
 		tmxAreaMap = MapGenerator.getInstance().getTmxAreaMap(GameFileHelper.getInstance().getCurrentAreaName());
-		tiledMap = tmxAreaMap.getTileMap();
+		tiledMap = tmxAreaMap.getTileMapReload();
 //		tiledMap.getLayers().get(TmxMap.LAYER_SHADOW).setVisible(false);
 		//获取渲染
 		renderer = new OrthogonalTiledMapRenderer(tiledMap,1f/32f);
@@ -107,10 +107,8 @@ public class  MapStage extends Stage{
 	}
 
 	public void initMap(){
-//		tmxAreaMap = MapGenerator.getInstance().getTmxAreaMap(GameFileHelper.getInstance().getCurrentAreaName());
-//		tiledMap = tmxAreaMap.getTileMap();
-//		renderer = null;
-//		renderer = new OrthogonalTiledMapRenderer(tiledMap,1f/32f);
+		tmxAreaMap = MapGenerator.getInstance().getTmxAreaMap(GameFileHelper.getInstance().getCurrentAreaName());
+		tiledMap = tmxAreaMap.getTileMapReload();
 	}
 	@Override
 	public boolean scrolled(int amount) {
@@ -379,7 +377,7 @@ public class  MapStage extends Stage{
 			translateCamera(0.5f,man.getActor().getX(),man.getActor().getY());
 		}
 		if(amount == -1){
-			zoomCamera(0.1f,16);
+			zoomCamera(0.1f,2);
 		}else if(amount == 1){
 			zoomCamera(0.1f,1);
 		}
@@ -387,7 +385,7 @@ public class  MapStage extends Stage{
 		float h = MainGame.worldHeight;
 		camera.viewportWidth = 16;
 		camera.viewportHeight = 16*(h/w);
-		camera.zoom = MathUtils.clamp(camera.zoom, 0.1f, 16f);
+		camera.zoom = MathUtils.clamp(camera.zoom, 0.5f, 2f);
 		camera.position.x = MathUtils.clamp(camera.position.x, camera.viewportWidth/2, 256-camera.viewportWidth/2);
 		camera.position.y = MathUtils.clamp(camera.position.y, camera.viewportHeight/2, 256-camera.viewportHeight/2);
 //		camera.position.x = MathUtils.clamp(camera.position.x, 0, 256);

@@ -3,7 +3,6 @@ package com.mw.map;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.resolvers.AbsoluteFileHandleResolver;
-import com.badlogic.gdx.assets.loaders.resolvers.ExternalFileHandleResolver;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.mw.model.Area;
 import com.mw.utils.Utils;
@@ -51,7 +50,7 @@ public class MapGenerator {
     }
     public TmxAreaMap getTmxAreaMap(String name){
         if(name.equals(currentAreaName)&&tmxAreaMap != null){
-//            return tmxAreaMap;//加载不了
+            return tmxAreaMap;//加载不了
         }
         sendBeginMsg(name+"generate begin");
         Area area = tmxWorldMap.getMapModel().getAreas().get(name);

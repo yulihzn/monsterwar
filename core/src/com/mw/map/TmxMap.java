@@ -163,4 +163,8 @@ public class TmxMap extends Map {
     public TiledMap getTileMap() {
         return tileMap;
     }
+    public TiledMap getTileMapReload() {
+        tileMap = MapGenerator.getTmxLoader().load(name);
+        return tileMap;
+    }
 }
