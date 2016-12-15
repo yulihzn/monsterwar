@@ -44,12 +44,12 @@ public class TmxMap extends Map {
     }
 
     protected void initWorld() {
-        try {
-            tileMap = MapGenerator.getTmxLoader().load(name);
-            return;
-        }catch (Exception e){
-            Gdx.app.log("error","no find the file.");
-        }
+//        try {
+//            tileMap = MapGenerator.getTmxLoader().load(name);
+//            return;
+//        }catch (Exception e){
+//            Gdx.app.log("error","no find the file.");
+//        }
 
     }
 
@@ -163,7 +163,7 @@ public class TmxMap extends Map {
     public TiledMap getTileMap() {
         return tileMap;
     }
-    public TiledMap getTileMapReload() {
+    protected TiledMap getTileMapReload() {
         tileMap = MapGenerator.getTmxLoader().load(name);
         return tileMap;
     }

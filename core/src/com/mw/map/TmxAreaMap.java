@@ -2,6 +2,7 @@ package com.mw.map;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.mw.game.MainGame;
 import com.mw.model.Area;
 import com.mw.model.AreaMapModel;
@@ -37,13 +38,16 @@ public class TmxAreaMap extends TmxMap {
 
     @Override
     protected void initWorld() {
-        try {
-            tileMap = MapGenerator.getTmxLoader().load(name);
-        }catch (Exception e){
-            Gdx.app.log("searching...","not find the file.");
-        }
-        if(null != tileMap){
-            initMapModel();
+//        try {
+//            tileMap = MapGenerator.getTmxLoader().load(name);
+//        }catch (Exception e){
+//            Gdx.app.log("searching...","not find the file.");
+//        }
+//        if(null != tileMap){
+//            initMapModel();
+//            return;
+//        }
+        if(MapGenerator.isExistsMap(name)){
             return;
         }
         mapModel = new AreaEditor(area).create();
@@ -70,7 +74,7 @@ public class TmxAreaMap extends TmxMap {
         try {
             TMXMapWriter mapWriter = new TMXMapWriter();
             mapWriter.writeMap(this,name);
-            tileMap = MapGenerator.getTmxLoader().load(name);
+//            tileMap = MapGenerator.getTmxLoader().load(name);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -109,4 +113,11 @@ public class TmxAreaMap extends TmxMap {
             tileMap.getLayers().get(layer).setOpacity(1f);
         }
     }
+    @Override
+    public TiledMap getTileMapReload() {
+        super.getTileMapReload();
+        initMapModel();
+        return tileMap;
+    }
+
 }

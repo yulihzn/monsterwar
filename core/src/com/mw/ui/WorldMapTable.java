@@ -86,7 +86,7 @@ public class WorldMapTable extends Table {
 //        camera.translate(0,0);
         //获取渲染
         final TmxWorldMap tmxWorldMap = new TmxWorldMap(TmxWorldMap.TILE_SIZE_WIDTH,TmxWorldMap.TILE_SIZE_HEIGHT);
-        TiledMap map = tmxWorldMap.getTileMap();
+        TiledMap map = tmxWorldMap.getTileMapReload();
         map.getLayers().get(TmxWorldMap.LAYER_SHADOW).setVisible(false);
 //        tmxWorldMap.saveTiledMap();
         renderer = new OrthogonalTiledMapRenderer(map, 1f/32f);

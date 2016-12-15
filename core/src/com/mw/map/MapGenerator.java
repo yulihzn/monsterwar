@@ -3,6 +3,7 @@ package com.mw.map;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.resolvers.AbsoluteFileHandleResolver;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.mw.model.Area;
 import com.mw.utils.Utils;
@@ -29,18 +30,17 @@ public class MapGenerator {
         return mapGenerator;
     }
     private MapGenerator(){
-        init();
     }
     private TmxAreaMap tmxAreaMap;
     private TmxWorldMap tmxWorldMap;
     private String currentAreaName="";
 
-    private void init() {
+    public void initWorld() {
         long time =System.currentTimeMillis();
         Gdx.app.log("world", Utils.getMins(time));
-        sendBeginMsg("world generate begin");
+        sendBeginMsg("world generate begin",0);
         tmxWorldMap = new TmxWorldMap(256,256);
-        sendFinishMsg("world generate finish");
+        sendFinishMsg("world generate finish",0);
         long tt = System.currentTimeMillis();
         Gdx.app.log("world", Utils.getMins(tt));
         Gdx.app.log("sec", Utils.getMins(tt-time));
@@ -52,19 +52,19 @@ public class MapGenerator {
         if(name.equals(currentAreaName)&&tmxAreaMap != null){
             return tmxAreaMap;//加载不了
         }
-        sendBeginMsg(name+"generate begin");
+        sendBeginMsg(name+"generate begin",1);
         Area area = tmxWorldMap.getMapModel().getAreas().get(name);
         long time =System.currentTimeMillis();
         Gdx.app.log(name, Utils.getMins(time));
         if(tmxAreaMap != null && tmxAreaMap.getTileMap() != null){
-            tmxAreaMap.getTileMap().dispose();
+//            tmxAreaMap.getTileMap().dispose();
             tmxAreaMap = null;
         }
         tmxAreaMap = new TmxAreaMap(area);
         long tt = System.currentTimeMillis();
         Gdx.app.log(name, Utils.getMins(tt));
         Gdx.app.log(name, Utils.getMins(tt-time));
-        sendBeginMsg(name+"generate finish");
+        sendBeginMsg(name+"generate finish",1);
         this.currentAreaName = name;
         return tmxAreaMap;
     }
@@ -133,29 +133,35 @@ public class MapGenerator {
         }
         return new TmxMapLoader();
     }
+    public static boolean isExistsMap(String name){
+        if(Gdx.app.getType().equals(Application.ApplicationType.Android)){
+            return new AbsoluteFileHandleResolver().resolve(name).exists();
+        }
+        return new InternalFileHandleResolver().resolve(name).exists();
+    }
     public interface OnMapGeneratorListener{
-        void begin(String msg);
-        void generating(String msg);
-        void finish(String msg);
+        void begin(String msg,int type);
+        void generating(String msg,int type);
+        void finish(String msg,int type);
     }
     private OnMapGeneratorListener onMapGeneratorListener;
 
     public void setOnMapGeneratorListener(OnMapGeneratorListener onMapGeneratorListener) {
         this.onMapGeneratorListener = onMapGeneratorListener;
     }
-    public void sendGenerateMsg(String msg){
+    public void sendGenerateMsg(String msg,int type){
         if(onMapGeneratorListener != null){
-            onMapGeneratorListener.generating(msg);
+            onMapGeneratorListener.generating(msg,type);
         }
     }
-    private void sendBeginMsg(String msg){
+    private void sendBeginMsg(String msg,int type){
         if(onMapGeneratorListener != null){
-            onMapGeneratorListener.begin(msg);
+            onMapGeneratorListener.begin(msg,type);
         }
     }
-    private void sendFinishMsg(String msg){
+    private void sendFinishMsg(String msg,int type){
         if(onMapGeneratorListener != null){
-            onMapGeneratorListener.finish(msg);
+            onMapGeneratorListener.finish(msg,type);
         }
     }
 }

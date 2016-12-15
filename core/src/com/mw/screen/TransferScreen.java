@@ -58,6 +58,37 @@ public class TransferScreen extends BaseScreen implements Screen {
 		stage.addActor(image_loading);
 		stage.addActor(infoLabel);
 //		isMapFinished = true;
+		MapGenerator.getInstance().setOnMapGeneratorListener(new MapGenerator.OnMapGeneratorListener() {
+			@Override
+			public void begin(String msg, int type) {
+			}
+			@Override
+			public void generating(String msg, int type) {
+			}
+			@Override
+			public void finish(String msg, int type) {
+				if (type==0){
+					//世界创建完毕需要用ui线程加载世界（可以放进assetmanager里）
+					// 初始化数据（可以在线程里跑，由于这里循环比较多，最好只执行一次）再加载地区
+					Gdx.app.postRunnable(new Runnable() {
+						@Override
+						public void run() {
+							MapGenerator.getInstance().getTmxWorldMap().getTileMapReload();
+							new Thread(new Runnable() {
+								@Override
+								public void run() {
+									MapGenerator.getInstance().getTmxAreaMap(GameFileHelper.getInstance().getCurrentAreaName());
+									isMapFinished = true;
+								}
+							}).start();
+						}
+					});
+
+				}else {
+
+				}
+			}
+		});
 
 	}
 
@@ -70,8 +101,7 @@ public class TransferScreen extends BaseScreen implements Screen {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				MapGenerator.getInstance().getTmxAreaMap(GameFileHelper.getInstance().getCurrentAreaName());
-				isMapFinished = true;
+				MapGenerator.getInstance().initWorld();
 			}
 		}).start();
 
