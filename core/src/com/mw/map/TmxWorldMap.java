@@ -29,6 +29,7 @@ public class TmxWorldMap extends TmxMap {
     public static final int TILE_SIZE_WIDTH = 256;
     public static final int TILE_SIZE_HEIGHT = 256;
     private WorldMapModel mapModel = new WorldMapModel();
+    private boolean hasInitMapModel = false;
     public TmxWorldMap(int width, int height) {
         super(width, height);
         String s = Gdx.files.getLocalStoragePath()+"save/";
@@ -97,8 +98,12 @@ public class TmxWorldMap extends TmxMap {
         }
     }
 
+    //初始化数据，加载完tilemap执行
     protected void initMapModel() {
-
+        if(hasInitMapModel){
+            return;
+        }
+        hasInitMapModel =true;
         HashMap<String,Area> map = mapModel.getAreas();
         map.clear();
         //新建256个空的Area并放入map，把tilemap里的数组赋值
