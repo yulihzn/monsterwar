@@ -48,7 +48,7 @@ import java.util.Random;
  *
  */
 public class MapEditor {
-	public static long SEED = 123;
+	public static long SEED = 3;//种子为3生成的00是城堡
 
 	public static final int CASTLE = 100;
 	public static final int VILLAGE = 101;

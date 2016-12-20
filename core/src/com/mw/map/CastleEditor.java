@@ -1,10 +1,14 @@
 package com.mw.map;
 
+import com.mw.map.areasegment.AreaSegment;
+import com.mw.map.areasegment.AreaSegmentCastleBuilding;
 import com.mw.map.areasegment.AreaSegmentCastleTower;
 import com.mw.map.areasegment.AreaSegmentCastleWall;
 import com.mw.map.areasegment.AreaSegmentCastleWater;
 import com.mw.model.Area;
 import com.mw.model.MapInfoModel;
+
+import java.util.Random;
 
 /**
  * Created by BanditCat on 2016/10/19.
@@ -27,36 +31,45 @@ public class CastleEditor {
                 map[i][j] = model;
             }
         }
+        Random random = new Random(MapEditor.SEED);
         for (int i = 0; i < 256; i+=16) {
             for (int j = 0; j < 256; j+=16) {
+                boolean isBuilding = true;
                 if(i == 16||i== 256-32){
-                    if(j==16||j==256-32){
-                        com.mw.map.areasegment.AreaSegmentCastleTower tower = new com.mw.map.areasegment.AreaSegmentCastleTower(i,j, com.mw.map.areasegment.AreaSegmentCastleWall.DIR_TB,0);
+                    if(j==16||j==256-32||j==256/2){
+                        AreaSegmentCastleTower tower = new AreaSegmentCastleTower(i,j, AreaSegmentCastleWall.DIR_TB,0);
                         addSegment(tower);
                     }else {
-                        com.mw.map.areasegment.AreaSegmentCastleWall wall = new com.mw.map.areasegment.AreaSegmentCastleWall(i,j, com.mw.map.areasegment.AreaSegmentCastleWall.DIR_TB,0);
+                        AreaSegmentCastleWall wall = new AreaSegmentCastleWall(i,j, AreaSegmentCastleWall.DIR_TB,0);
                         addSegment(wall);
                     }
+                    isBuilding =false;
                 }
                 if(j == 16||j== 256-32){
-                    if(i==16||i==256-32){
-                        com.mw.map.areasegment.AreaSegmentCastleTower tower = new AreaSegmentCastleTower(i,j, com.mw.map.areasegment.AreaSegmentCastleWall.DIR_LR,0);
+                    if(i==16||i==256-32||i==256/2){
+                        AreaSegmentCastleTower tower = new AreaSegmentCastleTower(i,j, AreaSegmentCastleWall.DIR_LR,0);
                         addSegment(tower);
                     }else {
-                        com.mw.map.areasegment.AreaSegmentCastleWall wall = new com.mw.map.areasegment.AreaSegmentCastleWall(i,j, AreaSegmentCastleWall.DIR_LR,0);
+                        AreaSegmentCastleWall wall = new AreaSegmentCastleWall(i,j, AreaSegmentCastleWall.DIR_LR,0);
                         addSegment(wall);
                     }
+                    isBuilding = false;
                 }
                 if(i == 0||i== 256-16||j == 0||j== 256-16){
-                    com.mw.map.areasegment.AreaSegmentCastleWater water = new AreaSegmentCastleWater(i,j,0);
+                    AreaSegmentCastleWater water = new AreaSegmentCastleWater(i,j,0);
                     addSegment(water);
+                    isBuilding = false;
+                }
+                if(isBuilding){
+                    AreaSegmentCastleBuilding building = new AreaSegmentCastleBuilding(i,j,random.nextLong(),0);
+                    addSegment(building);
                 }
             }
         }
     }
-    private void addSegment(com.mw.map.areasegment.AreaSegment segment){
-        for (int i = 0; i < com.mw.map.areasegment.AreaSegment.HEIGHT; i++) {
-            for (int j = 0; j < com.mw.map.areasegment.AreaSegment.WIDTH; j++) {
+    private void addSegment(AreaSegment segment){
+        for (int i = 0; i < AreaSegment.HEIGHT; i++) {
+            for (int j = 0; j < AreaSegment.WIDTH; j++) {
                 map[i+segment.getX0()][j+segment.getY0()] = segment.getMap()[i][j];
             }
         }

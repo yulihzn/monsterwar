@@ -36,6 +36,8 @@ public class AreaEditor {
 //            }
 //        }
         areaMapModel.setArea(area);
+        //测试
+        area.setType(MapEditor.CASTLE);
         switch (area.getType()){
             case MapEditor.CASTLE:areaMapModel.setArr(new CastleEditor(area).getMap());break;
             case MapEditor.WILD:areaMapModel.setArr(new WildEditor(area).getMap());break;

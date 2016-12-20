@@ -24,12 +24,14 @@ public class AreaTile {
     public static final int B_DOOR_01 = 2;
     public static final int B_DOOR_02 = 3;
     public static final int B_DOOR_03 = 50;
+    public static final int B_DOOR_04 = 292;
     public static final int B_DOWNSTAIRS_01 = 4;
     public static final int B_UPSTAIRS_01 = 5;
     public static final int B_WALL_01 = 6;
     public static final int B_WALL_02 = 7;
     public static final int B_WALL_03 = 9;
     public static final int B_WALL_04 = 10;
+    public static final int B_WALL_05 = 48;
     public static final int B_STONE_01 = 8;
 
     public static final int D_TRANS = 0;

@@ -106,7 +106,11 @@ public class MapGenerator {
     }
     public boolean isBlock(int x,int y){
         int block = tmxAreaMap.getMapModel().getArr()[x][y].getBlock();
-        if(block != AreaTile.B_TRANS){
+        if(block == AreaTile.B_WALL_01
+                ||block == AreaTile.B_WALL_02
+                ||block == AreaTile.B_WALL_03
+                ||block == AreaTile.B_WALL_04
+                ||block == AreaTile.B_WALL_05){
             return true;
         }else{
             return false;

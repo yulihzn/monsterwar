@@ -35,6 +35,7 @@ public abstract class Character implements Telegraph {
     protected SequenceAction walkSequenceAction;
     protected boolean isFocus = false;//是否镜头跟随
     protected int pathIndex = 0;
+    protected int oldX=-1,oldY=-1;
 
     public Character() {
         this.stateMachine = new DefaultStateMachine<Character, CharacterState>(this, CharacterState.IDLE, CharacterState.GLOBAL_STATE);
@@ -100,6 +101,13 @@ public abstract class Character implements Telegraph {
 
     }
     protected void findWay(int x,int y){
+        //判断是不是旧路径，是的话去除第一条并返回，不是的话生成新的路径
+        boolean isOldPos = (x==oldX&&y==oldY&&path.size()!=0);
+        if(isOldPos){
+            path.remove(0);
+            return;
+        }
+        oldX = x;oldY=y;
         pathIndex = 0;
         aStarMap.setSource(new AStarNode(getActor().getTilePosIndex().x,getActor().getTilePosIndex().y));
         aStarMap.setTarget(new AStarNode(x,y));
