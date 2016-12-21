@@ -98,9 +98,8 @@ public class  MapStage extends Stage{
 //		MapGenerator.getInstance();
 //		man.getActor().setPosition(16,14);
 		mapShadow = new MapShadow(camera);
-		addActor(mapShadow);
 		shadowActor = new ShadowActor(camera);
-		addActor(shadowActor);
+//		addActor(shadowActor);
 		shadowActor.drawShadow(man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y);
 		camera.position.set(man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y,0);
 

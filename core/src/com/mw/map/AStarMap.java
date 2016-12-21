@@ -22,6 +22,7 @@ public class AStarMap {
 
 	int[][] astarData;
 
+	int count = 0;//如果步数大于1000步就放弃,防止假死
 	public AStarMap(int xGridNum, int yGridNum) {
 		astarData = new int[yGridNum][xGridNum];
 		source = new AStarNode(0, 0);
@@ -83,7 +84,9 @@ public class AStarMap {
 	public List<AStarNode> find() {
 		init();
 		AStarNode current = null;
-		while (!isEnd() && !isFind()) {
+		count=0;
+		while (!isEnd() && !isFind()&&count<1000) {
+			count++;
 			current = getMinFNodeFromOpenList();
 			if (isAchieve(current)) { // 是否以及找到目标
 				buildPath(current);

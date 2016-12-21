@@ -21,8 +21,8 @@ public class ShadowActor extends Actor{
     private Texture texture;
     private int width = 256;
     private int height = 256;
-    private Color sightColor = new Color(0,0,0,1f);
-    private Color fadeColor = new Color(0,0,0,1f);
+    private Color sightColor = new Color(0,0,0,0f);
+    private Color fadeColor = new Color(0,0,0,0.5f);
     private int x0=-1,y0=-1;
     private int shadowRange = 7;
 
@@ -61,7 +61,7 @@ public class ShadowActor extends Actor{
     }
     public void drawShadow(int x,int y){
         Pixmap.setBlending(Pixmap.Blending.None);
-        pixmap.setColor(new Color(0,0,0,0.5f));
+        pixmap.setColor(new Color(0,0,0,1f));
         pixmap.fill();
         if(x0 !=-1||y0!=-1){
             pixmap.setColor(fadeColor);
