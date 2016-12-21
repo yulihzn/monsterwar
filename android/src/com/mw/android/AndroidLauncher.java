@@ -3,6 +3,7 @@ package com.mw.android;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.KeyEvent;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -46,5 +47,19 @@ public class AndroidLauncher extends AndroidApplication {
 		myOutput.flush();
 		myInput.close();
 		myOutput.close();
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			return false;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+
+	@Override
+	public void finish() {
+		super.finish();
+		System.exit(0);//强制退出
 	}
 }

@@ -10,6 +10,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.mw.game.MainGame;
+import com.mw.utils.AssetManagerHelper;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -164,7 +165,16 @@ public class TmxMap extends Map {
         return tileMap;
     }
     protected TiledMap getTileMapReload() {
-        tileMap = MapGenerator.getTmxLoader().load(name);
+//        tileMap = MapGenerator.getTmxLoader().load(name);
+        tileMap = AssetManagerHelper.getInstance().getTiledMap(name);
         return tileMap;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

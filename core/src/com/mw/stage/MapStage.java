@@ -307,7 +307,14 @@ public class  MapStage extends Stage{
 		return super.keyDown(keyCode);
 	}
 
-
+	@Override
+	public boolean keyUp(int keycode) {
+		if(Input.Keys.BACK == keycode){
+			mainScreen.getMainGame().setScreen(mainScreen.getMainGame().getStartScreen());
+			return false;
+		}
+		return super.keyUp(keycode);
+	}
 	@Override
 	public void draw() {
 		//地图绘制
@@ -331,7 +338,6 @@ public class  MapStage extends Stage{
 
 	@Override
 	public void act (float delta) {
-
 		if (TimeUtils.nanoTime() - roundTime >= roundSecond) {
 			roundTime = TimeUtils.nanoTime();
 //			if(man.isMoving()){

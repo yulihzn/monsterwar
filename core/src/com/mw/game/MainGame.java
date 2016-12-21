@@ -3,9 +3,11 @@ package com.mw.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.mw.map.MapGenerator;
 import com.mw.screen.MainScreen;
 import com.mw.screen.StartScreen;
 import com.mw.screen.TransferScreen;
+import com.mw.utils.AssetManagerHelper;
 
 public class MainGame extends Game {
 	public static final int worldWidth = 1280;
@@ -42,6 +44,7 @@ public class MainGame extends Game {
 
 	@Override
 	public void create() {
+		AssetManagerHelper.getInstance().init();
 		startScreen = new StartScreen(this);
 		transferScreen = new TransferScreen(this,1);
 		setScreen(startScreen);
@@ -61,5 +64,8 @@ public class MainGame extends Game {
 			mainScreen.dispose();
 		}
 		transferScreen.dispose();
+		AssetManagerHelper.getInstance().getAssetManager().clear();
+		AssetManagerHelper.getInstance().getAssetManager().dispose();
+		MapGenerator.getInstance().dispose();
 	}
 }

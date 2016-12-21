@@ -1,6 +1,7 @@
 package com.mw.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
@@ -74,6 +75,9 @@ public class StartScreen extends BaseScreen implements Screen{
 
 	@Override
 	public void render(float delta) {
+		if(Gdx.input.isKeyPressed(Input.Keys.BACK)){
+			Gdx.app.exit();
+		}
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
 	}
@@ -103,5 +107,4 @@ public class StartScreen extends BaseScreen implements Screen{
 		particleEffect.dispose();
 		atlas.dispose();
 	}
-
 }

@@ -168,4 +168,18 @@ public class MapGenerator {
             onMapGeneratorListener.finish(msg,type);
         }
     }
+    public void dispose(){
+        if(tmxWorldMap != null){
+            if(tmxWorldMap.getTileMap()!=null){
+                tmxWorldMap.getTileMap().dispose();
+                tmxWorldMap=null;
+            }
+        }
+        if(tmxAreaMap != null){
+            if(tmxAreaMap.getTileMap()!=null){
+                tmxAreaMap.getTileMap().dispose();
+                tmxAreaMap=null;
+            }
+        }
+    }
 }

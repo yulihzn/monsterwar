@@ -35,6 +35,7 @@ public class TransferScreen extends BaseScreen implements Screen {
 	private String msg = "Why did you hide that Tarot Deck in your music room?";
 	private boolean isMapFinished = false;
 	private float time=0;
+	private boolean isWorldFinished = false;
 
 	public TransferScreen(MainGame mainGame) {
 		super(mainGame);
@@ -73,14 +74,8 @@ public class TransferScreen extends BaseScreen implements Screen {
 					Gdx.app.postRunnable(new Runnable() {
 						@Override
 						public void run() {
-							MapGenerator.getInstance().getTmxWorldMap().getTileMapReload();
-							new Thread(new Runnable() {
-								@Override
-								public void run() {
-									MapGenerator.getInstance().getTmxAreaMap(GameFileHelper.getInstance().getCurrentAreaName());
-									isMapFinished = true;
-								}
-							}).start();
+							AssetManagerHelper.getInstance().loadTiledMap(MapGenerator.getInstance().getTmxWorldMap().getName());
+
 						}
 					});
 
@@ -97,6 +92,7 @@ public class TransferScreen extends BaseScreen implements Screen {
 	public void show() {
 		time = 0;
 		isMapFinished = false;
+		isWorldFinished = false;
 	//起线程去创建地图
 		new Thread(new Runnable() {
 			@Override
@@ -126,6 +122,18 @@ public class TransferScreen extends BaseScreen implements Screen {
 				}
 
 			}
+		}
+		if(MapGenerator.getInstance().getTmxWorldMap()!=null&&assetManager.isLoaded(MapGenerator.getInstance().getTmxWorldMap().getName())&&!isWorldFinished){
+			isWorldFinished = true;
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					MapGenerator.getInstance().getTmxWorldMap().getTileMapReload();
+					AssetManagerHelper.getInstance().loadTiledMap(MapGenerator.getInstance()
+							.getTmxAreaMap(GameFileHelper.getInstance().getCurrentAreaName()).getName());
+					isMapFinished = true;
+				}
+			}).start();
 		}
 	}
 
