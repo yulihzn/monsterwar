@@ -35,33 +35,33 @@ public class Castle extends Area{
         exits[1] = new GridPoint2(15+1,cy);
         exits[2] = new GridPoint2(cx,-1);
         exits[3] = new GridPoint2(cx,15+1);
-        int type = SegType.CASTLE_DIRT;
+        int type = SegType.CASTLE_DIRT.getValue();
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
-                type = SegType.CASTLE_DIRT;
+                type = SegType.CASTLE_DIRT.getValue();
                 //城墙
                 if(i==1||i==14||j==1||j==14){
-                    type = SegType.CASTLE_WALL;
+                    type = SegType.CASTLE_WALL.getValue();
                 }
                 //护城河
                 if(i==0||i==15||j==0||j==15){
-                    type = SegType.CASTLE_GUARD_WATER;
+                    type = SegType.CASTLE_GUARD_WATER.getValue();
                 }
                 //主干道
                 if(i==cx||j==cy) {
-                    type = SegType.CASTLE_AVENUE;
+                    type = SegType.CASTLE_AVENUE.getValue();
                 }
                 //要塞
                 if(i==cx&&j==cy){
-                    type = SegType.CASTLE_FORTRESSES;
+                    type = SegType.CASTLE_FORTRESSES.getValue();
                 }
                 //箭塔
-                if(((i==cx+1||i==cx-1)&&type == SegType.CASTLE_WALL)
-                        ||((j==cy+1||j==cy-1)&&type == SegType.CASTLE_WALL)){
-                    type = SegType.CASTLE_BATTLEMENT;
+                if(((i==cx+1||i==cx-1)&&type == SegType.CASTLE_WALL.getValue())
+                        ||((j==cy+1||j==cy-1)&&type == SegType.CASTLE_WALL.getValue())){
+                    type = SegType.CASTLE_BATTLEMENT.getValue();
                 }
                 if((i==1||i==14)&&(j==1||j==14)){
-                    type = SegType.CASTLE_BATTLEMENT;
+                    type = SegType.CASTLE_BATTLEMENT.getValue();
                 }
                 arr[i][j]= type;
             }

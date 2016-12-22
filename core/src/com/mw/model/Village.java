@@ -35,20 +35,20 @@ public class Village extends Area{
         exits[1] = new GridPoint2(15+1,cy);
         exits[2] = new GridPoint2(cx,-1);
         exits[3] = new GridPoint2(cx,15+1);
-        int type = SegType.VILLAGE_DIRT;
+        int type = SegType.VILLAGE_DIRT.getValue();
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
-                type = SegType.VILLAGE_DIRT;
+                type = SegType.VILLAGE_DIRT.getValue();
                 if(random.nextDouble()<0.15){
-                    type = SegType.VILLAGE_HOUSE;
+                    type = SegType.VILLAGE_HOUSE.getValue();
                 }
                 //主干道
                 if(i==cx||j==cy) {
-                    type = SegType.VILLAGE_AVENUE;
+                    type = SegType.VILLAGE_AVENUE.getValue();
                 }
                 //要塞
                 if(i==cx&&j==cy){
-                    type = SegType.VILLAGE_FORTRESSES;
+                    type = SegType.VILLAGE_FORTRESSES.getValue();
                 }
                 arr[i][j]= type;
             }

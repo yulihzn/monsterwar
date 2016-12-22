@@ -66,10 +66,10 @@ public class TmxWorldMap extends TmxMap {
         }
         for (int i = 0; i < arr.length; i++) {
             for (int j = 0; j < arr[0].length; j++) {
-                Tile floor = getTileSets().get(0).getTile(SegType.WILD_DIRT);
+                Tile floor = getTileSets().get(0).getTile(SegType.WILD_DIRT.getValue());
                 Tile block = getTileSets().get(0).getTile(arr[i][j]);
                 Tile decorate = getTileSets().get(0).getTile(arr[i][j]);
-                Tile shadow = getTileSets().get(0).getTile(SegType.SHADOW);
+                Tile shadow = getTileSets().get(0).getTile(SegType.SHADOW.getValue());
                 floor.getProperties().setProperty("value",""+floor.getId());
                 block.getProperties().setProperty("value",""+block.getId());
                 decorate.getProperties().setProperty("value",""+decorate.getId());

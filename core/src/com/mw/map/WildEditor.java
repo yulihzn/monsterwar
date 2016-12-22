@@ -1,8 +1,5 @@
 package com.mw.map;
 
-import com.mw.map.areasegment.AreaSegmentCastleTower;
-import com.mw.map.areasegment.AreaSegmentCastleWall;
-import com.mw.map.areasegment.AreaSegmentCastleWater;
 import com.mw.map.areasegment.AreaSegmentGrass;
 import com.mw.map.areasegment.AreaSegmentStone;
 import com.mw.map.areasegment.AreaSegmentTree;
@@ -35,19 +32,19 @@ public class WildEditor {
         for (int i = 0; i < 256; i+=16) {
             for (int j = 0; j < 256; j+=16) {
                 int type = area.getArr()[i%16][j%16];
-                if(type == SegType.WILD_WATER){
+                if(type == SegType.WILD_WATER.getValue()){
                     AreaSegmentWater water = new AreaSegmentWater(i,j,0);
                     addSegment(water);
                 }
-                if(type == SegType.WILD_GRASS){
+                if(type == SegType.WILD_GRASS.getValue()){
                     AreaSegmentGrass grass = new AreaSegmentGrass(i,j,0);
                     addSegment(grass);
                 }
-                if(type == SegType.WILD_TREE){
+                if(type == SegType.WILD_TREE.getValue()){
                     AreaSegmentTree tree = new AreaSegmentTree(i,j,0);
                     addSegment(tree);
                 }
-                if(type == SegType.WILD_STONE){
+                if(type == SegType.WILD_STONE.getValue()){
                     AreaSegmentStone stone = new AreaSegmentStone(i,j,0);
                     addSegment(stone);
                 }
