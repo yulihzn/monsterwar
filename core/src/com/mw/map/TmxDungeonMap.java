@@ -39,7 +39,7 @@ public class TmxDungeonMap extends TmxMap {
         }
         for (int i = 0; i < arr.length; i++) {
             for (int j = 0; j < arr[0].length; j++) {
-                Tile floor = getTileSets().get(0).getTile(MapEditor.DIRT);
+                Tile floor = getTileSets().get(0).getTile(SegType.WILD_DIRT);
                 Tile block = getTileSets().get(0).getTile(arr[i][j]);
                 Tile decorate = getTileSets().get(0).getTile(arr[i][j]);
                 Tile shadow = getTileSets().get(0).getTile(13);

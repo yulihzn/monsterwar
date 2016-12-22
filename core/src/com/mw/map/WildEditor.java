@@ -35,19 +35,19 @@ public class WildEditor {
         for (int i = 0; i < 256; i+=16) {
             for (int j = 0; j < 256; j+=16) {
                 int type = area.getArr()[i%16][j%16];
-                if(type == MapEditor.WATER){
+                if(type == SegType.WILD_WATER){
                     AreaSegmentWater water = new AreaSegmentWater(i,j,0);
                     addSegment(water);
                 }
-                if(type == MapEditor.GRASS){
+                if(type == SegType.WILD_GRASS){
                     AreaSegmentGrass grass = new AreaSegmentGrass(i,j,0);
                     addSegment(grass);
                 }
-                if(type == MapEditor.TREE){
+                if(type == SegType.WILD_TREE){
                     AreaSegmentTree tree = new AreaSegmentTree(i,j,0);
                     addSegment(tree);
                 }
-                if(type == MapEditor.STONE){
+                if(type == SegType.WILD_STONE){
                     AreaSegmentStone stone = new AreaSegmentStone(i,j,0);
                     addSegment(stone);
                 }

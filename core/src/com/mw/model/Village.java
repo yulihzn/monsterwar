@@ -2,6 +2,7 @@ package com.mw.model;
 
 import com.badlogic.gdx.math.GridPoint2;
 import com.mw.map.MapEditor;
+import com.mw.map.SegType;
 
 import java.util.Random;
 
@@ -34,20 +35,20 @@ public class Village extends Area{
         exits[1] = new GridPoint2(15+1,cy);
         exits[2] = new GridPoint2(cx,-1);
         exits[3] = new GridPoint2(cx,15+1);
-        int type = MapEditor.DIRT;
+        int type = SegType.VILLAGE_DIRT;
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
-                type = MapEditor.DIRT;
+                type = SegType.VILLAGE_DIRT;
                 if(random.nextDouble()<0.15){
-                    type = MapEditor.BUILDING2;
+                    type = SegType.VILLAGE_HOUSE;
                 }
                 //主干道
                 if(i==cx||j==cy) {
-                    type = MapEditor.ROAD;
+                    type = SegType.VILLAGE_AVENUE;
                 }
                 //要塞
                 if(i==cx&&j==cy){
-                    type = MapEditor.BUILDING;
+                    type = SegType.VILLAGE_FORTRESSES;
                 }
                 arr[i][j]= type;
             }

@@ -2,6 +2,7 @@ package com.mw.model;
 
 import com.badlogic.gdx.math.GridPoint2;
 import com.mw.map.MapEditor;
+import com.mw.map.SegType;
 
 import java.util.Random;
 
@@ -34,33 +35,33 @@ public class Castle extends Area{
         exits[1] = new GridPoint2(15+1,cy);
         exits[2] = new GridPoint2(cx,-1);
         exits[3] = new GridPoint2(cx,15+1);
-        int type = MapEditor.DIRT;
+        int type = SegType.CASTLE_DIRT;
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
-                type = MapEditor.DIRT;
+                type = SegType.CASTLE_DIRT;
                 //城墙
                 if(i==1||i==14||j==1||j==14){
-                    type = MapEditor.WALL;
+                    type = SegType.CASTLE_WALL;
                 }
                 //护城河
                 if(i==0||i==15||j==0||j==15){
-                    type = MapEditor.GUARD_WATER;
+                    type = SegType.CASTLE_GUARD_WATER;
                 }
                 //主干道
                 if(i==cx||j==cy) {
-                    type = MapEditor.ROAD;
+                    type = SegType.CASTLE_AVENUE;
                 }
                 //要塞
                 if(i==cx&&j==cy){
-                    type = MapEditor.BUILDING;
+                    type = SegType.CASTLE_FORTRESSES;
                 }
                 //箭塔
-                if(((i==cx+1||i==cx-1)&&type == MapEditor.WALL)
-                        ||((j==cy+1||j==cy-1)&&type == MapEditor.WALL)){
-                    type = MapEditor.BUILDING1;
+                if(((i==cx+1||i==cx-1)&&type == SegType.CASTLE_WALL)
+                        ||((j==cy+1||j==cy-1)&&type == SegType.CASTLE_WALL)){
+                    type = SegType.CASTLE_BATTLEMENT;
                 }
                 if((i==1||i==14)&&(j==1||j==14)){
-                    type = MapEditor.BUILDING1;
+                    type = SegType.CASTLE_BATTLEMENT;
                 }
                 arr[i][j]= type;
             }

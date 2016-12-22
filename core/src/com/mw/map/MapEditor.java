@@ -58,20 +58,20 @@ public class MapEditor {
 	public static final int VILLAGE = 101;//村子
 	public static final int WILD = 102;//野外
 
-	public static final int SHADOW = 1;
-	public static final int TRANS = 0;
-	public static final int DIRT = 2;
-	public static final int WATER = 5;
-	public static final int GRASS = 7;
-	public static final int TREE = 8;
-	public static final int GUARD_WATER = 9;
-	public static final int ROAD = 11;
-	public static final int WALL = 13;
-	public static final int STONE = 14;
-	public static final int DOOR = 15;
-	public static final int BUILDING2 = 16;
-	public static final int BUILDING = 17;
-	public static final int BUILDING1 = 18;
+//	public static final int SHADOW = 1;
+//	public static final int TRANS = 0;
+//	public static final int DIRT = 2;
+//	public static final int WATER = 5;
+//	public static final int GRASS = 7;
+//	public static final int TREE = 8;
+//	public static final int GUARD_WATER = 9;
+//	public static final int ROAD = 11;
+//	public static final int WALL = 13;
+//	public static final int STONE = 14;
+//	public static final int DOOR = 15;
+//	public static final int BUILDING2 = 16;
+//	public static final int BUILDING = 17;
+//	public static final int BUILDING1 = 18;
 	public static final int block = 256;
 	private int[][] arr = new int[block][block];
 	private Random random;
@@ -92,21 +92,21 @@ public class MapEditor {
 		y0 = random.nextInt(9999);
 		for(int i = 0;i < block;i++){
 			for(int j = 0;j < block;j++){
-				arr[i][j] = DIRT;
+				arr[i][j] = SegType.WILD_DIRT;
 				double x = dx * i / w + x0,
                         y = dy * j / h + y0;
 				double p = perlin.perlinNoise(x, y);
                 if (p > threshold){
-                	arr[i][j] = TREE;
+                	arr[i][j] = SegType.WILD_TREE;
                 }else if (p < threshold2){
-                	arr[i][j] = WATER;
+                	arr[i][j] = SegType.WILD_WATER;
                 }
 				double pr = random.nextDouble();
-				if(pr>=0&&pr<0.20&&arr[i][j]!=WATER){
-					arr[i][j]= STONE;
+				if(pr>=0&&pr<0.20&&arr[i][j]!=SegType.WILD_WATER){
+					arr[i][j]= SegType.WILD_STONE;
 				}
-				if(pr>=0.20&&pr<0.25&&arr[i][j]!=WATER){
-					arr[i][j]= GRASS;
+				if(pr>=0.20&&pr<0.25&&arr[i][j]!=SegType.WILD_WATER){
+					arr[i][j]= SegType.WILD_GRASS;
 				}
 			}
 		}
@@ -155,10 +155,10 @@ public class MapEditor {
 		for (int j = 0; j < x; j++) {
 			for (int i = 0; i < y; i++) {
 				int block = arr[y0+j][x0+i];
-				if(block == WALL
-						||block== ROAD
-						||block== BUILDING1
-						||block== GUARD_WATER){
+				if(block == SegType.CASTLE_WALL
+						||block== SegType.WILD_STREET
+						||block== SegType.CASTLE_BATTLEMENT
+						||block== SegType.CASTLE_GUARD_WATER){
 					aStarData[i][j] = 1;
 				}else{
 					aStarData[i][j] = 0;
@@ -235,7 +235,7 @@ public class MapEditor {
 		p2.y += castle2.getY0();
 		Array<GridPoint2> array = getRoadList(p1,p2);
 		for(GridPoint2 p:array){
-			arr[p.x][p.y] = ROAD;
+			arr[p.x][p.y] = SegType.WILD_STREET;
 		}
 	}
 
@@ -255,7 +255,7 @@ public class MapEditor {
 		int[][] a = village.getArr();
 		for (int i = 0; i < a.length; i++) {
 			for (int j = 0; j < a[0].length; j++) {
-				if(a[i][j] != DIRT){
+				if(a[i][j] != SegType.WILD_DIRT){
 					arr[x0+i][y0+j]=a[i][j];
 				}
 			}
@@ -284,18 +284,18 @@ public class MapEditor {
 		for(int i = 0;i < block;i++){
 			for(int j = 0;j < block;j++){
 				switch (arr[i][j]) {
-				case DIRT:strs[i][j]="　";break;
-				case GRASS:strs[i][j]="ｗ";break;
-				case TREE:strs[i][j]="Ｙ";break;
-				case WATER:strs[i][j]="～";break;
-				case STONE:strs[i][j]="ｏ";break;
-				case WALL:strs[i][j]="＝";break;
-				case DOOR:strs[i][j]="－";break;
-				case ROAD:strs[i][j]="＋";break;
-				case BUILDING:strs[i][j]="Ｍ";break;
-				case BUILDING1:strs[i][j]="Ｎ";break;
-				case BUILDING2:strs[i][j]="Ｈ";break;
-				case GUARD_WATER:strs[i][j]="＊";break;
+				case SegType.WILD_DIRT:strs[i][j]="　";break;
+				case SegType.WILD_GRASS:strs[i][j]="ｗ";break;
+				case SegType.WILD_TREE:strs[i][j]="Ｙ";break;
+				case SegType.WILD_WATER:strs[i][j]="～";break;
+				case SegType.WILD_STONE:strs[i][j]="ｏ";break;
+				case SegType.CASTLE_WALL:strs[i][j]="＝";break;
+				case SegType.CASTLE_GATE:strs[i][j]="－";break;
+				case SegType.WILD_STREET:strs[i][j]="＋";break;
+				case SegType.CASTLE_FORTRESSES:strs[i][j]="Ｍ";break;
+				case SegType.CASTLE_HOUSE:strs[i][j]="Ｎ";break;
+				case SegType.CASTLE_BATTLEMENT:strs[i][j]="Ｈ";break;
+				case SegType.CASTLE_GUARD_WATER:strs[i][j]="＊";break;
 				}
 				stringBuilder.append(strs[i][j]);
 			}
