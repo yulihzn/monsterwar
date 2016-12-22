@@ -1,0 +1,79 @@
+package com.mw.map;
+
+/**
+ * Created by BanditCat on 2016/12/22.
+ * 大地图片段类型，目前只有基础类型，具体外观变化以后加入
+ */
+
+public enum  SegType {
+    /**通用**/
+    TRANS,
+    SHADOW,
+    /**城堡**/
+    CASTLE_DIRT,//泥土
+    CASTLE_WATER,//水
+    CASTLE_GRASS,//草地
+    CASTLE_STONE,//石头
+    CASTLE_TREE,//树
+    CASTLE_TOMB,//墓地
+    CASTLE_BUSH,//灌木丛
+    CASTLE_WALL,//城墙
+    CASTLE_BATTLEMENT,//城垛
+    CASTLE_GATE,//城门
+    CASTLE_BRIDGE,//城桥
+    CASTLE_ROAD,//小路
+    CASTLE_STREET,//干道
+    CASTLE_AVENUE,//主干道
+    CASTLE_HOUSE,//民房
+    CASTLE_FORTRESSES,//要塞
+    CASTLE_GUILD_WARRIOR,//战士公会
+    CASTLE_GUILD_MAGIC,//法师公会
+    CASTLE_GUILD_RANGER,//游侠公会
+    CASTLE_GUILD_MINISTER,//占星家公会
+    CASTLE_STORE,//杂货店
+    CASTLE_SMITHY,//铁匠铺
+    CASTLE_INN,//酒馆
+    CASTLE_MARKET,//集市
+    /**村庄**/
+    VILLAGE_DIRT,//泥土
+    VILLAGE_WATER,//水
+    VILLAGE_GRASS,//草地
+    VILLAGE_STONE,//石头
+    VILLAGE_TREE,//树
+    VILLAGE_TOMB,//墓地
+    VILLAGE_BUSH,//灌木丛
+    VILLAGE_WALL,//城墙
+    VILLAGE_BATTLEMENT,//城垛
+    VILLAGE_GATE,//城门
+    VILLAGE_BRIDGE,//桥
+    VILLAGE_ROAD,//小路
+    VILLAGE_STREET,//干道
+    VILLAGE_AVENUE,//主干道
+    VILLAGE_HOUSE,//民房
+    VILLAGE_FORTRESSES,//要塞
+    VILLAGE_GUILD_WARRIOR,//战士公会
+    VILLAGE_GUILD_MAGIC,//法师公会
+    VILLAGE_GUILD_RANGER,//游侠公会
+    VILLAGE_GUILD_MINISTER,//占星家公会
+    VILLAGE_STORE,//杂货店
+    VILLAGE_SMITHY,//铁匠铺
+    VILLAGE_INN,//酒馆
+    VILLAGE_MARKET,//集市
+    VILLAGE_FIELD,//田
+    VILLAGE_FARM,//农场
+    /**野外**/
+    WILD_DIRT,//泥土
+    WILD_WATER,//水
+    WILD_GRASS,//草地
+    WILD_STONE,//石头
+    WILD_TREE,//树
+    WILD_MAGMA,//岩浆
+    WILD_BUSH,//灌木丛
+    WILD_CAVE,//洞穴
+    WILD_CABIN,//小屋
+    WILD_BRIDGE,//桥
+    WILD_ROAD,//小路
+    WILD_STREET,//干道
+    /**地牢**/
+    DUNGEON
+}

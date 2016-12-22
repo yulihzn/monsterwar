@@ -46,13 +46,17 @@ import java.util.Random;
  * 大区域地图存放在save/world/area/area0_0
  * 其中瓷砖类型会放入数组，属性存入key-value
  *
+ *
+ * 大地图上的每一个元素都是16x16的小区域
+ * 根据大地图上面设定好的类型来选择，这样做的前置是设定好所有的类型合理分类，例如草地可能有多种，但是共用一个类
+ * 小区域里面再细分功能和具体实现
  */
 public class MapEditor {
 	public static long SEED = 3;//种子为3生成的00是城堡
 
-	public static final int CASTLE = 100;
-	public static final int VILLAGE = 101;
-	public static final int WILD = 102;
+	public static final int CASTLE = 100;//城堡
+	public static final int VILLAGE = 101;//村子
+	public static final int WILD = 102;//野外
 
 	public static final int SHADOW = 1;
 	public static final int TRANS = 0;
