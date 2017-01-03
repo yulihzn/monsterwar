@@ -12,6 +12,21 @@ public enum SegType {
     TRANS(0,""),
     SHADOW(1,""),
     /**
+     * 野外
+     **/
+    WILD_DIRT(2,""),//泥土
+    WILD_WATER(5,""),//水
+    WILD_GRASS(7,""),//草地
+    WILD_STONE(14,""),//石头
+    WILD_TREE(8,""),//树
+    WILD_MAGMA(6,""),//岩浆
+    WILD_BUSH(3006,""),//灌木丛
+    WILD_CAVE(3007,""),//洞穴
+    WILD_CABIN(3008,""),//小屋
+    WILD_BRIDGE(3009,""),//桥
+    WILD_ROAD(3010,""),//小路
+    WILD_STREET(3011,""),//干道
+    /**
      * 城堡
      **/
     CASTLE_DIRT(1000,""),//泥土
@@ -68,21 +83,7 @@ public enum SegType {
     VILLAGE_INN(2023,""),//酒馆
     VILLAGE_MARKET(2024,""),//集市
     VILLAGE_FIELD(2025,""),//田
-    /**
-     * 野外
-     **/
-    WILD_DIRT(3000,""),//泥土
-    WILD_WATER(3001,""),//水
-    WILD_GRASS(3002,""),//草地
-    WILD_STONE(3003,""),//石头
-    WILD_TREE(3004,""),//树
-    WILD_MAGMA(3005,""),//岩浆
-    WILD_BUSH(3006,""),//灌木丛
-    WILD_CAVE(3007,""),//洞穴
-    WILD_CABIN(3008,""),//小屋
-    WILD_BRIDGE(3009,""),//桥
-    WILD_ROAD(3010,""),//小路
-    WILD_STREET(3011,""),//干道
+
     /**
      * 地牢
      **/
