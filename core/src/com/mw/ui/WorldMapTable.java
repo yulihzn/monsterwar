@@ -55,7 +55,7 @@ public class WorldMapTable extends Table {
         texture = new Texture(w, h, Pixmap.Format.RGBA8888);
         texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Linear);
         texture.setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);
-        pixmap.setColor(new Color(0,255,0,0.5f));
+        pixmap.setColor(new Color(0,0,0,1f));
         pixmap.fillRectangle(0,0,w,h);
         texture.draw(pixmap, 0, 0);
         TextureRegion textureRegion = new TextureRegion(texture,w,h);

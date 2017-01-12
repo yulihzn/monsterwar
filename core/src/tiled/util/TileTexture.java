@@ -18,7 +18,7 @@ public class TileTexture {
         for (int i = 0; i < packNames.length; i++) {
             if(name.equals(TileTexture.packNames[i])){
                 switch (i){
-                    case 0:width=1024;height=32;break;
+                    case 0:width=256;height=288;break;
                     case 1:width=128;height=992;break;
                     case 2:width=1024;height=384;break;
                     case 3:width=128;height=32;break;
