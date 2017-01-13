@@ -38,15 +38,15 @@ public class AreaSegmentCastleBuilding extends AreaSegment {
 
     /**
      * 生成房子
-     * 一个房子最小是3x3，最大是16x16
+     * 一个房子最小是3x3，最大是7x7
      *
      * @return
      */
     private int[][]getHouse(int cx,int cy){
         //0地板，1墙壁，2门
-        int lengthx = random.nextInt(16-cx);
+        int lengthx = random.nextInt(7-cx);
         lengthx = lengthx<3?3:lengthx;
-        int lengthy = random.nextInt(16-cy);
+        int lengthy = random.nextInt(7-cy);
         lengthy = lengthy<3?3:lengthy;
         int[][]arr = new int[lengthx][lengthy];
         for (int i = 0; i < arr.length; i++) {
@@ -72,11 +72,11 @@ public class AreaSegmentCastleBuilding extends AreaSegment {
 
     @Override
     protected void build() {
-        int cx = random.nextInt(14);
-        int cy = random.nextInt(14);
+        int cx = random.nextInt(5);
+        int cy = random.nextInt(5);
         int[][] house = getHouse(cx,cy);
-        for (int i = 0; i < WIDTH; i++) {
-            for (int j = 0; j < HEIGHT; j++) {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
                 MapInfoModel model = new MapInfoModel();
                 model.setFloor(floor);
                 model.setBlock(AreaTile.B_TRANS);

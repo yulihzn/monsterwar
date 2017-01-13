@@ -15,8 +15,9 @@ public class AreaEditor {
 
     private Random random;
     private Area area;
-    public static final int block = 256;
-    private MapInfoModel[][] arr = new MapInfoModel[block][block];
+    public static final int WIDTH = 112;
+    public static final int HEIGHT = 112;
+    private MapInfoModel[][] arr = new MapInfoModel[WIDTH][HEIGHT];
     private AreaMapModel areaMapModel = new AreaMapModel();
 
     public AreaEditor(Area area) {

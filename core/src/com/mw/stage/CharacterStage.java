@@ -95,7 +95,7 @@ public class CharacterStage extends Stage {
         addAvatar();
         addInventory();
         camera = new OrthographicCamera(camSize,camSize*(h/w));
-        camera.zoom = 20.0f;
+        camera.zoom = 1.0f;
         camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
         camera.update();
         worldMapTable = new WorldMapTable(camera);

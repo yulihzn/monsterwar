@@ -4,16 +4,15 @@ import com.mw.model.MapInfoModel;
 
 /**
  * Created by BanditCat on 2016/11/4.
- * 图块是大区域16等分的小区域，大小是16x16任意的区域
+ * 图块是大区域16等分的小区域，大小是7x7任意的区域
  */
 
 public abstract class AreaSegment {
     protected int x0;//顶点x
     protected int y0;//顶点y
     protected int style;//类型
-    public static final int WIDTH = 16;//宽度
-    public static final int HEIGHT = 16;//高度
-    protected MapInfoModel[][] map = new MapInfoModel[WIDTH][HEIGHT];//数组(包含顶点信息)
+    public static final int size = 7;
+    protected MapInfoModel[][] map = new MapInfoModel[size][size];//数组(包含顶点信息)
 
     public AreaSegment(int x0, int y0,int style) {
         this.x0 = x0;

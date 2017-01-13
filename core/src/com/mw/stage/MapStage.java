@@ -21,6 +21,7 @@ import com.mw.game.MainGame;
 import com.mw.logic.Logic;
 import com.mw.logic.characters.base.Monster;
 import com.mw.logic.characters.base.Player;
+import com.mw.map.AreaEditor;
 import com.mw.map.AreaTile;
 import com.mw.map.MapGenerator;
 import com.mw.map.MapShadow;
@@ -55,8 +56,6 @@ public class  MapStage extends Stage{
 
 	CameraController controller;
 	GestureDetector gestureDetector;
-	private float worldWidth = 256;
-	private float worldHeight = 256;
 	private float camSize = 16;
 	private MapShadow mapShadow;
 	private ShadowActor shadowActor;
@@ -229,8 +228,8 @@ public class  MapStage extends Stage{
 					generateNextStairs(level-1);
 					break;
 				case Player.ACTION_SELF:
-					GameFileHelper.getInstance().setCurrentAreaName("area"+MathUtils.random(15)*16+"_"+MathUtils.random(15)*16);
-					mainScreen.getMainGame().setScreen(mainScreen.getMainGame().getTransferScreen());
+//					GameFileHelper.getInstance().setCurrentAreaName("area"+MathUtils.random(15)*16+"_"+MathUtils.random(15)*16);
+//					mainScreen.getMainGame().setScreen(mainScreen.getMainGame().getTransferScreen());
 					break;
 			}
 		}
@@ -392,8 +391,8 @@ public class  MapStage extends Stage{
 		camera.viewportWidth = 16;
 		camera.viewportHeight = 16*(h/w);
 		camera.zoom = MathUtils.clamp(camera.zoom, 0.5f, 2f);
-		camera.position.x = MathUtils.clamp(camera.position.x, camera.viewportWidth/2, 256-camera.viewportWidth/2);
-		camera.position.y = MathUtils.clamp(camera.position.y, camera.viewportHeight/2, 256-camera.viewportHeight/2);
+		camera.position.x = MathUtils.clamp(camera.position.x, camera.viewportWidth/2, AreaEditor.WIDTH-camera.viewportWidth/2);
+		camera.position.y = MathUtils.clamp(camera.position.y, camera.viewportHeight/2, AreaEditor.HEIGHT-camera.viewportHeight/2);
 //		camera.position.x = MathUtils.clamp(camera.position.x, 0, 256);
 //		camera.position.y = MathUtils.clamp(camera.position.y, 0, 256);
 		camera.update();

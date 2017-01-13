@@ -41,8 +41,8 @@ public class AreaSegmentCastleWall extends AreaSegment {
 
     @Override
     protected void build() {
-        for (int i = 0; i < WIDTH; i++) {
-            for (int j = 0; j < HEIGHT; j++) {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
                 MapInfoModel model = new MapInfoModel();
                 model.setFloor(floor);
                 Random r = new Random(MapEditor.SEED);
@@ -57,16 +57,16 @@ public class AreaSegmentCastleWall extends AreaSegment {
                 model.setShadow(AreaTile.S_SHADOW);
                 if(dir == DIR_LR){
                     //左右方向，上下围墙
-                    if(j==0||j==HEIGHT-1){
+                    if(j==0||j==size-1){
                         model.setBlock(block);
                     }
                     //底部第二排装饰为墙
-                    if(j==HEIGHT-2){
+                    if(j==size-2){
                         model.setDecorate(decorate);
                     }
                 }else {
                     //上下方向，左右围墙
-                    if(i==0||i==WIDTH-1){
+                    if(i==0||i==size-1){
                         model.setBlock(block);
                     }
                 }

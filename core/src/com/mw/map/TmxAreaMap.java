@@ -19,11 +19,10 @@ import tiled.io.TMXMapWriter;
  */
 
 public class TmxAreaMap extends TmxMap {
-    public static final int block = 256;
     private AreaMapModel mapModel = new AreaMapModel();
     private Area area;
     public TmxAreaMap(Area area) {
-        super(block, block);
+        super(AreaEditor.WIDTH, AreaEditor.HEIGHT);
         this.area = area;
         String s = Gdx.files.getLocalStoragePath()+"save/area/";
         if(Gdx.app.getType().equals(Application.ApplicationType.Android)){
@@ -80,8 +79,8 @@ public class TmxAreaMap extends TmxMap {
         }
     }
     private void initMapModel() {
-        for (int i = 0; i < 256; i++) {
-            for (int j = 0; j < 256; j++) {
+        for (int i = 0; i < getWidth(); i++) {
+            for (int j = 0; j < getHeight(); j++) {
                         mapModel.getArr()[i][j] = getNewMapInfoModel(getTileId(LAYER_FLOOR,i,j)
                                 ,getTileId(LAYER_BLOCK,i,j)
                                 ,getTileId(LAYER_DECORATE,i,j)
@@ -103,7 +102,7 @@ public class TmxAreaMap extends TmxMap {
     }
 
     public void changeTileAlpha(String layer,int x,int y){
-        if(x<0||x>=256||y<0||y>=256){
+        if(x<0||x>=getWidth()||y<0||y>=getHeight()){
             return;
         }
         int decorate = mapModel.getArr()[x][y].getDecorate();

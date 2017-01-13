@@ -1,5 +1,6 @@
 package com.mw.map;
 
+import com.mw.map.areasegment.AreaSegment;
 import com.mw.map.areasegment.AreaSegmentGrass;
 import com.mw.map.areasegment.AreaSegmentStone;
 import com.mw.map.areasegment.AreaSegmentTree;
@@ -14,13 +15,16 @@ import com.mw.model.MapInfoModel;
  */
 
 public class WildEditor {
-    private MapInfoModel[][] map = new MapInfoModel[256][256];
+    public static final int width = AreaEditor.WIDTH;
+    public static final int height = AreaEditor.HEIGHT;
+    public static final int segsize = AreaSegment.size;
+    private MapInfoModel[][] map = new MapInfoModel[width][height];
     private Area area;
 
     public WildEditor(Area area) {
         this.area = area;
-        for (int i = 0; i < 256; i++) {
-            for (int j = 0; j < 256; j++) {
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
                 MapInfoModel model = new MapInfoModel();
                 model.setFloor(AreaTile.F_DIRT_01);
                 model.setBlock(AreaTile.B_TRANS);
@@ -29,9 +33,9 @@ public class WildEditor {
                 map[i][j] = model;
             }
         }
-        for (int i = 0; i < 256; i+=16) {
-            for (int j = 0; j < 256; j+=16) {
-                int type = area.getArr()[i%16][j%16];
+        for (int i = 0; i < width; i+=segsize) {
+            for (int j = 0; j < height; j+=segsize) {
+                int type = area.getArr()[i%segsize][j%segsize];
                 if(type == SegType.WILD_WATER.getValue()){
                     AreaSegmentWater water = new AreaSegmentWater(i,j,0);
                     addSegment(water);
@@ -52,9 +56,9 @@ public class WildEditor {
             }
         }
     }
-    private void addSegment(com.mw.map.areasegment.AreaSegment segment){
-        for (int i = 0; i < com.mw.map.areasegment.AreaSegment.HEIGHT; i++) {
-            for (int j = 0; j < com.mw.map.areasegment.AreaSegment.WIDTH; j++) {
+    private void addSegment(AreaSegment segment){
+        for (int i = 0; i < segsize; i++) {
+            for (int j = 0; j < segsize; j++) {
                 map[i+segment.getX0()][j+segment.getY0()] = segment.getMap()[i][j];
             }
         }

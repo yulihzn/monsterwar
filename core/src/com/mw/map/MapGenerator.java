@@ -39,7 +39,7 @@ public class MapGenerator {
         long time =System.currentTimeMillis();
         Gdx.app.log("world", Utils.getMins(time));
         sendBeginMsg("world generate begin",0);
-        tmxWorldMap = new TmxWorldMap(256,256);
+        tmxWorldMap = new TmxWorldMap(MapEditor.WIDTH,MapEditor.HEIGHT);
         sendFinishMsg("world generate finish",0);
         long tt = System.currentTimeMillis();
         Gdx.app.log("world", Utils.getMins(tt));

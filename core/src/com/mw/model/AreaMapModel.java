@@ -1,5 +1,7 @@
 package com.mw.model;
 
+import com.mw.map.AreaEditor;
+
 import java.util.HashMap;
 
 /**
@@ -7,7 +9,7 @@ import java.util.HashMap;
  */
 
 public class AreaMapModel {
-    private MapInfoModel[][]arr = new MapInfoModel[256][256];
+    private MapInfoModel[][]arr = new MapInfoModel[AreaEditor.WIDTH][AreaEditor.HEIGHT];
     private Area area;
 
     public AreaMapModel() {

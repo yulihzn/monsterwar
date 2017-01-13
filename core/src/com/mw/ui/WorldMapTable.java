@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mw.actor.TiledMapActor;
 import com.mw.game.MainGame;
+import com.mw.map.MapEditor;
 import com.mw.map.TmxWorldMap;
 import com.mw.stage.CharacterStage;
 
@@ -85,7 +86,7 @@ public class WorldMapTable extends Table {
 //        renderer.setView(new OrthographicCamera(800,600));
 //        camera.translate(0,0);
         //获取渲染
-        final TmxWorldMap tmxWorldMap = new TmxWorldMap(TmxWorldMap.TILE_SIZE_WIDTH,TmxWorldMap.TILE_SIZE_HEIGHT);
+        final TmxWorldMap tmxWorldMap = new TmxWorldMap(MapEditor.WIDTH,MapEditor.HEIGHT);
         TiledMap map = tmxWorldMap.getTileMapReload();
         map.getLayers().get(TmxWorldMap.LAYER_SHADOW).setVisible(false);
 //        tmxWorldMap.saveTiledMap();

@@ -1,5 +1,7 @@
 package com.mw.model;
 
+import com.mw.map.MapEditor;
+
 import java.util.HashMap;
 
 /**
@@ -7,7 +9,7 @@ import java.util.HashMap;
  */
 
 public class WorldMapModel {
-    private int[][]arr = new int[256][256];
+    private int[][]arr = new int[MapEditor.WIDTH][MapEditor.HEIGHT];
     private HashMap<String,Area> areas = new HashMap<String, Area>();
 
     public WorldMapModel() {

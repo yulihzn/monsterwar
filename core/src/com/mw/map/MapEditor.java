@@ -72,13 +72,14 @@ public class MapEditor {
 //	public static final int BUILDING2 = 16;
 //	public static final int BUILDING = 17;
 //	public static final int BUILDING1 = 18;
-	public static final int block = 256;
-	private int[][] arr = new int[block][block];
+public static final int WIDTH = 256;
+	public static final int HEIGHT = 256;
+	private int[][] arr = new int[WIDTH][HEIGHT];
 	private Random random;
 	private PerlinNoise2D perlin = new PerlinNoise2D();
 	private double threshold = .14, threshold2 = -.14;
 	double x0 = 0, y0 = 0, dx = 20, dy = 20;
-	int w = block, h = block, d = 2;
+	int w = WIDTH, h = HEIGHT, d = 2;
 
 	private WorldMapModel worldMapModel = new WorldMapModel();
 	public MapEditor(long seed) {
@@ -90,8 +91,8 @@ public class MapEditor {
 		dy = 20+random.nextInt(20);
 		x0 = random.nextInt(9999);
 		y0 = random.nextInt(9999);
-		for(int i = 0;i < block;i++){
-			for(int j = 0;j < block;j++){
+		for(int i = 0;i < w;i++){
+			for(int j = 0;j < h;j++){
 				arr[i][j] = SegType.WILD_DIRT.getValue();
 				double x = dx * i / w + x0,
                         y = dy * j / h + y0;
@@ -281,9 +282,9 @@ public class MapEditor {
 
 	public String getArrayString(){
 		StringBuilder stringBuilder = new StringBuilder();
-		String[][] strs = new String[block][block];
-		for(int i = 0;i < block;i++){
-			for(int j = 0;j < block;j++){
+		String[][] strs = new String[WIDTH][HEIGHT];
+		for(int i = 0;i < WIDTH;i++){
+			for(int j = 0;j < HEIGHT;j++){
 				strs[i][j] = SegType.getType(arr[i][j]).toString();
 //				switch (arr[i][j]) {
 //				case SegType.WILD_DIRT:strs[i][j]="　";break;

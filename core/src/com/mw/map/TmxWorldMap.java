@@ -26,8 +26,7 @@ import tiled.io.TMXMapWriter;
  */
 
 public class TmxWorldMap extends TmxMap {
-    public static final int TILE_SIZE_WIDTH = 256;
-    public static final int TILE_SIZE_HEIGHT = 256;
+
     private WorldMapModel mapModel = new WorldMapModel();
     private boolean hasInitMapModel = false;
     public TmxWorldMap(int width, int height) {
@@ -107,8 +106,8 @@ public class TmxWorldMap extends TmxMap {
         HashMap<String,Area> map = mapModel.getAreas();
         map.clear();
         //新建256个空的Area并放入map，把tilemap里的数组赋值
-        for (int i = 0; i < 256; i++) {
-            for (int j = 0; j < 256; j++) {
+        for (int i = 0; i < getWidth(); i++) {
+            for (int j = 0; j < getHeight(); j++) {
                 if(i%16==0&&j%16==0){
                     Area area = new Area(i,j);
                     map.put(area.getName(),area);

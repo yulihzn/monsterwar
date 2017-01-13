@@ -128,7 +128,7 @@ public class TmxMap extends Map {
         return tile;
     }
     public void changeTile(String layer,int type,int x,int y){
-        if(x<0||x>=256||y<0||y>=256){
+        if(x<0||x>=getWidth()||y<0||y>=getHeight()){
             return;
         }
         TiledMapTileLayer.Cell cell = ((TiledMapTileLayer)(tileMap.getLayers().get(layer))).getCell(x,y);
@@ -142,7 +142,7 @@ public class TmxMap extends Map {
     }
 
     public int getTileId(String layer,int x,int y){
-        if(x<0||x>=256||y<0||y>=256){
+        if(x<0||x>=getWidth()||y<0||y>=getHeight()){
             return -1;
         }
         TiledMapTileLayer.Cell cell = ((TiledMapTileLayer)(tileMap.getLayers().get(layer))).getCell(x,y);
