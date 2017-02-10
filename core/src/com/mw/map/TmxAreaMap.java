@@ -31,6 +31,7 @@ public class TmxAreaMap extends TmxMap {
             dir.mkdirs();
         }
         name = s+area.getName()+".tmx";
+        name=name.replaceAll("\\\\", "/");
         Gdx.app.log("namePath",name);
         initWorld();
     }

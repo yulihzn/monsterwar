@@ -39,6 +39,7 @@ public class TmxWorldMap extends TmxMap {
             dir.mkdirs();
         }
         name = s+"world.tmx";
+        name=name.replaceAll("\\\\", "/");
         Gdx.app.log("namePath",name);
         initWorld();
     }

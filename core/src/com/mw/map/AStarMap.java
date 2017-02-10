@@ -139,36 +139,36 @@ public class AStarMap {
 			return true;
 		}
 		/**----------------只有在走斜线的时候才要继续判断--------------------**/
-//		else { /* 如果他旁边 */
-//			int offsetX = from.getX() - to.getX();
-//			int offsetY = from.getY() - to.getY();
-//			if (Math.abs(offsetX) == 1 && Math.abs(offsetY) == 1) { // 只有在走斜线的时候才要继续判断
-//				if ((offsetX == 1 && offsetY == -1 && (isValidX(from.getX() - 1)
-//						&& STATE_BARRIER == astarData[from.getY()][from.getX() - 1] || isValidY(from
-//						.getY() + 1)
-//						&& STATE_BARRIER == astarData[from.getY() + 1][from
-//								.getX()]))
-//						|| (offsetX == 1 && offsetY == 1 && (isValidY(from
-//								.getY() - 1)
-//								&& STATE_BARRIER == astarData[from.getY() - 1][from
-//										.getX()] || isValidX(from.getX() - 1)
-//								&& STATE_BARRIER == astarData[from.getY()][from
-//										.getX() - 1]))
-//						|| (offsetX == -1 && offsetY == 1 && (isValidX(from
-//								.getX() + 1)
-//								&& STATE_BARRIER == astarData[from.getY()][from
-//										.getX() + 1] || isValidY(from.getY() - 1)
-//								&& STATE_BARRIER == astarData[from.getY() - 1][from
-//										.getX()]))
-//						|| (offsetX == -1 && offsetY == -1 && (isValidX(from
-//								.getX() + 1)
-//								&& STATE_BARRIER == astarData[from.getY()][from
-//										.getX() + 1] || isValidY(from.getY() + 1)
-//								&& STATE_BARRIER == astarData[from.getY() + 1][from
-//										.getX()])))
-//					return false;//这里本来是TRUE,默认斜线障碍物不能越过。
-//			}
-//		}
+		else { /* 如果他旁边 */
+			int offsetX = from.getX() - to.getX();
+			int offsetY = from.getY() - to.getY();
+			if (Math.abs(offsetX) == 1 && Math.abs(offsetY) == 1) { // 只有在走斜线的时候才要继续判断
+				if ((offsetX == 1 && offsetY == -1 && (isValidX(from.getX() - 1)
+						&& STATE_BARRIER == astarData[from.getY()][from.getX() - 1] || isValidY(from
+						.getY() + 1)
+						&& STATE_BARRIER == astarData[from.getY() + 1][from
+								.getX()]))
+						|| (offsetX == 1 && offsetY == 1 && (isValidY(from
+								.getY() - 1)
+								&& STATE_BARRIER == astarData[from.getY() - 1][from
+										.getX()] || isValidX(from.getX() - 1)
+								&& STATE_BARRIER == astarData[from.getY()][from
+										.getX() - 1]))
+						|| (offsetX == -1 && offsetY == 1 && (isValidX(from
+								.getX() + 1)
+								&& STATE_BARRIER == astarData[from.getY()][from
+										.getX() + 1] || isValidY(from.getY() - 1)
+								&& STATE_BARRIER == astarData[from.getY() - 1][from
+										.getX()]))
+						|| (offsetX == -1 && offsetY == -1 && (isValidX(from
+								.getX() + 1)
+								&& STATE_BARRIER == astarData[from.getY()][from
+										.getX() + 1] || isValidY(from.getY() + 1)
+								&& STATE_BARRIER == astarData[from.getY() + 1][from
+										.getX()])))
+					return true;//这里本来是TRUE,默认斜线障碍物不能越过。
+			}
+		}
 		/**--------------------------------------------------------------**/
 		return false;
 	}

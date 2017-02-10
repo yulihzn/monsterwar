@@ -38,16 +38,16 @@ public class AreaSegmentCastleBuilding extends AreaSegment {
 
     /**
      * 生成房子
-     * 一个房子最小是3x3，最大是7x7
+     * 一个房子最小是5x5，最大是7x7
      *
      * @return
      */
     private int[][]getHouse(int cx,int cy){
         //0地板，1墙壁，2门
         int lengthx = random.nextInt(7-cx);
-        lengthx = lengthx<3?3:lengthx;
+        lengthx = lengthx<5?5:lengthx;
         int lengthy = random.nextInt(7-cy);
-        lengthy = lengthy<3?3:lengthy;
+        lengthy = lengthy<5?5:lengthy;
         int[][]arr = new int[lengthx][lengthy];
         for (int i = 0; i < arr.length; i++) {
             for (int j = 0; j < arr[0].length; j++) {
@@ -72,8 +72,8 @@ public class AreaSegmentCastleBuilding extends AreaSegment {
 
     @Override
     protected void build() {
-        int cx = random.nextInt(5);
-        int cy = random.nextInt(5);
+        int cx = random.nextInt(2);
+        int cy = random.nextInt(2);
         int[][] house = getHouse(cx,cy);
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
