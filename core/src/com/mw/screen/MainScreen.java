@@ -11,7 +11,7 @@ import com.mw.stage.MapStage;
 import com.mw.stage.UiStage;
 import com.mw.utils.GameInputMultiplexer;
 
-public class MainScreen extends BaseScreen implements Screen{
+public class MainScreen extends BaseScreen{
 	private MapStage mapStage;
 	private UiStage uiStage;
 	private CharacterStage characterStage;
