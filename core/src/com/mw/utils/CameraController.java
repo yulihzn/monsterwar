@@ -60,7 +60,11 @@ public class CameraController implements GestureDetector.GestureListener{
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        camera.position.add(-deltaX * camera.zoom, deltaY * camera.zoom, 0);
+
+        float addX = -deltaX * camera.zoom * 0.01f;
+        float addY = deltaY * camera.zoom * 0.01f;
+//        Gdx.app.log("GestureDetectorTest", "pan addX addY " + addX + ", " + addY);
+        camera.position.add(addX, addY, 0);
         return false;
     }
 
