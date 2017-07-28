@@ -49,8 +49,8 @@ public class PlayerAvatarTable extends Table {
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
                 SequenceAction sequenceAction = Actions.sequence();
-                for (int i = 0; i < 3; i++) {
-                    sequenceAction.addAction(Actions.delay(0.03f,Actions.run(new Runnable() {
+                for (int i = 0; i < 15; i++) {
+                    sequenceAction.addAction(Actions.delay(0.1f,Actions.run(new Runnable() {
                         @Override
                         public void run() {
                             avatar.upDateAvatar();

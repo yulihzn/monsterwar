@@ -100,7 +100,7 @@ public class CharacterStage extends Stage {
         camera.update();
         worldMapTable = new WorldMapTable(camera);
         worldMapTable.setPosition(0,0);
-        addActor(worldMapTable);
+//        addActor(worldMapTable);
     }
 
     private void addMagicBottle(){
