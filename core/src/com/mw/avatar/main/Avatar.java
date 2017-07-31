@@ -1,18 +1,15 @@
-package com.mw.avatar;
+package com.mw.avatar.main;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.Timer;
 import com.mw.avatar.model.PixelAnimModel;
 import com.mw.avatar.model.PixelIndexModel;
-import com.mw.avatar.model.PixelInfoModel;
 import com.mw.ui.FloatRectPixmap;
 
 import java.util.HashMap;
@@ -30,6 +27,7 @@ public class Avatar {
     private Texture texture;
     private int index = 0;
 
+
     public Avatar() {
         as = new AvatarSettings();
         pixmap = new FloatRectPixmap(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
@@ -39,10 +37,16 @@ public class Avatar {
         upDateAvatar();
     }
 
-    public void upDateAvatar() {
+    private void upDateAvatar() {
         fill(as.all, new Color(0, 0, 0, 0));
-        pixmap.setColor(as.color_skin);
-        Array<PixelIndexModel> arr = as.model.getList().get(index).getList();
+        updatePixmap();
+        texture.draw(pixmap, 0, 0);
+    }
+    private void updatePixmap(){
+        if(as.list.size <=0){
+            return;
+        }
+        Array<PixelIndexModel> arr = as.list.get(0).getList().get(index).getList();
         for (int i = 0; i < arr.size; i++) {
             int x = arr.get(i).getX();
             int y = arr.get(i).getY();
@@ -50,13 +54,11 @@ public class Avatar {
             pixmap.setColor(as.getColor(index));
             pixmap.drawPixel(x, y);
         }
-        texture.draw(pixmap, 0, 0);
         index++;
-        if (index >= as.model.getList().size) {
+        if (index >= as.list.get(0).getList().size) {
             index = 0;
         }
     }
-
     public void createRegions() {
     }
 
@@ -87,14 +89,43 @@ public class Avatar {
         pixmap.fillRectangle(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
     }
 
-    private void pixel(int x, int y) {
-        pixmap.drawPixel(x, y);
+    public static final int LOOP = -2;//循环
+    private float frameDuration = 0.1f;//帧间隔
+    private Timer timer = new Timer();
+    private Timer.Task timerTask = new Timer.Task() {
+        @Override
+        public void run() {
+            upDateAvatar();
+        }
+    };
+
+    private int getAnimCount() {
+        int count = as.list.get(0).getList().size;
+        Gdx.app.log("count:", "" + count);
+        return count;
     }
 
-    private void pixel(int x, int y, Color color) {
-        pixmap.drawPixel(x, y, color.toIntBits());
+    public void play(float delaySeconds, float intervalSeconds, int repeatCount) {
+        synchronized (timerTask) {
+            if (!timerTask.isScheduled()) {
+                index = 0;
+                timer.scheduleTask(timerTask, delaySeconds, intervalSeconds, repeatCount);
+            }
+        }
     }
 
+    public void play() {
+        play(0, frameDuration, getAnimCount());
+    }
+
+    public void playLoop() {
+        play(0, frameDuration, LOOP);
+    }
+    public void stop(){
+        timer.clear();
+        index = 0;
+        upDateAvatar();
+    }
     private class AvatarSettings {
 
         public int color_skin = 0xffffccff;
@@ -108,8 +139,7 @@ public class Avatar {
 
         public Rectangle all = new Rectangle(0, 0, width, height);
 
-
-        public PixelAnimModel model;
+        public Array<PixelAnimModel> list = new Array<PixelAnimModel>();
         private Map<Integer, Integer> colors = new HashMap<Integer, Integer>();
 
         public AvatarSettings() {
@@ -117,10 +147,8 @@ public class Avatar {
         }
 
         public void init() {
-            FileHandle fileHandle = Gdx.files.internal("anim/base_anim_face.json");
-            String text = fileHandle.readString();
-            Json json = new Json();
-            model = json.fromJson(PixelAnimModel.class, text);
+            addAnimFile("anim/base_anim_face.json");
+            //给每一个点设置颜色
             for (int i = 1; i < 71; i++) {
                 //head
                 if (i >= 1 && i <= 25) {
@@ -161,7 +189,13 @@ public class Avatar {
                 }
             }
         }
-
+        public void addAnimFile(String internalFile){
+            FileHandle fileHandle = Gdx.files.internal(internalFile);
+            String text = fileHandle.readString();
+            Json json = new Json();
+            PixelAnimModel model = json.fromJson(PixelAnimModel.class, text);
+            list.add(model);
+        }
         public int getColor(int index) {
             Integer i = colors.get(index);
             if (i == null) {

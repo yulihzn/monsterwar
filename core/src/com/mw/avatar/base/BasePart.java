@@ -29,9 +29,6 @@ import com.badlogic.gdx.utils.Array;
  */
 public abstract class BasePart {
     protected String name;//名字
-    protected int index;//序号
-    protected AvatarPixel connectPixel = new AvatarPixel();//连接点,左上角
-    protected Array<AvatarPixel> pixels = new Array<AvatarPixel>();//像素表
 
     public BasePart() {
         init();
@@ -47,27 +44,4 @@ public abstract class BasePart {
         this.name = name;
     }
 
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-    public AvatarPixel getConnectPixel() {
-        return connectPixel;
-    }
-
-    public void setConnectPixel(AvatarPixel connectPixel) {
-        this.connectPixel = connectPixel;
-    }
-
-    public Array<AvatarPixel> getPixels() {
-        return pixels;
-    }
-
-    public void setPixels(Array<AvatarPixel> pixels) {
-        this.pixels = pixels;
-    }
 }
