@@ -80,7 +80,7 @@ public abstract class Character implements Telegraph {
         final int y = path.get(pathIndex).getY();
         final boolean isStayAround = getActor().getTilePosIndex().x == x&&getActor().getTilePosIndex().y==y;
         characterActor.setTilePosIndexOnly(new GridPoint2(x,y));
-        MoveToAction action = Actions.moveTo(x,y,0.1f);
+        MoveToAction action = Actions.moveTo(x,y,0.3f);
         //添加移动动画
         walkSequenceAction.addAction(action);
         //添加动画完成事件

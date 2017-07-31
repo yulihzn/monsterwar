@@ -20,9 +20,8 @@ import com.mw.game.MainGame;
  */
 public class PlayerAvatarTable extends Table {
     private Texture texture;
-    private Avatar avatar;
+    private CharacterAnimImage image;
     public PlayerAvatarTable() {
-        avatar = new Avatar();
         int w = MainGame.worldWidth /4;
         int h = MainGame.worldHeight/4;
         Pixmap pixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
@@ -37,20 +36,20 @@ public class PlayerAvatarTable extends Table {
         setPosition(0,0);
         setWidth(w);
         setHeight(h);
-        final Image image = new Image(avatar.getTexture());
+        image = new CharacterAnimImage();
         image.setScale(10);
         image.setPosition(0,0);
         bottom().left().add(image);
-        image.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                avatar.play();
-            }
-        });
+//        image.addListener(new ClickListener(){
+//            @Override
+//            public void clicked(InputEvent event, float x, float y) {
+//                super.clicked(event, x, y);
+//                avatar.play();
+//            }
+//        });
     }
     public void dispose(){
         texture.dispose();
-        avatar.dispose();
+        image.dispose();
     }
 }
