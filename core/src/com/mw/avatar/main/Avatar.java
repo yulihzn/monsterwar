@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Timer;
 import com.mw.avatar.model.PixelAnimModel;
 import com.mw.avatar.model.PixelIndexModel;
+import com.mw.avatar.part.PlayerPart;
 import com.mw.ui.FloatRectPixmap;
 
 import java.util.HashMap;
@@ -127,20 +128,10 @@ public class Avatar {
         upDateAvatar();
     }
     private class AvatarSettings {
-
         public int color_skin = 0xffffccff;
-        public int color_eyes = 0x000000ff;
-        public int color_lips = 0xff6666ff;
-        public int color_armr = 0xffffccff;
-        public int color_arml = 0xffffccff;
-        public int color_legl = 0xffffccff;
-        public int color_legr = 0xffffccff;
-        public int color_body = 0xffffccff;
-
         public Rectangle all = new Rectangle(0, 0, width, height);
-
         public Array<PixelAnimModel> list = new Array<PixelAnimModel>();
-        private Map<Integer, Integer> colors = new HashMap<Integer, Integer>();
+        private PlayerPart playerPart;
 
         public AvatarSettings() {
             init();
@@ -148,46 +139,7 @@ public class Avatar {
 
         public void init() {
             addAnimFile("anim/base_anim_face.json");
-            //给每一个点设置颜色
-            for (int i = 1; i < 71; i++) {
-                //head
-                if (i >= 1 && i <= 25) {
-                    colors.put(i, color_skin);
-                }
-                //right arm
-                if (i >= 26 && i <= 30) {
-                    colors.put(i, color_armr);
-                }
-                //left arm
-                if (i >= 36 && i <= 40) {
-                    colors.put(i, color_arml);
-                }
-                //body
-                if (i >= 31 && i <= 35) {
-                    colors.put(i, color_body);
-                }
-                if (i >= 41 && i <= 60) {
-                    colors.put(i, color_body);
-                }
-                if (i >= 61) {
-                    //right leg
-                    if (i % 2 == 1) {
-                        colors.put(i, color_legr);
-                    }
-                    //left leg
-                    else {
-                        colors.put(i, color_legl);
-                    }
-                }
-                //eyes
-                if (i == 12 || i == 14) {
-                    colors.put(i, color_eyes);
-                }
-                //mouth
-                if (i == 23) {
-                    colors.put(i, color_lips);
-                }
-            }
+            playerPart = new PlayerPart();
         }
         public void addAnimFile(String internalFile){
             FileHandle fileHandle = Gdx.files.internal(internalFile);
@@ -197,11 +149,10 @@ public class Avatar {
             list.add(model);
         }
         public int getColor(int index) {
-            Integer i = colors.get(index);
-            if (i == null) {
+            if (playerPart == null) {
                 return color_skin;
             }
-            return i;
+            return playerPart.getColor(index);
         }
 
     }
