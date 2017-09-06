@@ -60,7 +60,7 @@ public class ShadowActor extends Actor{
         Gdx.gl.glDisable(GL20.GL_BLEND);
     }
     public void drawShadow(int x,int y){
-        Pixmap.setBlending(Pixmap.Blending.None);
+        pixmap.setBlending(Pixmap.Blending.None);
         pixmap.setColor(new Color(0,0,0,1f));
         pixmap.fill();
         if(x0 !=-1||y0!=-1){

@@ -138,7 +138,7 @@ public class MapShadow extends Actor{
         float[] arr = floatArray.toArray();
         float sx = (sightPosIndex.x*32)+16;//视野的横坐标
         float sy = (sightPosIndex.y*32)+16;//视野的纵坐标
-        Pixmap.setBlending(Pixmap.Blending.None);
+        pixmap.setBlending(Pixmap.Blending.None);
         //画半黑阴影
         pixmap.setColor(new Color(0,0,0,0.6f));
         pixmap.fillRectangle(0,0,width,height);
