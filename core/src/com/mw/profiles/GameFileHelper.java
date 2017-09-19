@@ -3,18 +3,11 @@ package com.mw.profiles;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.utils.Base64Coder;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.mw.logic.characters.info.PlayerInfo;
-import com.mw.model.Area;
-import com.mw.model.AreaModel;
-import com.mw.model.MapInfo;
-import com.mw.model.WorldMapModel;
-import com.mw.utils.GZIP;
-
-import java.io.IOException;
+import com.mw.components.map.model.MapInfo;
 
 /**
  * Created by BanditCat on 2016/7/4.

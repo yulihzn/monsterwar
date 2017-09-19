@@ -3,8 +3,7 @@ package com.mw.utils;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.mw.map.MapGenerator;
+import com.mw.components.map.MapGenerator;
 
 /**
  * Created by BanditCat on 2016/10/19.

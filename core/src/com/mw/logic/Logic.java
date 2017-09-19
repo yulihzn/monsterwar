@@ -1,8 +1,6 @@
 package com.mw.logic;
 
-import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
-import com.mw.logic.characters.base.Character;
 import com.mw.logic.characters.base.Monster;
 import com.mw.logic.characters.base.Player;
 import com.mw.logic.characters.info.GhostInfo;
@@ -10,9 +8,9 @@ import com.mw.logic.characters.npc.Ghost;
 import com.mw.logic.item.base.Food;
 import com.mw.logic.item.base.Item;
 import com.mw.logic.item.info.FoodInfo;
-import com.mw.map.MapGenerator;
+import com.mw.components.map.MapGenerator;
 import com.mw.profiles.GameFileHelper;
-import com.mw.ui.LogMessageTable;
+import com.mw.ui.widget.LogMessageTable;
 
 /**
  * Created by BanditCat on 2016/8/10.

@@ -6,9 +6,8 @@ import com.mw.logic.characters.info.PlayerInfo;
 import com.mw.logic.characters.npc.Ghost;
 import com.mw.logic.item.base.Food;
 import com.mw.logic.item.base.Item;
-import com.mw.map.DungeonMap;
-import com.mw.ui.LogMessageTable;
-import com.mw.utils.Dungeon;
+import com.mw.components.map.DungeonMap;
+import com.mw.ui.widget.LogMessageTable;
 import com.mw.profiles.GameFileHelper;
 
 /**

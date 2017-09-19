@@ -3,10 +3,10 @@ package com.mw.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.mw.map.MapGenerator;
-import com.mw.screen.MainScreen;
-import com.mw.screen.StartScreen;
-import com.mw.screen.TransferScreen;
+import com.mw.components.map.MapGenerator;
+import com.mw.ui.screen.MainScreen;
+import com.mw.ui.screen.StartScreen;
+import com.mw.ui.screen.TransferScreen;
 import com.mw.utils.AssetManagerHelper;
 
 public class MainGame extends Game {

@@ -2,9 +2,6 @@ package com.mw.logic.characters.npc;
 
 import com.mw.logic.Logic;
 import com.mw.logic.characters.base.Monster;
-import com.mw.logic.characters.base.Player;
-import com.mw.map.DungeonMap;
-import com.mw.stage.MapStage;
 
 /**
  * Created by BanditCat on 2016/7/25.

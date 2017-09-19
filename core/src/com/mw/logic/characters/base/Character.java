@@ -9,14 +9,14 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
-import com.mw.actor.CharacterActor;
+import com.mw.ui.actor.CharacterActor;
 import com.mw.logic.Logic;
 import com.mw.logic.characters.info.CharacterInfo;
 import com.mw.logic.characters.info.PlayerInfo;
 import com.mw.logic.item.base.Item;
-import com.mw.map.AStarMap;
-import com.mw.map.AStarNode;
-import com.mw.ui.LogMessageTable;
+import com.mw.components.map.AStarMap;
+import com.mw.components.map.AStarNode;
+import com.mw.ui.widget.LogMessageTable;
 
 import java.util.ArrayList;
 import java.util.List;
