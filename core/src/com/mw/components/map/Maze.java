@@ -1,4 +1,4 @@
-package com.mw.map;
+package com.mw.components.map;
 
 /**
  * Created by BanditCat on 2016/9/13.
