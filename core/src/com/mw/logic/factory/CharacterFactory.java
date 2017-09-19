@@ -38,7 +38,7 @@ public class CharacterFactory {
         player.setActor(manActor);
         stage.addActor(manActor);
         manActor.setZIndex(300);
-        int[][] stars = MapGenerator.getInstance().getAStarArray();
+        int[][] stars = MapGenerator.map().getAStarArray();
         player.upDateAStarArray(stars);
         Logic.getInstance().setPlayer(player);
         return player;

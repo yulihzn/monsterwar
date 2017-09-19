@@ -22,9 +22,9 @@ public class AreaSegmentTree extends AreaSegment {
 
     @Override
     protected void build() {
-        map = new MapInfoModel[size][size];
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
+        map = new MapInfoModel[SIZE][SIZE];
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
                 MapInfoModel model = new MapInfoModel();
                 model.setFloor(com.mw.components.map.AreaTile.F_GRASS_02);
                 model.setBlock(com.mw.components.map.AreaTile.B_TRANS);

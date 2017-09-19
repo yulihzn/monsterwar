@@ -3,6 +3,7 @@ package com.mw.components.map;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.mw.components.map.areaeditor.AreaEditorManager;
 import com.mw.game.MainGame;
 import com.mw.components.map.model.Area;
 import com.mw.components.map.model.AreaMapModel;
@@ -22,7 +23,7 @@ public class TmxAreaMap extends TmxMap {
     private AreaMapModel mapModel = new AreaMapModel();
     private Area area;
     public TmxAreaMap(Area area) {
-        super(AreaEditor.WIDTH, AreaEditor.HEIGHT);
+        super(AreaEditorManager.WIDTH, AreaEditorManager.HEIGHT);
         this.area = area;
         String s = Gdx.files.getLocalStoragePath()+"save/area/";
         if(Gdx.app.getType().equals(Application.ApplicationType.Android)){
@@ -50,7 +51,7 @@ public class TmxAreaMap extends TmxMap {
         if(MapGenerator.isExistsMap(name)){
             return;
         }
-        mapModel = new AreaEditor(area).create();
+        mapModel = new AreaEditorManager(area).create();
         MapInfoModel[][]arr = mapModel.getArr();
         for (int i = 0; i < arr.length; i++) {
             for (int j = 0; j < arr[0].length; j++) {

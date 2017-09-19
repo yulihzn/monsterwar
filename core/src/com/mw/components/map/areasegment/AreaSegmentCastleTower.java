@@ -34,27 +34,27 @@ public class AreaSegmentCastleTower extends AreaSegment {
 
     @Override
     protected void build() {
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
                 MapInfoModel model = new MapInfoModel();
                 model.setFloor(floor);
                 model.setBlock(com.mw.components.map.AreaTile.B_TRANS);
                 model.setDecorate(com.mw.components.map.AreaTile.D_TRANS);
                 model.setShadow(com.mw.components.map.AreaTile.S_SHADOW);
-                if(j==0||j==size-1){
+                if(j==0||j==SIZE-1){
                     model.setBlock(block);
-                    if(i==size/2){
+                    if(i==SIZE/2){
                         model.setBlock(door);
                     }
                 }
-                if(i==0||i==size-1){
+                if(i==0||i==SIZE-1){
                     model.setBlock(block);
-                    if(j==size/2){
+                    if(j==SIZE/2){
                         model.setBlock(door);
                     }
                 }
                 //底部装饰为墙
-                if(j>=size-4){
+                if(j>=SIZE-4){
                     model.setDecorate(decorate);
                 }
                 map[i][j] = model;

@@ -6,6 +6,7 @@ import com.badlogic.gdx.assets.loaders.resolvers.AbsoluteFileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.mw.components.map.model.Area;
+import com.mw.utils.L;
 import com.mw.utils.Utils;
 
 /**
@@ -20,8 +21,11 @@ import com.mw.utils.Utils;
  */
 
 public class MapGenerator {
+    public static final int WORLD = 0;
+    public static final int AREA = 1;
+    public static final int DUNGEON = 2;
     private static MapGenerator mapGenerator;
-    public static MapGenerator getInstance()
+    public static MapGenerator map()
     {
         if (mapGenerator ==null)
         {
@@ -31,45 +35,46 @@ public class MapGenerator {
     }
     private MapGenerator(){
     }
-    private com.mw.components.map.TmxAreaMap tmxAreaMap;
+    private TmxAreaMap tmxAreaMap;
     private TmxWorldMap tmxWorldMap;
     private String currentAreaName="";
 
     public void initWorld() {
         long time =System.currentTimeMillis();
-        Gdx.app.log("world", Utils.getMins(time));
-        sendBeginMsg("world generate begin",0);
+        L.i("world", Utils.getMins(time));
+        sendBeginMsg("world generate begin",WORLD);
         tmxWorldMap = new TmxWorldMap(MapEditor.WIDTH,MapEditor.HEIGHT);
-        sendFinishMsg("world generate finish",0);
+        sendFinishMsg("world generate finish",WORLD);
+
         long tt = System.currentTimeMillis();
-        Gdx.app.log("world", Utils.getMins(tt));
-        Gdx.app.log("sec", Utils.getMins(tt-time));
+        L.i("world", Utils.getMins(tt));
+        L.i("sec", Utils.getMins(tt-time));
     }
     public TmxWorldMap getTmxWorldMap(){
         return tmxWorldMap;
     }
-    public com.mw.components.map.TmxAreaMap getTmxAreaMap(String name){
+    public TmxAreaMap getTmxAreaMap(String name){
         if(name.equals(currentAreaName)&&tmxAreaMap != null){
             return tmxAreaMap;//加载不了
         }
-        sendBeginMsg(name+"generate begin",1);
+        sendBeginMsg(name+"generate begin",AREA);
         Area area = tmxWorldMap.getMapModel().getAreas().get(name);
         long time =System.currentTimeMillis();
-        Gdx.app.log(name, Utils.getMins(time));
+        L.i(name, Utils.getMins(time));
         if(tmxAreaMap != null && tmxAreaMap.getTileMap() != null){
 //            tmxAreaMap.getTileMap().dispose();
             tmxAreaMap = null;
         }
-        tmxAreaMap = new com.mw.components.map.TmxAreaMap(area);
+        tmxAreaMap = new TmxAreaMap(area);
         long tt = System.currentTimeMillis();
-        Gdx.app.log(name, Utils.getMins(tt));
-        Gdx.app.log(name, Utils.getMins(tt-time));
-        sendBeginMsg(name+"generate finish",1);
+        L.i(name, Utils.getMins(tt));
+        L.i(name, Utils.getMins(tt-time));
+        sendBeginMsg(name+"generate finish",AREA);
         this.currentAreaName = name;
         return tmxAreaMap;
     }
 
-    public com.mw.components.map.TmxAreaMap getTmxAreaMap() {
+    public TmxAreaMap getTmxAreaMap() {
         return tmxAreaMap;
     }
 
@@ -100,17 +105,17 @@ public class MapGenerator {
 //            str+="\n";
 //            origin+="\n";
         }
-//        Gdx.app.log("origin",origin);
-//        Gdx.app.log("map",str);
+//        L.i("origin",origin);
+//        L.i("map",str);
         return arr;
     }
     public boolean isBlock(int x,int y){
         int block = tmxAreaMap.getMapModel().getArr()[x][y].getBlock();
-        if(block == com.mw.components.map.AreaTile.B_WALL_01
-                ||block == com.mw.components.map.AreaTile.B_WALL_02
-                ||block == com.mw.components.map.AreaTile.B_WALL_03
-                ||block == com.mw.components.map.AreaTile.B_WALL_04
-                ||block == com.mw.components.map.AreaTile.B_WALL_05){
+        if(block == AreaTile.B_WALL_01
+                ||block == AreaTile.B_WALL_02
+                ||block == AreaTile.B_WALL_03
+                ||block == AreaTile.B_WALL_04
+                ||block == AreaTile.B_WALL_05){
             return true;
         }else{
             return false;
@@ -121,7 +126,7 @@ public class MapGenerator {
         int length = tmxAreaMap.getMapModel().getArr().length;
         int floor = tmxAreaMap.getMapModel().getArr()[x][y].getFloor();
         if(x>=0&&x<length&&y>=0&&y<length){
-            if(floor == com.mw.components.map.AreaTile.F_WATER_01){
+            if(floor == AreaTile.F_WATER_01){
                 return true;
             }else {
                 return false;

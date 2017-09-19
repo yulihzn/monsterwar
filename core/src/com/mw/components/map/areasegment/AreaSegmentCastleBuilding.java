@@ -72,8 +72,8 @@ public class AreaSegmentCastleBuilding extends AreaSegment {
         int cx = random.nextInt(2);
         int cy = random.nextInt(2);
         int[][] house = getHouse(cx,cy);
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
                 MapInfoModel model = new MapInfoModel();
                 model.setFloor(floor);
                 model.setBlock(com.mw.components.map.AreaTile.B_TRANS);

@@ -10,4 +10,7 @@ public class L {
     public static void i(String msg){
         Gdx.app.log("L",msg);
     }
+    public static void i(String name,String msg){
+        Gdx.app.log(name,msg);
+    }
 }

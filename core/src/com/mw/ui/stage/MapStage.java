@@ -21,7 +21,7 @@ import com.mw.game.MainGame;
 import com.mw.logic.Logic;
 import com.mw.logic.characters.base.Monster;
 import com.mw.logic.characters.base.Player;
-import com.mw.components.map.AreaEditor;
+import com.mw.components.map.areaeditor.AreaEditorManager;
 import com.mw.components.map.AreaTile;
 import com.mw.components.map.MapGenerator;
 import com.mw.components.map.MapShadow;
@@ -74,7 +74,7 @@ public class  MapStage extends Stage{
 		gestureDetector = new GestureDetector(controller);
 		//初始化地图
 		level = GameFileHelper.getInstance().getCurrentLevel();
-		tmxAreaMap = MapGenerator.getInstance().getTmxAreaMap(GameFileHelper.getInstance().getCurrentAreaName());
+		tmxAreaMap = MapGenerator.map().getTmxAreaMap(GameFileHelper.getInstance().getCurrentAreaName());
 		tiledMap = tmxAreaMap.getTileMapReload();
 //		tiledMap.getLayers().get(TmxMap.LAYER_SHADOW).setVisible(false);
 		//获取渲染
@@ -104,7 +104,7 @@ public class  MapStage extends Stage{
 	}
 
 	public void initMap(){
-		tmxAreaMap = MapGenerator.getInstance().getTmxAreaMap(GameFileHelper.getInstance().getCurrentAreaName());
+		tmxAreaMap = MapGenerator.map().getTmxAreaMap(GameFileHelper.getInstance().getCurrentAreaName());
 		tiledMap = tmxAreaMap.getTileMapReload();
 		renderer = new OrthogonalTiledMapRenderer(tiledMap,1f/32f);
 	}
@@ -390,8 +390,8 @@ public class  MapStage extends Stage{
 		camera.viewportWidth = 16;
 		camera.viewportHeight = 16*(h/w);
 		camera.zoom = MathUtils.clamp(camera.zoom, 0.5f, 2f);
-		camera.position.x = MathUtils.clamp(camera.position.x, camera.viewportWidth/2, AreaEditor.WIDTH-camera.viewportWidth/2);
-		camera.position.y = MathUtils.clamp(camera.position.y, camera.viewportHeight/2, AreaEditor.HEIGHT-camera.viewportHeight/2);
+		camera.position.x = MathUtils.clamp(camera.position.x, camera.viewportWidth/2, AreaEditorManager.WIDTH-camera.viewportWidth/2);
+		camera.position.y = MathUtils.clamp(camera.position.y, camera.viewportHeight/2, AreaEditorManager.HEIGHT-camera.viewportHeight/2);
 //		camera.position.x = MathUtils.clamp(camera.position.x, 0, 256);
 //		camera.position.y = MathUtils.clamp(camera.position.y, 0, 256);
 		camera.update();

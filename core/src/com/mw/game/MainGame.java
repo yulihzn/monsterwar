@@ -41,6 +41,9 @@ public class MainGame extends Game {
 	public void setTransferScreen(TransferScreen transferScreen) {
 		this.transferScreen = transferScreen;
 	}
+	public void loadingMap(){
+
+    }
 
 	@Override
 	public void create() {
@@ -66,6 +69,6 @@ public class MainGame extends Game {
 		transferScreen.dispose();
 		AssetManagerHelper.getInstance().getAssetManager().clear();
 		AssetManagerHelper.getInstance().getAssetManager().dispose();
-		MapGenerator.getInstance().dispose();
+		MapGenerator.map().dispose();
 	}
 }

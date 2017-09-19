@@ -11,8 +11,8 @@ public abstract class AreaSegment {
     protected int x0;//顶点x
     protected int y0;//顶点y
     protected int style;//类型
-    public static final int size = 7;
-    protected MapInfoModel[][] map = new MapInfoModel[size][size];//数组(包含顶点信息)
+    public static final int SIZE = 7;
+    protected MapInfoModel[][] map = new MapInfoModel[SIZE][SIZE];//数组(包含顶点信息)
 
     public AreaSegment(int x0, int y0,int style) {
         this.x0 = x0;

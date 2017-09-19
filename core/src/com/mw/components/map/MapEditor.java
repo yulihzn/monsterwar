@@ -56,6 +56,7 @@ public class MapEditor {
 	public static final int CASTLE = 100;//城堡
 	public static final int VILLAGE = 101;//村子
 	public static final int WILD = 102;//野外
+	public static final int DUNGEON = 103;//地牢
 
 //	public static final int SHADOW = 1;
 //	public static final int TRANS = 0;

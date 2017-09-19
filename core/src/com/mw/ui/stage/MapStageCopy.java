@@ -109,7 +109,7 @@ public class MapStageCopy extends Stage{
 //		elementsInterFace.drawTile();
 
 		Logic.getInstance().addGameEventListener(logicEventListener);
-		MapGenerator.getInstance();
+		MapGenerator.map();
 
 	}
 	private LogicEventListener logicEventListener = new LogicEventListener() {

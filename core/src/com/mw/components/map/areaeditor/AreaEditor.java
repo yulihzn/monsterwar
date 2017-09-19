@@ -1,23 +1,25 @@
-package com.mw.components.map;
+package com.mw.components.map.areaeditor;
 
+import com.mw.components.map.MapEditor;
 import com.mw.components.map.areasegment.AreaSegment;
 import com.mw.components.map.model.Area;
 import com.mw.components.map.model.MapInfoModel;
 
+import java.util.Random;
+
 /**
- * Created by BanditCat on 2016/10/19.
- *
- *
+ * Created by yuli.he on 2017/9/19.
  */
 
-public class EmptyEditor {
-    public static final int width = AreaEditor.WIDTH;
-    public static final int height = AreaEditor.HEIGHT;
-    public static final int segsize = AreaSegment.size;
-    private MapInfoModel[][] map = new MapInfoModel[width][height];
-    private Area area;
+public abstract class AreaEditor {
+    public static final int width = AreaEditorManager.WIDTH;
+    public static final int height = AreaEditorManager.HEIGHT;
+    public static final int segSize = AreaSegment.SIZE;
+    protected MapInfoModel[][] map = new MapInfoModel[width][height];
+    protected Area area;
+    protected Random random = new Random(MapEditor.SEED);
 
-    public EmptyEditor(Area area) {
+    public AreaEditor(Area area) {
         this.area = area;
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -29,14 +31,16 @@ public class EmptyEditor {
                 map[i][j] = model;
             }
         }
+        initArea();
     }
-    private void addSegment(AreaSegment segment){
-        for (int i = 0; i < segsize; i++) {
-            for (int j = 0; j < segsize; j++) {
+    protected void addSegment(AreaSegment segment){
+        for (int i = 0; i < segSize; i++) {
+            for (int j = 0; j < segSize; j++) {
                 map[i+segment.getX0()][j+segment.getY0()] = segment.getMap()[i][j];
             }
         }
     }
+    protected abstract void initArea();
 
     public MapInfoModel[][] getMap() {
         return map;

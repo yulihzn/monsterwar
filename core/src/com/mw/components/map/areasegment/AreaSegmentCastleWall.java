@@ -40,8 +40,8 @@ public class AreaSegmentCastleWall extends AreaSegment {
 
     @Override
     protected void build() {
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
                 MapInfoModel model = new MapInfoModel();
                 model.setFloor(floor);
                 Random r = new Random(com.mw.components.map.MapEditor.SEED);
@@ -56,16 +56,16 @@ public class AreaSegmentCastleWall extends AreaSegment {
                 model.setShadow(com.mw.components.map.AreaTile.S_SHADOW);
                 if(dir == DIR_LR){
                     //左右方向，上下围墙
-                    if(j==0||j==size-1){
+                    if(j==0||j==SIZE-1){
                         model.setBlock(block);
                     }
                     //底部第二排装饰为墙
-                    if(j==size-2){
+                    if(j==SIZE-2){
                         model.setDecorate(decorate);
                     }
                 }else {
                     //上下方向，左右围墙
-                    if(i==0||i==size-1){
+                    if(i==0||i==SIZE-1){
                         model.setBlock(block);
                     }
                 }

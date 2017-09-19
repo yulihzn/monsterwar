@@ -1,10 +1,10 @@
 @echo off
 setlocal enabledelayedexpansion
-set /p "e=ÇëÊäÈëÎÄ¼şºó×ºÃû:"
-echo ½«°´Ë³Ğò¸ü¸ÄÒÔÏÂÎÄ¼şµÄÃû³Æ:
+set /p "e=è¯·è¾“å…¥æ–‡ä»¶åç¼€å:"
+echo å°†æŒ‰é¡ºåºæ›´æ”¹ä»¥ä¸‹æ–‡ä»¶çš„åç§°:
 dir /b /o:n "*!e!"
-set /p "n=ÇëÊäÈëĞÂÃû³Æ:"
-set /p "i=ÇëÊäÈëÊı×ÖµÄÎ»Êı:"
+set /p "n=è¯·è¾“å…¥æ–°åç§°:"
+set /p "i=è¯·è¾“å…¥æ•°å­—çš„ä½æ•°:"
 set "num=100000"
 for /f "delims=" %%i in ('dir /b /o:n "*!e!"') do (
 set /a num+=1
