@@ -105,7 +105,7 @@ public class GameFileHelper {
     public String getCurrentAreaName(){
         String name = getSaveObject(GameFileStr.AREA,String.class);
         if(null == name){
-            name = "area0_0";
+            name = "area0_0_0";
         }
         return name;
     }

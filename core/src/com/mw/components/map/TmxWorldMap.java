@@ -31,9 +31,9 @@ public class TmxWorldMap extends TmxMap {
         if(Gdx.app.getType().equals(Application.ApplicationType.Android)){
             s = MainGame.androidDir+"save/";
 //            s=s.substring(s.indexOf("Android"));
-            File dir = new File(s);
-            dir.mkdirs();
         }
+        File dir = new File(s);
+        dir.mkdirs();
         name = s+"world.tmx";
         name=name.replaceAll("\\\\", "/");
         Gdx.app.log("namePath",name);

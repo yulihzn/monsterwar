@@ -18,6 +18,8 @@ public class AreaTile {
     public static final int F_WATER_01 = 6;
     public static final int F_WATER_02 = 17;
     public static final int F_ROAD_02 = 8;
+    public static final int F_DUNGEON_DIRT_01 = 15;
+
 
     public static final int B_TRANS = 0;
     public static final int B_SHADOW = 1;

@@ -12,14 +12,15 @@ public class Area {
     protected int x0,y0;
     protected Random random;
     protected int[][]arr = new int[16][16];
-    protected String name;
+    protected String name;//名字是area+坐标+level：area0_0_0
     protected int type;
+    protected int level = 0;//层级默认为0,向下为123456...
 
     public Area(int x0, int y0) {
         this.x0 = x0;
         this.y0 = y0;
         this.random = new Random(MapEditor.SEED);
-        this.name = "area"+x0+"_"+y0;
+        this.name = "area"+x0+"_"+y0+"_"+level;
     }
 
     public Area() {
@@ -63,5 +64,13 @@ public class Area {
 
     public void setY0(int y0) {
         this.y0 = y0;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 }

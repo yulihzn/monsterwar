@@ -1,14 +1,12 @@
 package com.mw.components.map.areaeditor;
 
-import com.mw.components.map.AreaTile;
 import com.mw.components.map.SegType;
-import com.mw.components.map.areasegment.AreaSegment;
 import com.mw.components.map.areasegment.AreaSegmentGrass;
 import com.mw.components.map.areasegment.AreaSegmentStone;
 import com.mw.components.map.areasegment.AreaSegmentTree;
 import com.mw.components.map.areasegment.AreaSegmentWater;
+import com.mw.components.map.circle.elements.CircleDungeon;
 import com.mw.components.map.model.Area;
-import com.mw.components.map.model.MapInfoModel;
 
 /**
  * Created by BanditCat on 2016/10/19.
@@ -17,6 +15,7 @@ import com.mw.components.map.model.MapInfoModel;
  */
 
 public class DungeonEditor extends AreaEditor {
+    private CircleDungeon dungeon;
 
     public DungeonEditor(Area area) {
         super(area);
@@ -24,6 +23,9 @@ public class DungeonEditor extends AreaEditor {
 
     @Override
     protected void initArea() {
+        dungeon = new CircleDungeon(width,height);
+        dungeon.createDungeon();
+
         for (int i = 0; i < width; i+=segSize) {
             for (int j = 0; j < height; j+=segSize) {
                 int type = area.getArr()[i%segSize][j%segSize];

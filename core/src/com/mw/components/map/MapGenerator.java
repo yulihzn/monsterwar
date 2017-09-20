@@ -59,6 +59,9 @@ public class MapGenerator {
         }
         sendBeginMsg(name+"generate begin",AREA);
         Area area = tmxWorldMap.getMapModel().getAreas().get(name);
+        if(area == null&&!name.endsWith("0")){
+            //dungeon
+        }
         long time =System.currentTimeMillis();
         L.i(name, Utils.getMins(time));
         if(tmxAreaMap != null && tmxAreaMap.getTileMap() != null){

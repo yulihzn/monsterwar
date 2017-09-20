@@ -10,16 +10,16 @@ import java.util.HashMap;
 
 public class WorldMapModel {
     private int[][]arr = new int[MapEditor.WIDTH][MapEditor.HEIGHT];
-    private HashMap<String, com.mw.components.map.model.Area> areas = new HashMap<String, com.mw.components.map.model.Area>();
+    private HashMap<String, Area> areas = new HashMap<String, Area>();
 
     public WorldMapModel() {
     }
 
-    public HashMap<String, com.mw.components.map.model.Area> getAreas() {
+    public HashMap<String, Area> getAreas() {
         return areas;
     }
 
-    public void setAreas(HashMap<String, com.mw.components.map.model.Area> areas) {
+    public void setAreas(HashMap<String, Area> areas) {
         this.areas = areas;
     }
 

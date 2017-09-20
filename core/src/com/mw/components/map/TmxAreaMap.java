@@ -28,9 +28,9 @@ public class TmxAreaMap extends TmxMap {
         String s = Gdx.files.getLocalStoragePath()+"save/area/";
         if(Gdx.app.getType().equals(Application.ApplicationType.Android)){
             s = MainGame.androidDir+"save/area/";
-            File dir = new File(s);
-            dir.mkdirs();
         }
+        File dir = new File(s);
+        dir.mkdirs();
         name = s+area.getName()+".tmx";
         name=name.replaceAll("\\\\", "/");
         Gdx.app.log("namePath",name);
