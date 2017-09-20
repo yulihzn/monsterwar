@@ -16,9 +16,10 @@ public class Area {
     protected int type;
     protected int level = 0;//层级默认为0,向下为123456...
 
-    public Area(int x0, int y0) {
+    public Area(int x0, int y0, int level) {
         this.x0 = x0;
         this.y0 = y0;
+        this.level = level;
         this.random = new Random(MapEditor.SEED);
         this.name = "area"+x0+"_"+y0+"_"+level;
     }

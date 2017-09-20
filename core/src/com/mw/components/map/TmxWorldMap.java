@@ -106,7 +106,7 @@ public class TmxWorldMap extends TmxMap {
         for (int i = 0; i < getWidth(); i++) {
             for (int j = 0; j < getHeight(); j++) {
                 if(i%16==0&&j%16==0){
-                    Area area = new Area(i,j);
+                    Area area = new Area(i,j,0);
                     map.put(area.getName(),area);
                 }
                 mapModel.getArr()[i][j]=getTileId(LAYER_BLOCK,i,j);
