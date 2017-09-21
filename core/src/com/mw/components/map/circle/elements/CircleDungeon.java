@@ -100,6 +100,9 @@ public class CircleDungeon {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 maps[i][j] = Tiles.tile().empty;
+                if(i==0||j==0||i==width-1||j==height-1){
+                    maps[i][j] = Tiles.tile().roomwall;
+                }
             }
         }
 

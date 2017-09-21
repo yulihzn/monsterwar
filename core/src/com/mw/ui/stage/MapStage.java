@@ -322,7 +322,7 @@ public class  MapStage extends Stage{
 		super.draw();
 		renderer.render(new int[]{2});
 		getBatch().begin();
-		shadowActor.draw(getBatch(),1);
+//		shadowActor.draw(getBatch(),1);
 		getBatch().end();
 //		renderer.render(new int[]{3});
 	}
@@ -389,7 +389,7 @@ public class  MapStage extends Stage{
 		float h = MainGame.worldHeight;
 		camera.viewportWidth = 16;
 		camera.viewportHeight = 16*(h/w);
-		camera.zoom = MathUtils.clamp(camera.zoom, 0.5f, 2f);
+		camera.zoom = MathUtils.clamp(camera.zoom, 0.5f, 4f);
 		camera.position.x = MathUtils.clamp(camera.position.x, camera.viewportWidth/2, AreaEditorManager.WIDTH-camera.viewportWidth/2);
 		camera.position.y = MathUtils.clamp(camera.position.y, camera.viewportHeight/2, AreaEditorManager.HEIGHT-camera.viewportHeight/2);
 //		camera.position.x = MathUtils.clamp(camera.position.x, 0, 256);
