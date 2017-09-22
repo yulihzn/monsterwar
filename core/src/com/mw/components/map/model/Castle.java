@@ -1,8 +1,8 @@
 package com.mw.components.map.model;
 
 import com.badlogic.gdx.math.GridPoint2;
-import com.mw.components.map.MapEditor;
 import com.mw.components.map.SegType;
+import com.mw.components.map.world.WorldAreaType;
 
 /**
  * Created by BanditCat on 2016/10/9.
@@ -13,12 +13,12 @@ public class Castle extends Area{
     private GridPoint2[] exits = new GridPoint2[4];//4个门,0,1,2,3,上下左右
 
     public Castle() {
-        this.type = MapEditor.CASTLE;
+        this.type = WorldAreaType.CASTLE_00_FOOL;
     }
 
     public Castle(int x0, int y0) {
         super(x0, y0,0);
-        this.type = MapEditor.CASTLE;
+        this.type = WorldAreaType.CASTLE_00_FOOL;
     }
 
     public Castle init() {

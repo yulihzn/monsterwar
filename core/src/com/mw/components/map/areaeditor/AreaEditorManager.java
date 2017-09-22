@@ -23,10 +23,13 @@ public class AreaEditorManager {
     public AreaMapModel create(){
         areaMapModel.setArea(area);
         switch (area.getType()){
-            case MapEditor.CASTLE:areaMapModel.setArr(new CastleEditor(area).getMap());break;
-            case MapEditor.WILD:areaMapModel.setArr(new WildEditor(area).getMap());break;
-            case MapEditor.VILLAGE:areaMapModel.setArr(new WildEditor(area).getMap());break;
-            case MapEditor.DUNGEON:areaMapModel.setArr(new DungeonEditor(area).getMap());break;
+            case CASTLE_00_FOOL:areaMapModel.setArr(new CastleEditor(area).getMap());break;
+            case WILD_DIRT:
+            case WILD_FOREST:
+            case WILD_WATER:
+            case WILD_GRASS:
+                areaMapModel.setArr(new WildEditor(area).getMap());break;
+            case DUNGEON:areaMapModel.setArr(new DungeonEditor(area).getMap());break;
             default:areaMapModel.setArr(new EmptyEditor(area).getMap());break;
         }
         return areaMapModel;

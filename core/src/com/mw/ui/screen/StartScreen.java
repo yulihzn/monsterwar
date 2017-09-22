@@ -44,14 +44,11 @@ public class StartScreen extends BaseScreen implements Screen{
 		ib_start.setPosition(Gdx.graphics.getWidth() / 2 - ib_start.getWidth() / 2, ib_start.getWidth());
 		background.setPosition(Gdx.graphics.getWidth()/2-background.getWidth()/2,0);
 		stage = new Stage();
-        final WorldEditor editor = new WorldEditor(System.currentTimeMillis());
 		ib_start.addListener(new ClickListener(){
 
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				mainGame.setScreen(mainGame.getTransferScreen());
-                editor.create();
-                L.i(editor.getArrayString());
 				super.clicked(event, x, y);
 			}
 
@@ -73,6 +70,7 @@ public class StartScreen extends BaseScreen implements Screen{
 	@Override
 	public void show() {
 		Gdx.input.setInputProcessor(stage);
+
 	}
 
 	@Override

@@ -8,6 +8,9 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.mw.components.map.areaeditor.AreaEditor;
 import com.mw.components.map.areaeditor.AreaEditorManager;
 import com.mw.components.map.model.Area;
+import com.mw.components.map.world.WorldAreaType;
+import com.mw.components.map.world.WorldEditor;
+import com.mw.profiles.GameFileHelper;
 import com.mw.utils.L;
 import com.mw.utils.Utils;
 
@@ -38,48 +41,55 @@ public class MapGenerator {
     private MapGenerator(){
     }
     private TmxAreaMap tmxAreaMap;
-    private TmxWorldMap tmxWorldMap;
+    private WorldEditor worldEditor;
     private String currentAreaName="";
 
-    public void initWorld() {
-        long time =System.currentTimeMillis();
-        L.i("world", Utils.getMins(time));
-        sendBeginMsg("world generate begin",WORLD);
-        tmxWorldMap = new TmxWorldMap(MapEditor.WIDTH,MapEditor.HEIGHT);
-        sendFinishMsg("world generate finish",WORLD);
 
-        long tt = System.currentTimeMillis();
-        L.i("world", Utils.getMins(tt));
-        L.i("sec", Utils.getMins(tt-time));
+    public void initWorld() {
+        worldEditor = new WorldEditor(GameFileHelper.getInstance().getWorldSeed());
+        worldEditor.create();
     }
-    public TmxWorldMap getTmxWorldMap(){
-        return tmxWorldMap;
-    }
-    public TmxAreaMap getTmxAreaMap(String name){
+    public void getTmxAreaMap(final String name,OnMapGeneratorListener onMapGeneratorListener){
+        this.setOnMapGeneratorListener(onMapGeneratorListener);
         if(name.equals(currentAreaName)&&tmxAreaMap != null){
-            return tmxAreaMap;//加载不了
+            sendFinishMsg(tmxAreaMap);//加载不了
+            return;
         }
-        sendBeginMsg(name+"generate begin",AREA);
-        Area area = tmxWorldMap.getMapModel().getAreas().get(name);
-        if(area == null&&!name.endsWith("0")){
-            //dungeon
-            Area temp = tmxWorldMap.getMapModel().getAreas().get(name.substring(0,name.lastIndexOf("_"))+"_0");
-            area = new Area(temp.getX0(),temp.getY0(),1);
-            area.setType(MapEditor.DUNGEON);
+        String[]astr = name.split("_");
+        final int x = Integer.valueOf(astr[1]);
+        final int y = Integer.valueOf(astr[2]);
+        final int level = Integer.valueOf(astr[3]);
+        if(astr.length != 4){
+            sendFinishMsg(tmxAreaMap);//name格式错误
+            return;
         }
-        long time =System.currentTimeMillis();
-        L.i(name, Utils.getMins(time));
-        if(tmxAreaMap != null && tmxAreaMap.getTileMap() != null){
-//            tmxAreaMap.getTileMap().dispose();
-            tmxAreaMap = null;
-        }
-        tmxAreaMap = new TmxAreaMap(area);
-        long tt = System.currentTimeMillis();
-        L.i(name, Utils.getMins(tt));
-        L.i(name, Utils.getMins(tt-time));
-        sendBeginMsg(name+"generate finish",AREA);
-        this.currentAreaName = name;
-        return tmxAreaMap;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Area area = new Area(x,y,level);
+                if(level == 0){
+                    //地表
+                    area.setType(worldEditor.getArr()[x][y]);
+                }else {
+                    //地下
+                    area.setType(WorldAreaType.DUNGEON);
+                }
+                long time =System.currentTimeMillis();
+                L.i(name, Utils.getMins(time));
+                if(tmxAreaMap != null && tmxAreaMap.getTileMap() != null){
+                    tmxAreaMap = null;
+                }
+                tmxAreaMap = new TmxAreaMap(area);
+                MapGenerator.this.currentAreaName = name;
+                //ui线程通知
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        sendFinishMsg(tmxAreaMap);
+                    }
+                });
+            }
+        }).start();
     }
 
     public TmxAreaMap getTmxAreaMap() {
@@ -157,37 +167,22 @@ public class MapGenerator {
         return new InternalFileHandleResolver().resolve(name).exists();
     }
     public interface OnMapGeneratorListener{
-        void begin(String msg,int type);
-        void generating(String msg,int type);
-        void finish(String msg,int type);
+        void finish(TmxAreaMap tmxAreaMap);
     }
     private OnMapGeneratorListener onMapGeneratorListener;
 
     public void setOnMapGeneratorListener(OnMapGeneratorListener onMapGeneratorListener) {
         this.onMapGeneratorListener = onMapGeneratorListener;
     }
-    public void sendGenerateMsg(String msg,int type){
+
+    private void sendFinishMsg(final TmxAreaMap tmxAreaMap){
+
         if(onMapGeneratorListener != null){
-            onMapGeneratorListener.generating(msg,type);
-        }
-    }
-    private void sendBeginMsg(String msg,int type){
-        if(onMapGeneratorListener != null){
-            onMapGeneratorListener.begin(msg,type);
-        }
-    }
-    private void sendFinishMsg(String msg,int type){
-        if(onMapGeneratorListener != null){
-            onMapGeneratorListener.finish(msg,type);
+            onMapGeneratorListener.finish(tmxAreaMap);
         }
     }
     public void dispose(){
-        if(tmxWorldMap != null){
-            if(tmxWorldMap.getTileMap()!=null){
-                tmxWorldMap.getTileMap().dispose();
-                tmxWorldMap=null;
-            }
-        }
+
         if(tmxAreaMap != null){
             if(tmxAreaMap.getTileMap()!=null){
                 tmxAreaMap.getTileMap().dispose();

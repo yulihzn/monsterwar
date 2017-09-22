@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Timer;
+import com.mw.components.map.TmxAreaMap;
 import com.mw.ui.actor.LoadingImage;
 import com.mw.game.MainGame;
 import com.mw.components.map.MapGenerator;
@@ -18,6 +19,8 @@ import com.mw.profiles.GameFileHelper;
 import com.mw.ui.widget.GameInfoLabel;
 import com.mw.ui.widget.LazyBitmapFont;
 import com.mw.utils.AssetManagerHelper;
+
+import tiled.core.Map;
 
 /**
  * 关卡加载过渡界面，用来处理耗时任务
@@ -36,7 +39,6 @@ public class TransferScreen extends BaseScreen implements Screen {
 	private String msg = "Why did you hide that Tarot Deck in your music room?";
 	private boolean isMapFinished = false;
 	private float time=0;
-	private boolean isWorldFinished = false;
 
 	public TransferScreen(MainGame mainGame) {
 		super(mainGame);
@@ -59,29 +61,6 @@ public class TransferScreen extends BaseScreen implements Screen {
 		stage = new Stage();
 		stage.addActor(image_loading);
 		stage.addActor(infoLabel);
-		MapGenerator.map().setOnMapGeneratorListener(new MapGenerator.OnMapGeneratorListener() {
-			@Override
-			public void begin(String msg, int type) {
-			}
-			@Override
-			public void generating(String msg, int type) {
-			}
-			@Override
-			public void finish(String msg, int type) {
-				if (type==MapGenerator.WORLD){
-					//世界创建完毕需要用ui线程加载世界（可以放进assetmanager里）
-					// 初始化数据（可以在线程里跑，由于这里循环比较多，最好只执行一次）再加载地区
-					Gdx.app.postRunnable(new Runnable() {
-						@Override
-						public void run() {
-							AssetManagerHelper.getInstance().loadTiledMap(MapGenerator.map().getTmxWorldMap().getName());
-
-						}
-					});
-				}
-			}
-		});
-
 	}
 
 
@@ -89,15 +68,16 @@ public class TransferScreen extends BaseScreen implements Screen {
 	public void show() {
 		time = 0;
 		isMapFinished = false;
-		isWorldFinished = false;
-
-        //起线程去创建地图
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				MapGenerator.map().initWorld();
-			}
-		}).start();
+        //创建大地图
+        MapGenerator.map().initWorld();
+        MapGenerator.map().getTmxAreaMap(GameFileHelper.getInstance().getCurrentAreaName()
+                , new MapGenerator.OnMapGeneratorListener() {
+                    @Override
+                    public void finish(final TmxAreaMap tmxAreaMap) {
+                        AssetManagerHelper.getInstance().loadTiledMap(tmxAreaMap.getName());
+                        isMapFinished = true;
+                    }
+                });
 
 	}
 
@@ -110,29 +90,16 @@ public class TransferScreen extends BaseScreen implements Screen {
 		stage.draw();
 		time+=delta;
 		AssetManager assetManager = AssetManagerHelper.getInstance().getAssetManager();
-		if(assetManager.update()){
-			if(type == 1&&isMapFinished){
-				if(time>1){
-					if(mainGame.getMainScreen() == null){
-						mainGame.setMainScreen(new com.mw.ui.screen.MainScreen(mainGame));
-					}
-					mainGame.setScreen(mainGame.getMainScreen());
-				}
 
+		if(assetManager.update()){
+			if(time>1&&isMapFinished){
+                if(mainGame.getMainScreen() == null){
+                    mainGame.setMainScreen(new MainScreen(mainGame));
+                }
+                mainGame.setScreen(mainGame.getMainScreen());
 			}
 		}
-		if(MapGenerator.map().getTmxWorldMap()!=null&&assetManager.isLoaded(MapGenerator.map().getTmxWorldMap().getName())&&!isWorldFinished){
-			isWorldFinished = true;
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					MapGenerator.map().getTmxWorldMap().getTileMapReload();
-					AssetManagerHelper.getInstance().loadTiledMap(MapGenerator.map()
-							.getTmxAreaMap(GameFileHelper.getInstance().getCurrentAreaName()).getName());
-					isMapFinished = true;
-				}
-			}).start();
-		}
+
 	}
 
 	@Override

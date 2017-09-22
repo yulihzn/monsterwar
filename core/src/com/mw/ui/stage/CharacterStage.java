@@ -34,7 +34,6 @@ public class CharacterStage extends Stage {
     private Table backGround;
     private InventoryTable inventoryTable;
     private PlayerAvatarTable playerAvatarTable;
-    private WorldMapTable worldMapTable;
     public static final float camSize = 16;
     private OrthographicCamera camera;
     private boolean isVisible = false;
@@ -97,8 +96,6 @@ public class CharacterStage extends Stage {
         camera.zoom = 1.0f;
         camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
         camera.update();
-        worldMapTable = new WorldMapTable(camera);
-        worldMapTable.setPosition(0,0);
 //        addActor(worldMapTable);
     }
 

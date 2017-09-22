@@ -105,9 +105,18 @@ public class GameFileHelper {
     public String getCurrentAreaName(){
         String name = getSaveObject(GameFileStr.AREA,String.class);
         if(null == name){
-            name = "area0_0_1";
+            name = "area_0_0_1";
         }
         return name;
+    }
+
+    public long getWorldSeed(){
+        Long seed = getSaveObject(GameFileStr.WORLD_SEED,Long.class);
+        if(null == seed){
+            seed = System.currentTimeMillis();
+            putSaveObject(GameFileStr.WORLD_SEED,seed);
+        }
+        return seed;
     }
 
     public void setCurrentStep(String name,int step){

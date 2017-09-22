@@ -74,7 +74,7 @@ public class  MapStage extends Stage{
 		gestureDetector = new GestureDetector(controller);
 		//初始化地图
 		level = GameFileHelper.getInstance().getCurrentLevel();
-		tmxAreaMap = MapGenerator.map().getTmxAreaMap(GameFileHelper.getInstance().getCurrentAreaName());
+		tmxAreaMap = MapGenerator.map().getTmxAreaMap();
 		tiledMap = tmxAreaMap.getTileMapReload();
 //		tiledMap.getLayers().get(TmxMap.LAYER_SHADOW).setVisible(false);
 		//获取渲染
@@ -104,7 +104,7 @@ public class  MapStage extends Stage{
 	}
 
 	public void initMap(){
-		tmxAreaMap = MapGenerator.map().getTmxAreaMap(GameFileHelper.getInstance().getCurrentAreaName());
+		tmxAreaMap = MapGenerator.map().getTmxAreaMap();
 		tiledMap = tmxAreaMap.getTileMapReload();
 		renderer = new OrthogonalTiledMapRenderer(tiledMap,1f/32f);
 	}

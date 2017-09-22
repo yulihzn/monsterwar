@@ -32,7 +32,8 @@ public enum WorldAreaType {
     WILD_DIRT("ｘ","Dirt",23),//泥土区
     WILD_GRASS("ｒ","Grass",24),//草地区
     WILD_FOREST("ｗ","Forest",25),//森林区
-    WILD_ROCK("ｏ","Rock",26);//岩石区
+    WILD_ROCK("ｏ","Rock",26),//岩石区
+    DUNGEON("ｏ","Rock",27);//地牢
 
 
     private int value;

@@ -9,6 +9,6 @@ public class GameFileStr {
     public static final String CURPOS = "curpos";
     public static final String AREAPOS = "areapos";
     public static final String INFO = "info";
-    public static final String WORLD = "world";
+    public static final String WORLD_SEED = "world_seed";
     public static final String AREA = "area";
 }

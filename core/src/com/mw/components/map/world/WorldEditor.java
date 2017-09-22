@@ -21,7 +21,6 @@ public class WorldEditor {
     double x0 = 0, y0 = 0, dx = 20, dy = 20;
     int w = WIDTH, h = HEIGHT, d = 2;
     private Array<WorldAreaType> castles = new Array<WorldAreaType>();
-
     public WorldEditor(long seed) {
         random = new Random(seed);
     }

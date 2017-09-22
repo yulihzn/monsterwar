@@ -120,7 +120,7 @@ public class TmxWorldMap extends TmxMap {
             int x0 = area.getX0();
             int y0 = area.getY0();
             int type = Integer.parseInt(String.valueOf(tileMap.getProperties().get(area.getName()+"type")));
-            area.setType(type);
+//            area.setType(type);
             for (int i = 0; i < 16; i++) {
                 for (int j = 0; j < 16; j++) {
                     area.getArr()[i][j] = mapModel.getArr()[x0+i][y0+j];

@@ -126,12 +126,7 @@ public static final int WIDTH = 256;
 			buildCastle(g.x,g.y);
 			indexs.removeValue(g,false);
 		}
-		//添加56个村庄
-		for (int i = 0; i < 56; i++) {
-			GridPoint2 g = indexs.get(random.nextInt(indexs.size));
-			buildVillage(g.x,g.y);
-			indexs.removeValue(g,false);
-		}
+
 		//添加178个野外
 		for (int i = 0; i < 178; i++) {
 			GridPoint2 g = indexs.get(random.nextInt(indexs.size));
@@ -252,18 +247,7 @@ public static final int WIDTH = 256;
 		worldMapModel.getAreas().put(castle.getName(),castle);
 
 	}
-	private void buildVillage(int x0,int y0){
-		com.mw.components.map.model.Village village = new com.mw.components.map.model.Village(x0,y0).init();
-		int[][] a = village.getArr();
-		for (int i = 0; i < a.length; i++) {
-			for (int j = 0; j < a[0].length; j++) {
-				if(a[i][j] != com.mw.components.map.SegType.WILD_DIRT.getValue()){
-					arr[x0+i][y0+j]=a[i][j];
-				}
-			}
-		}
-		worldMapModel.getAreas().put(village.getName(),village);
-	}
+
 
 	private void buildWild(int x0,int y0){
 		com.mw.components.map.model.Wild wild = new com.mw.components.map.model.Wild(x0,y0,random);

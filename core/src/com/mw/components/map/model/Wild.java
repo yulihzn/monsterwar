@@ -1,6 +1,7 @@
 package com.mw.components.map.model;
 
 import com.mw.components.map.MapEditor;
+import com.mw.components.map.world.WorldAreaType;
 
 import java.util.Random;
 
@@ -14,6 +15,6 @@ public class Wild extends com.mw.components.map.model.Area {
 
     public Wild(int x0, int y0, Random random) {
         super(x0, y0,0);
-        this.type = MapEditor.WILD;
+        this.type = WorldAreaType.WILD_DIRT;
     }
 }
