@@ -105,4 +105,13 @@ public class WorldEditor {
     public WorldAreaType[][] getArr() {
         return arr;
     }
+    public WorldAreaType getWorldAreaType(int x,int y,int level){
+        if(level>0){
+            //地牢
+            return WorldAreaType.DUNGEON;
+        }else{
+            //地表
+            return arr[x][y];
+        }
+    }
 }

@@ -5,8 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.resolvers.AbsoluteFileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.mw.components.map.areaeditor.AreaEditor;
-import com.mw.components.map.areaeditor.AreaEditorManager;
 import com.mw.components.map.model.Area;
 import com.mw.components.map.world.WorldAreaType;
 import com.mw.components.map.world.WorldEditor;
@@ -26,9 +24,6 @@ import com.mw.utils.Utils;
  */
 
 public class MapGenerator {
-    public static final int WORLD = 0;
-    public static final int AREA = 1;
-    public static final int DUNGEON = 2;
     private static MapGenerator mapGenerator;
     public static MapGenerator map()
     {
@@ -67,15 +62,7 @@ public class MapGenerator {
             @Override
             public void run() {
                 Area area = new Area(x,y,level);
-                if(level == 0){
-                    //地表
-                    area.setType(worldEditor.getArr()[x][y]);
-                }else {
-                    //地下
-                    area.setType(WorldAreaType.DUNGEON);
-                }
-                long time =System.currentTimeMillis();
-                L.i(name, Utils.getMins(time));
+                area.setType(worldEditor.getWorldAreaType(x,y,level));
                 if(tmxAreaMap != null && tmxAreaMap.getTileMap() != null){
                     tmxAreaMap = null;
                 }
