@@ -31,23 +31,18 @@ public class TransferScreen extends BaseScreen implements Screen {
 	private Stage stage;
 	private static final float DURATION = 0.1f;
 	private Timer timer = new Timer();
-	private int type = 0;
 
 	private FreeTypeFontGenerator generator;
 	private LazyBitmapFont bitmapFont;
 	private GameInfoLabel infoLabel;
 	private String msg = "Why did you hide that Tarot Deck in your music room?";
 	private boolean isMapFinished = false;
-	private float time=0;
+	private float deltaTime=0;
+	private String mapName;
+    private static final long DELAY = 1;
 
 	public TransferScreen(MainGame mainGame) {
 		super(mainGame);
-	}
-
-	public TransferScreen(MainGame mainGame, int type) {
-		super(mainGame);
-		this.type = type;
-
 		generator = new FreeTypeFontGenerator(Gdx.files.internal("data/font.ttf"));
 		bitmapFont = new LazyBitmapFont(generator,24);
 		infoLabel = new GameInfoLabel("",new Label.LabelStyle(bitmapFont, Color.WHITE));
@@ -63,15 +58,18 @@ public class TransferScreen extends BaseScreen implements Screen {
 		stage.addActor(infoLabel);
 	}
 
+	public TransferScreen initMapName(String name){
+        this.mapName = name;
+        return this;
+    }
 
 	@Override
 	public void show() {
-		time = 0;
+        deltaTime = 0;
 		isMapFinished = false;
         //创建大地图
         MapGenerator.map().initWorld();
-        MapGenerator.map().getTmxAreaMap(GameFileHelper.getInstance().getCurrentAreaName()
-                , new MapGenerator.OnMapGeneratorListener() {
+        MapGenerator.map().getTmxAreaMap(mapName, new MapGenerator.OnMapGeneratorListener() {
                     @Override
                     public void finish(final TmxAreaMap tmxAreaMap) {
                         AssetManagerHelper.getInstance().loadTiledMap(tmxAreaMap.getName());
@@ -88,11 +86,11 @@ public class TransferScreen extends BaseScreen implements Screen {
 		infoLabel.setPosition(Gdx.graphics.getWidth()/2-infoLabel.getGlyphLayout().width/2,Gdx.graphics.getHeight()/2-infoLabel.getGlyphLayout().height-50);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
-		time+=delta;
+        deltaTime+=delta;
 		AssetManager assetManager = AssetManagerHelper.getInstance().getAssetManager();
 
 		if(assetManager.update()){
-			if(time>1&&isMapFinished){
+			if(deltaTime>DELAY&&isMapFinished){
                 if(mainGame.getMainScreen() == null){
                     mainGame.setMainScreen(new MainScreen(mainGame));
                 }

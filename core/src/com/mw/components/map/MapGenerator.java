@@ -6,19 +6,16 @@ import com.badlogic.gdx.assets.loaders.resolvers.AbsoluteFileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.mw.components.map.model.Area;
-import com.mw.components.map.world.WorldAreaType;
 import com.mw.components.map.world.WorldEditor;
 import com.mw.profiles.GameFileHelper;
-import com.mw.utils.L;
-import com.mw.utils.Utils;
 
 /**
  * Created by BanditCat on 2016/9/27.
- * 小区域由16x16块组成
+ * 小区域由7x7块组成
  * 大区域由16x16块小区域组成
  * 世界由16x16个大区域组成
- * 16x16x16x16=65536个小区域
- * 地图类型分为城堡，村落，野外，地牢
+ * 7x16x16x16=28672个小区域
+ * 地图类型分为城堡，野外，地牢
  * 根据塔罗牌大阿卡那和小阿卡那，其中22个城堡56个村落，剩下的178个是野外
  *
  */
@@ -41,8 +38,10 @@ public class MapGenerator {
 
 
     public void initWorld() {
-        worldEditor = new WorldEditor(GameFileHelper.getInstance().getWorldSeed());
-        worldEditor.create();
+        if(worldEditor == null){
+            worldEditor = new WorldEditor(GameFileHelper.getInstance().getWorldSeed());
+            worldEditor.create();
+        }
     }
     public void getTmxAreaMap(final String name,OnMapGeneratorListener onMapGeneratorListener){
         this.setOnMapGeneratorListener(onMapGeneratorListener);

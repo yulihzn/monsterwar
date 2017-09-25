@@ -48,7 +48,7 @@ public class StartScreen extends BaseScreen implements Screen{
 
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				mainGame.setScreen(mainGame.getTransferScreen());
+				mainGame.loadMap(GameFileHelper.getInstance().getCurrentAreaName());
 				super.clicked(event, x, y);
 			}
 

@@ -41,15 +41,15 @@ public class MainGame extends Game {
 	public void setTransferScreen(TransferScreen transferScreen) {
 		this.transferScreen = transferScreen;
 	}
-	public void loadingMap(){
-
+	public void loadMap(String name){
+        setScreen(transferScreen.initMapName(name));
     }
 
 	@Override
 	public void create() {
 		AssetManagerHelper.getInstance().init();
 		startScreen = new StartScreen(this);
-		transferScreen = new TransferScreen(this,1);
+		transferScreen = new TransferScreen(this);
 		setScreen(startScreen);
 	}
 

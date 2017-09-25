@@ -138,6 +138,7 @@ public class  MapStage extends Stage{
 		Logic.getInstance().beginRound(x0,y0);
 	}
 
+
 	public void translateCamera(float delta,float Xtaget, float Ytarget) {
 		if(Xtaget != camera.position.x || Ytarget != camera.position.y){
 			//Creating a vector 3 which represents the target location myplayer)

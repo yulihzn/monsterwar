@@ -74,6 +74,7 @@ public class WorldEditor {
             castles.add(WorldAreaType.CASTLE_20_JUDGMENT);
             castles.add(WorldAreaType.CASTLE_21_WORLD);
         }
+
         //存储256个点遍历列表生成对应大区域
         Array<GridPoint2> indexs = new Array<GridPoint2>();
         for (int i = 0; i < WIDTH; i++) {
