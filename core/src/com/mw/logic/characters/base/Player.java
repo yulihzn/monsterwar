@@ -1,5 +1,7 @@
 package com.mw.logic.characters.base;
 
+import com.mw.components.map.AreaTile;
+import com.mw.components.map.MapGenerator;
 import com.mw.logic.Logic;
 import com.mw.logic.characters.info.CharacterInfo;
 import com.mw.logic.characters.info.PlayerInfo;
@@ -57,15 +59,17 @@ public class Player extends Character {
     protected void stayAround(int x, int y) {
         super.stayAround(x, y);
         if(playerActionListener != null){
-            playerActionListener.move(ACTION_SELF,x,y);
-            Logic.getInstance().sendLogMessage("进入下一个区域", LogMessageTable.TYPE_NORMAL);
-//            if(dungeonMap.getMapInfo().getMapArray()[x][y].getBlock() == Dungeon.tileUpStairs){
-//                playerActionListener.move(ACTION_UP,x,y);
-//                Logic.getInstance().sendLogMessage("你费力地爬了上来", LogMessageTable.TYPE_NORMAL);
-//            }else if(dungeonMap.getMapInfo().getMapArray()[x][y].getBlock() == Dungeon.tileDownStairs){
-//                playerActionListener.move(ACTION_DOWN,x,y);
-//                Logic.getInstance().sendLogMessage("不知道这底下是什么", LogMessageTable.TYPE_NORMAL);
-//            }
+
+            if(MapGenerator.map().getBlockValue(x,y) == AreaTile.B_UPSTAIRS_01){
+                playerActionListener.move(ACTION_UP,x,y);
+                Logic.getInstance().sendLogMessage("你费力地爬了上来", LogMessageTable.TYPE_NORMAL);
+            }else if(MapGenerator.map().getBlockValue(x,y) == AreaTile.B_DOWNSTAIRS_01){
+                playerActionListener.move(ACTION_DOWN,x,y);
+                Logic.getInstance().sendLogMessage("不知道这底下是什么", LogMessageTable.TYPE_NORMAL);
+            }else {
+                playerActionListener.move(ACTION_SELF,x,y);
+                Logic.getInstance().sendLogMessage("what???", LogMessageTable.TYPE_NORMAL);
+            }
         }
     }
 
@@ -169,5 +173,40 @@ public class Player extends Character {
     }
     public interface PlayerActionListener{
         void move(int action,int x,int y);
+    }
+
+    @Override
+    public void attack() {
+
+    }
+
+    @Override
+    public void useItem() {
+
+    }
+
+    @Override
+    public void pickUp() {
+
+    }
+
+    @Override
+    public void discard() {
+
+    }
+
+    @Override
+    public void speak() {
+
+    }
+
+    @Override
+    public void death() {
+
+    }
+
+    @Override
+    public void buffer() {
+
     }
 }

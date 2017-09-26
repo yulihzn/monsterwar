@@ -43,4 +43,39 @@ public class Ghost extends Monster {
         super.attackUnit(curPos);
         attackCalculate(this,Logic.getInstance().getPlayer());
     }
+
+    @Override
+    public void attack() {
+
+    }
+
+    @Override
+    public void useItem() {
+
+    }
+
+    @Override
+    public void pickUp() {
+
+    }
+
+    @Override
+    public void discard() {
+
+    }
+
+    @Override
+    public void speak() {
+
+    }
+
+    @Override
+    public void death() {
+
+    }
+
+    @Override
+    public void buffer() {
+
+    }
 }

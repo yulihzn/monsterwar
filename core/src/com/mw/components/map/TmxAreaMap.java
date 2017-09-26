@@ -3,6 +3,7 @@ package com.mw.components.map;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.math.GridPoint2;
 import com.mw.components.map.areaeditor.AreaEditorManager;
 import com.mw.game.MainGame;
 import com.mw.components.map.model.Area;
@@ -11,6 +12,8 @@ import com.mw.components.map.model.MapInfoModel;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+
 import tiled.core.Tile;
 import tiled.core.TileLayer;
 import tiled.io.TMXMapWriter;
@@ -22,6 +25,7 @@ import tiled.io.TMXMapWriter;
 public class TmxAreaMap extends TmxMap {
     private AreaMapModel mapModel = new AreaMapModel();
     private Area area;
+
     public TmxAreaMap(Area area) {
         super(AreaEditorManager.WIDTH, AreaEditorManager.HEIGHT);
         this.area = area;
@@ -39,19 +43,11 @@ public class TmxAreaMap extends TmxMap {
 
     @Override
     protected void initWorld() {
-//        try {
-//            tileMap = MapGenerator.getTmxLoader().load(name);
-//        }catch (Exception e){
-//            Gdx.app.log("searching...","not find the file.");
-//        }
-//        if(null != tileMap){
-//            initMapModel();
-//            return;
-//        }
         if(MapGenerator.isExistsMap(name)){
             return;
         }
         mapModel = new AreaEditorManager(area).create();
+
         MapInfoModel[][]arr = mapModel.getArr();
         for (int i = 0; i < arr.length; i++) {
             for (int j = 0; j < arr[0].length; j++) {
@@ -75,7 +71,6 @@ public class TmxAreaMap extends TmxMap {
         try {
             TMXMapWriter mapWriter = new TMXMapWriter();
             mapWriter.writeMap(this,name);
-//            tileMap = MapGenerator.getTmxLoader().load(name);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -83,15 +78,15 @@ public class TmxAreaMap extends TmxMap {
     private void initMapModel() {
         for (int i = 0; i < getWidth(); i++) {
             for (int j = 0; j < getHeight(); j++) {
-                        mapModel.getArr()[i][j] = getNewMapInfoModel(getTileId(LAYER_FLOOR,i,j)
+                        mapModel.getArr()[i][j] = getNewMapInfoModel(i,j,getTileId(LAYER_FLOOR,i,j)
                                 ,getTileId(LAYER_BLOCK,i,j)
                                 ,getTileId(LAYER_DECORATE,i,j)
                                 ,getTileId(LAYER_SHADOW,i,j));
             }
         }
     }
-    private MapInfoModel getNewMapInfoModel(int floor,int block,int decorate,int shadow) {
-        MapInfoModel model = new MapInfoModel();
+    private MapInfoModel getNewMapInfoModel(int x,int y,int floor,int block,int decorate,int shadow) {
+        MapInfoModel model = new MapInfoModel(x,y);
         model.setFloor(floor);
         model.setBlock(block);
         model.setDecorate(decorate);

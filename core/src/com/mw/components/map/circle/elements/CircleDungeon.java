@@ -80,6 +80,12 @@ public class CircleDungeon {
         mainSectionsIndex = index-1;
 
         for (Section sec : sections) {
+            if(sec.getIndex() == 1){
+                sec.updateArea(sec.left + sec.width() / 2, sec.top + sec.height() / 2, Tiles.tile().upstairs);
+            }
+            if(sec.getIndex() == mainSectionsIndex){
+                sec.updateArea(sec.left + sec.width() / 2, sec.top + sec.height() / 2, Tiles.tile().downstairs);
+            }
             putSectionIntoMap(sec);
         }
         for (Section sec : sections) {

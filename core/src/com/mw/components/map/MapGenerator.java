@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.resolvers.AbsoluteFileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.math.GridPoint2;
 import com.mw.components.map.model.Area;
 import com.mw.components.map.world.WorldEditor;
 import com.mw.profiles.GameFileHelper;
@@ -125,6 +126,12 @@ public class MapGenerator {
             return false;
         }
     }
+    public int getBlockValue(int x,int y){
+        return tmxAreaMap.getMapModel().getArr()[x][y].getBlock();
+    }
+    public int getFloorValue(int x,int y){
+        return tmxAreaMap.getMapModel().getArr()[x][y].getFloor();
+    }
     //是否是不可去的位置
     public boolean isForbidden(int x,int y){
         int length = tmxAreaMap.getMapModel().getArr().length;
@@ -175,5 +182,11 @@ public class MapGenerator {
                 tmxAreaMap=null;
             }
         }
+    }
+    public void putSpecialTile(String name,int x,int y){
+        tmxAreaMap.getMapModel().putSpecialTile(name,x,y);
+    }
+    public GridPoint2 getSpecialTile(String name){
+        return tmxAreaMap.getMapModel().getSpecialTile(name).getPos();
     }
 }

@@ -10,19 +10,20 @@ import java.util.Random;
  */
 
 public class Area {
-    protected int x0,y0;
+    protected int x0, y0;
     protected Random random;
-    protected int[][]arr = new int[16][16];
+    protected int[][] arr = new int[16][16];
     protected String name;//名字是area+坐标+level：area0_0_0
     protected WorldAreaType type;
     protected int level = 0;//层级默认为0,向下为123456...
+    public static final String AREA = "area_";
 
     public Area(int x0, int y0, int level) {
         this.x0 = x0;
         this.y0 = y0;
         this.level = level;
         this.random = new Random(MapEditor.SEED);
-        this.name = "area_"+x0+"_"+y0+"_"+level;
+        this.name = "area_" + x0 + "_" + y0 + "_" + level;
     }
 
     public Area() {
@@ -74,5 +75,37 @@ public class Area {
 
     public void setLevel(int level) {
         this.level = level;
+    }
+
+    public static String getAreaName(int x, int y, int level) {
+        return "AREA" + x + "_" + y + "_" + level;
+    }
+
+    public static String getChangedAreaName(String name, int level) {
+        String[] str = name.split("_");
+        if (str.length != 4) {
+            return name;
+        }
+        int x = Integer.valueOf(str[1]);
+        int y = Integer.valueOf(str[2]);
+        return AREA + x + "_" + y + "_" + level;
+    }
+
+    public static String getChangedAreaName(String name, int x, int y) {
+        String[] str = name.split("_");
+        if (str.length != 4) {
+            return name;
+        }
+        int level = Integer.valueOf(str[3]);
+        return AREA + x + "_" + y + "_" + level;
+    }
+
+    public static int getAreaLevel(String name) {
+        String[] str = name.split("_");
+        if (str.length != 4) {
+            return 0;
+        }
+        int level = Integer.valueOf(str[3]);
+        return level;
     }
 }

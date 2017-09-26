@@ -7,6 +7,7 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -14,6 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.mw.components.map.model.Area;
+import com.mw.components.map.model.AreaMapModel;
 import com.mw.ui.actor.ShadowActor;
 import com.mw.ui.actor.TiledMapActor;
 import com.mw.logic.factory.ItemFactory;
@@ -63,15 +66,7 @@ public class  MapStage extends Stage{
 
 	public MapStage(MainScreen mainScreen){
 		this.mainScreen = mainScreen;
-		float w = MainGame.worldWidth;
-		float h = MainGame.worldHeight;
-		camera = new OrthographicCamera(camSize, camSize*(h/w));
-		camera.position.set(0f, 0f, 0);
-		camera.zoom = 1f;
-		camera.update();
-		setViewport(new FitViewport(MainGame.worldWidth,MainGame.worldHeight,camera));
-		controller = new CameraController(camera);
-		gestureDetector = new GestureDetector(controller);
+        initCamera();
 		//初始化地图
 		level = GameFileHelper.getInstance().getCurrentLevel();
 		tmxAreaMap = MapGenerator.map().getTmxAreaMap();
@@ -90,6 +85,7 @@ public class  MapStage extends Stage{
 
 		//添加角色
 		man = characterFactory.getPlayer();
+        man.getActor().setTilePosIndex(MapGenerator.map().getSpecialTile(AreaMapModel.UPSTAIRS));
 //		Logic.getInstance().setPlayer(man);
 		man.setPlayerActionListener(playerActionListener);
 		Logic.getInstance().addGameEventListener(logicEventListener);
@@ -102,6 +98,17 @@ public class  MapStage extends Stage{
 		camera.position.set(man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y,0);
 
 	}
+	private void initCamera(){
+        float w = MainGame.worldWidth;
+        float h = MainGame.worldHeight;
+        camera = new OrthographicCamera(camSize, camSize*(h/w));
+        camera.position.set(0f, 0f, 0);
+        camera.zoom = 1f;
+        camera.update();
+        setViewport(new FitViewport(MainGame.worldWidth,MainGame.worldHeight,camera));
+        controller = new CameraController(camera);
+        gestureDetector = new GestureDetector(controller);
+    }
 
 	public void initMap(){
 		tmxAreaMap = MapGenerator.map().getTmxAreaMap();
@@ -220,12 +227,22 @@ public class  MapStage extends Stage{
 	private Player.PlayerActionListener playerActionListener = new Player.PlayerActionListener() {
 		@Override
 		public void move(int action, int x, int y) {
-			switch (action){
+            String name = GameFileHelper.getInstance().getCurrentAreaName();
+            int level = Area.getAreaLevel(name);
+            switch (action){
 				case Player.ACTION_DOWN:
 					generateNextStairs(level+1);
+                    if(level +1 <= 10){
+                        mainScreen.getMainGame().loadMap(Area.getChangedAreaName(name,level+1));
+
+                    }
+
 					break;
 				case Player.ACTION_UP:
 					generateNextStairs(level-1);
+                    if(level - 1 >= 0){
+                        mainScreen.getMainGame().loadMap(Area.getChangedAreaName(name,level-1));
+                    }
 					break;
 				case Player.ACTION_SELF:
 //					GameFileHelper.getInstance().setCurrentAreaName("area"+MathUtils.random(15)*16+"_"+MathUtils.random(15)*16);
@@ -317,10 +334,11 @@ public class  MapStage extends Stage{
 	@Override
 	public void draw() {
 		//地图绘制
-//		renderer.render();
+        //地板和地表层绘制
 		renderer.render(new int[]{0,1});
-		//余下actor绘制
+		//其它actor绘制
 		super.draw();
+        //装饰层绘制
 		renderer.render(new int[]{2});
 		getBatch().begin();
 //		shadowActor.draw(getBatch(),1);

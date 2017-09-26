@@ -42,7 +42,7 @@ public class AreaSegmentCastleWall extends AreaSegment {
     protected void build() {
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
-                MapInfoModel model = new MapInfoModel();
+                MapInfoModel model = new MapInfoModel(i,j);
                 model.setFloor(floor);
                 Random r = new Random(com.mw.components.map.MapEditor.SEED);
                 if(r.nextDouble()<0.2){

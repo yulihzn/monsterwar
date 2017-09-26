@@ -9,7 +9,7 @@ public abstract class Monster extends Character {
     }
 
     @Override
-    protected void findWay(int x, int y) {
+    public void findWay(int x, int y) {
         super.findWay(x, y);
     }
 }

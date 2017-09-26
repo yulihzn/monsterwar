@@ -5,6 +5,8 @@ import com.mw.logic.characters.base.Monster;
 import com.mw.logic.characters.base.Player;
 import com.mw.logic.characters.info.GhostInfo;
 import com.mw.logic.characters.npc.Ghost;
+import com.mw.logic.commands.WalkCommand;
+import com.mw.logic.commands.base.CommandQueue;
 import com.mw.logic.item.base.Food;
 import com.mw.logic.item.base.Item;
 import com.mw.logic.item.info.FoodInfo;
@@ -22,8 +24,9 @@ public class Logic {
      * 比如移动，当点击目的地的时候，其余单位也确定各自的目的地或者其他行为，玩家移动一格其他单位也行动一回合，各种逻辑处理完毕，最后再执行动画
      * 由静止的动画转变成相应的动画
      * 重新梳理回合的概念
-     * 一个回合由若干命令组成，回合开始会依次执行队列里每个命令，一个回合结束才能执行下一个回合
-     *
+     * 一个回合由若干命令组成，回合开始会依次执行队列里每个命令
+     * 点击地图：行走 攻击 对话 拾取
+     * 点击物品栏：使用物品
      *
      */
 
@@ -33,6 +36,7 @@ public class Logic {
     }
 
     private void init() {
+        commandQueue = new CommandQueue();
     }
 
     public static Logic getInstance(){
@@ -66,6 +70,8 @@ public class Logic {
 
     private Player player;
 
+    private CommandQueue commandQueue;
+
     public Player getPlayer() {
         return player;
     }
@@ -91,8 +97,14 @@ public class Logic {
          */
         this.clickX =x;
         this.clickY =y;
+        commandQueue.clear();
+        WalkCommand walkCommand = new WalkCommand(x,y,player);
+        commandQueue.addCommand(walkCommand);
 
-        playerWalk(x,y);
+
+        if(!commandQueue.execute()){
+            return;
+        }
 
 //        checkOthers();
 //        for (int i = 0; i < Logic.getInstance().getMonsterArray().size; i++) {
@@ -107,30 +119,7 @@ public class Logic {
         endRound();
 
     }
-    /**
-     * 点击地图位置，通知L，L让player寻路并规划好要移动的第一格，获取map关于这一格的信息（判断是移动，停止，和该格子互动，或者和该格子的player互动）
-     * 执行这些操作，结束player这一回合，执行其他npc的ai
-     */
-    public boolean playerWalk(int x,int y) {
-        //获取玩家为中心的16x16的数组
-//        int length = 16;
-//        int x0 = player.getActor().getTilePosIndex().x-length/2;
-//        int y0 = player.getActor().getTilePosIndex().y-length/2;
-//        //传入左上角坐标得到数组
-//        int[][] stars = MapGenerator.getInstance().getAStarArray(x0,y0,length);
-//        player.upDateAStarArray(x0,y0,stars);
-        if(MapGenerator.map().isBlock(x,y)||MapGenerator.map().isForbidden(x,y)){
-            return false;
-        }
-        player.findWay(x,y);
-        //判断是否有第一格，没有不执行移动
-        if(player.getPath().size() == 0){
-            return false;
-        }
-        player.walk();
 
-        return true;
-    }
     public void continueWalk(){
         //如果没有到目的地继续。
         if(player.getActor().getTilePosIndex().x != clickX || player.getActor().getTilePosIndex().y != clickY){

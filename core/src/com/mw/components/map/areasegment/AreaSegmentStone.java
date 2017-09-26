@@ -26,7 +26,7 @@ public class AreaSegmentStone extends AreaSegment {
         map = new MapInfoModel[SIZE][SIZE];
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
-                MapInfoModel model = new MapInfoModel();
+                MapInfoModel model = new MapInfoModel(i,j);
                 model.setFloor(AreaTile.F_DIRT_03);
                 model.setBlock(AreaTile.B_TRANS);
                 model.setDecorate(AreaTile.D_TRANS);

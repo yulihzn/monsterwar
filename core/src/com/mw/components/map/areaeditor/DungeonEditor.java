@@ -4,6 +4,7 @@ import com.mw.components.map.AreaTile;
 import com.mw.components.map.circle.elements.CircleDungeon;
 import com.mw.components.map.circle.elements.Tiles;
 import com.mw.components.map.model.Area;
+import com.mw.components.map.model.AreaMapModel;
 import com.mw.components.map.model.MapInfoModel;
 
 import tiled.core.Tile;
@@ -17,6 +18,8 @@ public class DungeonEditor extends AreaEditor {
     private static int floor = AreaTile.F_DIRT_03;
     private static int door = AreaTile.B_DOOR_04;
     private static int block = AreaTile.B_WALL_05;
+    private static int upstairs = AreaTile.B_UPSTAIRS_01;
+    private static int downstairs = AreaTile.B_DOWNSTAIRS_01;
 
     public DungeonEditor(Area area) {
         super(area);
@@ -29,7 +32,7 @@ public class DungeonEditor extends AreaEditor {
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                MapInfoModel model = new MapInfoModel();
+                MapInfoModel model = new MapInfoModel(i,j);
                 model.setFloor(floor);
                 model.setBlock(AreaTile.B_SHADOW);
                 int x = i-width/4;
@@ -47,6 +50,14 @@ public class DungeonEditor extends AreaEditor {
                     if (value == Tiles.tile().roomfloor.getValue()
                             ||value == Tiles.tile().corridorfloor.getValue()) {
                         model.setBlock(AreaTile.B_TRANS);
+                    }
+                    if (value == Tiles.tile().upstairs.getValue()) {
+                        model.setBlock(upstairs);
+                        areaMapModel.putSpecialTile(AreaMapModel.UPSTAIRS,i,j);
+                    }
+                    if (value == Tiles.tile().downstairs.getValue()) {
+                        model.setBlock(downstairs);
+                        areaMapModel.putSpecialTile(AreaMapModel.DOWNSTAIRS,i,j);
                     }
                 }
 

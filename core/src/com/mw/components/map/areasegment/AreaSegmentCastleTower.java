@@ -36,7 +36,7 @@ public class AreaSegmentCastleTower extends AreaSegment {
     protected void build() {
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
-                MapInfoModel model = new MapInfoModel();
+                MapInfoModel model = new MapInfoModel(i,j);
                 model.setFloor(floor);
                 model.setBlock(com.mw.components.map.AreaTile.B_TRANS);
                 model.setDecorate(com.mw.components.map.AreaTile.D_TRANS);

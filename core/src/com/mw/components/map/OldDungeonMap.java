@@ -90,7 +90,7 @@ public class OldDungeonMap extends TiledMap {
             mapInfo.setLevel(level);
             for (int i = 0; i < mapInfo.getMapArray().length; i++) {
                 for (int j = 0; j < mapInfo.getMapArray()[0].length; j++) {
-                    MapInfoModel mim = new MapInfoModel();
+                    MapInfoModel mim = new MapInfoModel(i,j);
                     //阴影要多两条边
                     if(i<dungeonArray.length&&j<dungeonArray[0].length){
                         mim.setBlock(dungeonArray[i][j]);

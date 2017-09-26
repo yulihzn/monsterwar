@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Created by BanditCat on 2016/7/25.
  */
-public abstract class Character implements Telegraph {
+public abstract class Character implements Npc,Telegraph {
     protected StateMachine<Character,CharacterState> stateMachine;
     protected CharacterActor characterActor;
     protected CharacterInfo characterInfo;
@@ -80,7 +80,7 @@ public abstract class Character implements Telegraph {
         final int y = path.get(pathIndex).getY();
         final boolean isStayAround = getActor().getTilePosIndex().x == x&&getActor().getTilePosIndex().y==y;
         characterActor.setTilePosIndexOnly(new GridPoint2(x,y));
-        MoveToAction action = Actions.moveTo(x,y,0.3f);
+        MoveToAction action = Actions.moveTo(x,y,0.1f);
         //添加移动动画
         walkSequenceAction.addAction(action);
         //添加动画完成事件
@@ -100,7 +100,7 @@ public abstract class Character implements Telegraph {
         characterActor.addAction(walkSequenceAction);
 
     }
-    protected void findWay(int x,int y){
+    public void findWay(int x,int y){
         //判断是不是旧路径，是的话去除第一条并返回，不是的话生成新的路径
         boolean isOldPos = (x==oldX&&y==oldY&&path.size()!=0);
         if(isOldPos){

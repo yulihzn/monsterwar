@@ -1,4 +1,4 @@
-package com.mw.logic;
+package com.mw.logic.commands.base;
 
 /**
  * Created by yuli.he on 2017/9/25.
@@ -7,5 +7,5 @@ package com.mw.logic;
  */
 
 public interface Command{
-    void execute();
+    boolean execute();
 }

@@ -25,7 +25,7 @@ public class AreaSegmentTree extends AreaSegment {
         map = new MapInfoModel[SIZE][SIZE];
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
-                MapInfoModel model = new MapInfoModel();
+                MapInfoModel model = new MapInfoModel(i,j);
                 model.setFloor(com.mw.components.map.AreaTile.F_GRASS_02);
                 model.setBlock(com.mw.components.map.AreaTile.B_TRANS);
                 model.setDecorate(com.mw.components.map.AreaTile.D_TRANS);
