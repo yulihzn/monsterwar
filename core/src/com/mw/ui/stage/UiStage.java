@@ -23,7 +23,7 @@ import com.mw.profiles.GameFileHelper;
 /**
  * Created by BanditCat on 2016/7/13.
  */
-public class UiStage extends Stage {
+public class UiStage extends BaseStage {
     private FreeTypeFontGenerator generator;
     private LazyBitmapFont bitmapFont;
 
@@ -89,6 +89,11 @@ public class UiStage extends Stage {
         addActor(apLabel);
         addActor(dpLabel);
         logMessageTable.setVisible(false);
+
+    }
+
+    @Override
+    public void show() {
 
     }
 

@@ -91,9 +91,7 @@ public class TransferScreen extends BaseScreen implements Screen {
 
 		if(assetManager.update()){
 			if(deltaTime>DELAY&&isMapFinished){
-                if(mainGame.getMainScreen() == null){
-                    mainGame.setMainScreen(new MainScreen(mainGame));
-                }
+
                 mainGame.setScreen(mainGame.getMainScreen());
 			}
 		}

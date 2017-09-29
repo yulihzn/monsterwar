@@ -26,7 +26,7 @@ import com.mw.ui.widget.WorldMapTable;
 /**
  * Created by BanditCat on 2016/7/13.
  */
-public class CharacterStage extends Stage {
+public class CharacterStage extends BaseStage {
     private FreeTypeFontGenerator generator;
     private LazyBitmapFont bitmapFont;
 
@@ -41,15 +41,31 @@ public class CharacterStage extends Stage {
     private MainScreen mainScreen;
 
     private Array<MagicBottle> bottles = new Array<MagicBottle>();
+    private int width,height;
 
 
     public CharacterStage(final MainScreen mainScreen) {
         setDebugUnderMouse(true);
+        width = MainGame.worldWidth/10;
+        height = MainGame.worldHeight-MainGame.worldHeight/10;
         this.mainScreen = mainScreen;
         setViewport(new FitViewport(MainGame.worldWidth,MainGame.worldHeight));
         generator = new FreeTypeFontGenerator(Gdx.files.internal("data/font.ttf"));
         bitmapFont = new LazyBitmapFont(generator,10);
+        camera = new OrthographicCamera(camSize,camSize*(width/height));
+        camera.zoom = 1.0f;
+        camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
+        camera.update();
         addBackGround();
+    }
+
+    @Override
+    public void show() {
+        backGround.clearChildren();
+        addMagicBottle();
+        addAvatar();
+        addInventory();
+//      addActor(worldMapTable);
     }
 
     private void addInventory() {
@@ -62,22 +78,20 @@ public class CharacterStage extends Stage {
     }
 
     private void addBackGround(){
-        int w = MainGame.worldWidth/10;
-        int h = MainGame.worldHeight-MainGame.worldHeight/10;
-        Pixmap pixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
-        texture = new Texture(w, h, Pixmap.Format.RGBA8888);
+        Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
+        texture = new Texture(width, height, Pixmap.Format.RGBA8888);
         texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Linear);
         texture.setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);
         pixmap.setColor(new Color(0,0,0,0.9f));
-        pixmap.fillRectangle(0,0,w,h);
+        pixmap.fillRectangle(0,0,width,height);
         texture.draw(pixmap, 0, 0);
         pixmap.dispose();
         backGround = new Table();
-        backGround.setWidth(w);
-        backGround.setHeight(h);
+        backGround.setWidth(width);
+        backGround.setHeight(height);
         backGround.setPosition(MainGame.worldWidth/10,MainGame.worldHeight);
         backGround.setVisible(isVisible);
-        TextureRegion textureRegion = new TextureRegion(texture,w,h);
+        TextureRegion textureRegion = new TextureRegion(texture,width,width);
         backGround.setBackground(new TextureRegionDrawable(textureRegion));
         backGround.addListener(new ClickListener(){
 
@@ -89,14 +103,6 @@ public class CharacterStage extends Stage {
 
         });
         addActor(backGround);
-        addMagicBottle();
-        addAvatar();
-        addInventory();
-        camera = new OrthographicCamera(camSize,camSize*(h/w));
-        camera.zoom = 1.0f;
-        camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
-        camera.update();
-//        addActor(worldMapTable);
     }
 
     private void addMagicBottle(){

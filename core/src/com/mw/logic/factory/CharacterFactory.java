@@ -4,6 +4,7 @@ package com.mw.logic.factory;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.mw.profiles.GameFileHelper;
 import com.mw.ui.actor.GhostActor;
 import com.mw.ui.actor.PlayerActor;
 import com.mw.logic.Logic;
@@ -34,7 +35,7 @@ public class CharacterFactory {
         PlayerActor manActor = new PlayerActor(player,PlayerInfo.REGION_NAME,camera);
         manActor.setPosition(0,0);
         manActor.setScale(1f/32f);
-        manActor.setTilePosIndex(new GridPoint2(48,48));
+        manActor.setTilePosIndex(GameFileHelper.getInstance().getCharacterPos(manActor.getRegionName()));
         player.setActor(manActor);
         stage.addActor(manActor);
         manActor.setZIndex(300);

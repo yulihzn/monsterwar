@@ -40,7 +40,7 @@ import com.mw.utils.LogicEventListener;
 import tiled.core.TileLayer;
 
 
-public class  MapStage extends Stage{
+public class  MapStage extends BaseStage{
 	private OrthographicCamera camera;
 	private long roundTime = TimeUtils.nanoTime();
 	public static final long roundSecond = 100000000;
@@ -66,39 +66,6 @@ public class  MapStage extends Stage{
 
 	public MapStage(MainScreen mainScreen){
 		this.mainScreen = mainScreen;
-        initCamera();
-		//初始化地图
-		level = GameFileHelper.getInstance().getCurrentLevel();
-		tmxAreaMap = MapGenerator.map().getTmxAreaMap();
-		tiledMap = tmxAreaMap.getTileMapReload();
-//		tiledMap.getLayers().get(TmxMap.LAYER_SHADOW).setVisible(false);
-		//获取渲染
-		renderer = new OrthogonalTiledMapRenderer(tiledMap,1f/32f);
-		characterFactory = new CharacterFactory(this);
-		itemFactory = new ItemFactory(this);
-		controller.setOnTouchListener(new CameraController.OnTouchListener() {
-			@Override
-			public void onTap(float x, float y) {
-				elementTouch("",x,y);
-			}
-		});
-
-		//添加角色
-		man = characterFactory.getPlayer();
-        man.getActor().setTilePosIndex(MapGenerator.map().getSpecialTile(AreaMapModel.UPSTAIRS));
-//		Logic.getInstance().setPlayer(man);
-		man.setPlayerActionListener(playerActionListener);
-		Logic.getInstance().addGameEventListener(logicEventListener);
-//		MapGenerator.getInstance();
-//		man.getActor().setPosition(16,14);
-		mapShadow = new MapShadow(camera);
-		shadowActor = new ShadowActor(camera);
-//		addActor(shadowActor);
-		shadowActor.drawShadow(man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y);
-		camera.position.set(man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y,0);
-
-	}
-	private void initCamera(){
         float w = MainGame.worldWidth;
         float h = MainGame.worldHeight;
         camera = new OrthographicCamera(camSize, camSize*(h/w));
@@ -108,13 +75,48 @@ public class  MapStage extends Stage{
         setViewport(new FitViewport(MainGame.worldWidth,MainGame.worldHeight,camera));
         controller = new CameraController(camera);
         gestureDetector = new GestureDetector(controller);
+		controller.setOnTouchListener(new CameraController.OnTouchListener() {
+			@Override
+			public void onTap(float x, float y) {
+				elementTouch("",x,y);
+			}
+		});
+	}
+
+    @Override
+    public void show() {
+        //初始化地图
+        level = GameFileHelper.getInstance().getCurrentLevel();
+        tmxAreaMap = MapGenerator.map().getTmxAreaMap();
+        tiledMap = tmxAreaMap.getTileMapReload();
+        //获取渲染
+        renderer = new OrthogonalTiledMapRenderer(tiledMap,1f/32f);
+        characterFactory = new CharacterFactory(this);
+        itemFactory = new ItemFactory(this);
+        //添加角色
+        man = characterFactory.getPlayer();
+        if(man.getActor().getTilePosIndex().x == -1){
+            setPlayerPos(MapGenerator.map().getSpecialTile(AreaMapModel.UPSTAIRS));
+        }else if(man.getActor().getTilePosIndex().x == -2){
+            setPlayerPos(MapGenerator.map().getSpecialTile(AreaMapModel.DOWNSTAIRS));
+        }
+
+//		Logic.getInstance().setPlayer(man);
+        man.setPlayerActionListener(playerActionListener);
+        Logic.getInstance().addGameEventListener(logicEventListener);
+//		MapGenerator.getInstance();
+//		man.getActor().setPosition(16,14);
+        mapShadow = new MapShadow(camera);
+        shadowActor = new ShadowActor(camera);
+//		addActor(shadowActor);
+        shadowActor.drawShadow(man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y);
+        camera.position.set(man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y,0);
     }
 
-	public void initMap(){
-		tmxAreaMap = MapGenerator.map().getTmxAreaMap();
-		tiledMap = tmxAreaMap.getTileMapReload();
-		renderer = new OrthogonalTiledMapRenderer(tiledMap,1f/32f);
-	}
+    private void setPlayerPos(GridPoint2 pos){
+        man.getActor().setTilePosIndex(pos);
+        camera.position.set(man.getActor().getTilePosIndex().x,man.getActor().getTilePosIndex().y,0);
+    }
 	@Override
 	public boolean scrolled(int amount) {
 		Gdx.app.log("scrolled",""+amount);
@@ -234,7 +236,7 @@ public class  MapStage extends Stage{
 					generateNextStairs(level+1);
                     if(level +1 <= 10){
                         mainScreen.getMainGame().loadMap(Area.getChangedAreaName(name,level+1));
-
+                        man.getActor().setTilePosIndex(new GridPoint2(-1,-1));
                     }
 
 					break;
@@ -242,6 +244,7 @@ public class  MapStage extends Stage{
 					generateNextStairs(level-1);
                     if(level - 1 >= 0){
                         mainScreen.getMainGame().loadMap(Area.getChangedAreaName(name,level-1));
+                        man.getActor().setTilePosIndex(new GridPoint2(-2,-2));
                     }
 					break;
 				case Player.ACTION_SELF:
@@ -327,6 +330,7 @@ public class  MapStage extends Stage{
 	public boolean keyUp(int keycode) {
 		if(Input.Keys.BACK == keycode){
 			mainScreen.getMainGame().setScreen(mainScreen.getMainGame().getStartScreen());
+            GameFileHelper.getInstance().saveProfile(GameFileHelper.DEFAULT_PROFILE);
 			return false;
 		}
 		return super.keyUp(keycode);
@@ -351,6 +355,7 @@ public class  MapStage extends Stage{
 		super.dispose();
 		mapShadow.dispose();
 		tiledMap.dispose();
+        tiledMap = null;
 	}
 
 	@Override

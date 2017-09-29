@@ -37,22 +37,26 @@ public class MainScreen extends BaseScreen{
 
 	@Override
 	public void show() {
-		mapStage.initMap();
+		mapStage.show();
+        uiStage.show();
+        characterStage.show();
 		hideCharacterStage();
 
 	}
+	public void setStageTouchable(boolean ui,boolean map,boolean character){
+        inputMultiplexer.clear();
+        if(ui)inputMultiplexer.addProcessor(uiStage);
+        if(map)inputMultiplexer.addProcessor(mapStage.getGestureDetector());
+        if(map)inputMultiplexer.addProcessor(mapStage);
+        if(character)inputMultiplexer.addProcessor(characterStage);
+        Gdx.input.setInputProcessor(inputMultiplexer);
+    }
 	public void showCharacterStage(){
-		inputMultiplexer.clear();
-		inputMultiplexer.addProcessor(characterStage);
-		Gdx.input.setInputProcessor(inputMultiplexer);
+        setStageTouchable(false,false,true);
 		characterStage.setVisible(true);
 	}
 	public void hideCharacterStage(){
-		inputMultiplexer.clear();
-		inputMultiplexer.addProcessor(uiStage);
-		inputMultiplexer.addProcessor(mapStage.getGestureDetector());
-		inputMultiplexer.addProcessor(mapStage);
-		Gdx.input.setInputProcessor(inputMultiplexer);
+        setStageTouchable(true,true,false);
 		characterStage.setVisible(false);
 	}
 	@Override

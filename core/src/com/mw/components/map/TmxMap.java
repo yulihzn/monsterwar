@@ -162,7 +162,6 @@ public class TmxMap extends Map {
         return tileMap;
     }
     protected TiledMap getTileMapReload() {
-//        tileMap = MapGenerator.getTmxLoader().load(name);
         tileMap = AssetManagerHelper.getInstance().getTiledMap(name);
         return tileMap;
     }

@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.GridPoint2;
 import com.mw.components.map.areaeditor.AreaEditorManager;
+import com.mw.components.map.circle.elements.Tiles;
 import com.mw.game.MainGame;
 import com.mw.components.map.model.Area;
 import com.mw.components.map.model.AreaMapModel;
@@ -82,6 +83,12 @@ public class TmxAreaMap extends TmxMap {
                                 ,getTileId(LAYER_BLOCK,i,j)
                                 ,getTileId(LAYER_DECORATE,i,j)
                                 ,getTileId(LAYER_SHADOW,i,j));
+                if (mapModel.getArr()[i][j].getBlock() == AreaTile.B_UPSTAIRS_01) {
+                    mapModel.putSpecialTile(AreaMapModel.UPSTAIRS,i,j);
+                }
+                if (mapModel.getArr()[i][j].getBlock() == AreaTile.B_DOWNSTAIRS_01) {
+                    mapModel.putSpecialTile(AreaMapModel.DOWNSTAIRS,i,j);
+                }
             }
         }
     }

@@ -43,7 +43,8 @@ public class MainGame extends Game {
 	}
 	public void loadMap(String name){
         setScreen(transferScreen.initMapName(name));
-    }public void loadMap(int x,int y,int level){
+    }
+    public void loadMap(int x,int y,int level){
         setScreen(transferScreen.initMapName("area_"));
     }
 
@@ -52,6 +53,7 @@ public class MainGame extends Game {
 		AssetManagerHelper.getInstance().init();
 		startScreen = new StartScreen(this);
 		transferScreen = new TransferScreen(this);
+        mainScreen = new MainScreen(this);
 		setScreen(startScreen);
 	}
 
